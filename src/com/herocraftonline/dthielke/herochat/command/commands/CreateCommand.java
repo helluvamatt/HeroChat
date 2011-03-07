@@ -25,7 +25,7 @@ public class CreateCommand extends BaseCommand {
         super(plugin);
         name = "Create";
         description = "Creates a channel. Type /ch help create for info";
-        usage = "Usage: /ch create <name> <nick> [color:#] [-options]";
+        usage = "/ch create <name> <nick> [p:pass] [color:#] [-options]";
         minArgs = 2;
         maxArgs = 4;
         identifiers.add("ch create");
@@ -81,7 +81,9 @@ public class CreateCommand extends BaseCommand {
         for (int i = 2; i < args.length; i++) {
             String tmp = args[i].toLowerCase();
 
-            if (tmp.startsWith("color:")) {
+            if (tmp.startsWith("p:")) {
+                c.setPassword(tmp.substring(2));
+            } else if (tmp.startsWith("color:")) {
                 try {
                     int color = Integer.parseInt(tmp.substring(6), 16);
                     c.setColor(ChatColor.values()[color]);

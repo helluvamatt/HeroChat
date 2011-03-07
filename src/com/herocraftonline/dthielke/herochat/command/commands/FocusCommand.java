@@ -22,9 +22,9 @@ public class FocusCommand extends BaseCommand {
         super(plugin);
         name = "Focus";
         description = "Directs all future messages to a channel";
-        usage = "Usage: /ch <channel>";
+        usage = "/ch <channel> [password]";
         minArgs = 1;
-        maxArgs = 1;
+        maxArgs = 2;
         identifiers.add("ch");
     }
 
@@ -44,10 +44,15 @@ public class FocusCommand extends BaseCommand {
                             return;
                         }
                     }
-
                     if (!c.getPlayers().contains(name)) {
-                        c.addPlayer(name);
-                        sender.sendMessage(plugin.getTag() + "Joined channel " + c.getCName());
+                        String password = c.getPassword();
+                        if (password.isEmpty() || (args.length == 2 && args[1].equals(password)) || plugin.getPermissions().isAdmin(player)) {
+                            c.addPlayer(name);
+                            sender.sendMessage(plugin.getTag() + "Joined channel " + c.getCName());
+                        } else {
+                            sender.sendMessage(plugin.getTag() + "Wrong password for " + c.getCName());
+                            return;
+                        }
                     }
                     cm.setActiveChannel(name, c.getName());
                     sender.sendMessage(plugin.getTag() + "Set focus on " + c.getCName());

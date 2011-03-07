@@ -19,13 +19,14 @@ import com.herocraftonline.dthielke.herochat.util.Messaging;
 
 public class Channel {
 
-    protected static final String logFormat = "[{nick}] {player}: ";
-    protected static final String joinFormat = "{color.CHANNEL}[{nick}] ";
+    public static final String logFormat = "[{nick}] {player}: ";
+    public static final String joinFormat = "{color.CHANNEL}[{nick}] ";
 
     protected HeroChat plugin;
 
     protected String name;
     protected String nick;
+    protected String password;
     protected String msgFormat;
     protected ChatColor color;
 
@@ -41,11 +42,21 @@ public class Channel {
     protected List<String> whitelist;
     protected List<String> voicelist;
     protected List<String> worlds;
+    protected List<String> ircTags;
 
     public Channel(HeroChat plugin) {
         this.plugin = plugin;
+        this.name = "DefaultName";
+        this.nick = "DefaultNick";
+        this.password = "";
         this.msgFormat = "{default}";
         this.color = ChatColor.WHITE;
+
+        verbose = false;
+        hidden = false;
+        forced = false;
+        autoJoined = false;
+        quickMessagable = false;
 
         players = new ArrayList<String>();
         moderators = new ArrayList<String>();
@@ -53,9 +64,14 @@ public class Channel {
         whitelist = new ArrayList<String>();
         voicelist = new ArrayList<String>();
         worlds = new ArrayList<String>();
+        ircTags = new ArrayList<String>();
     }
 
     public void sendMessage(String source, String msg, String format, boolean sentByPlayer) {
+        sendMessage(source, msg, format, sentByPlayer, true);
+    }
+
+    public void sendMessage(String source, String msg, String format, boolean sentByPlayer, boolean includeSender) {
         List<String> formattedMsg = Messaging.formatWrapped(plugin, this, format, source, msg, sentByPlayer);
         ChannelManager cm = plugin.getChannelManager();
         if (sentByPlayer) {
@@ -73,9 +89,11 @@ public class Channel {
             if (!cm.isIgnoring(other, name)) {
                 Player receiver = plugin.getServer().getPlayer(other);
                 if (receiver != null) {
-                    if (worlds.isEmpty() || worlds.contains(receiver.getWorld().getName())) {
-                        for (String line : formattedMsg) {
-                            receiver.sendMessage(line);
+                    if (includeSender || !receiver.getName().equals(source)) {
+                        if (worlds.isEmpty() || worlds.contains(receiver.getWorld().getName())) {
+                            for (String line : formattedMsg) {
+                                receiver.sendMessage(line);
+                            }
                         }
                     }
                 }
@@ -93,20 +111,13 @@ public class Channel {
         if (!players.contains(name) && !blacklist.contains(name)) {
             players.add(name);
             if (verbose) {
+                String displayName = name;
                 Player p = plugin.getServer().getPlayer(name);
                 if (p != null) {
-                    String msg = p.getDisplayName() + " has joined the channel";
-                    List<String> msgLines = Messaging.formatWrapped(plugin, this, joinFormat, "", msg, false);
-
-                    for (String s : players) {
-                        Player other = plugin.getServer().getPlayer(s);
-                        if (!p.equals(other)) {
-                            for (String line : msgLines) {
-                                other.sendMessage(line);
-                            }
-                        }
-                    }
+                    displayName = p.getDisplayName();
                 }
+                String msg = "§f" + displayName + color.str + " has joined the channel";
+                sendMessage(name, msg, joinFormat, false, false);
             }
         }
     }
@@ -115,20 +126,13 @@ public class Channel {
         if (players.contains(name)) {
             players.remove(name);
             if (verbose) {
+                String displayName = name;
                 Player p = plugin.getServer().getPlayer(name);
                 if (p != null) {
-                    String msg = p.getDisplayName() + " has left the channel";
-                    List<String> msgLines = Messaging.formatWrapped(plugin, this, joinFormat, "", msg, false);
-
-                    for (String s : players) {
-                        Player other = plugin.getServer().getPlayer(s);
-                        if (!p.equals(other)) {
-                            for (String line : msgLines) {
-                                other.sendMessage(line);
-                            }
-                        }
-                    }
+                    displayName = p.getDisplayName();
                 }
+                String msg = "§f" + displayName + color.str + " has left the channel";
+                sendMessage(name, msg, joinFormat, false, false);
             }
         }
     }
@@ -251,6 +255,22 @@ public class Channel {
 
     public void setWorlds(List<String> worlds) {
         this.worlds = worlds;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public List<String> getIrcTags() {
+        return ircTags;
+    }
+
+    public void setIrcTags(List<String> ircTags) {
+        this.ircTags = ircTags;
     }
 
 }

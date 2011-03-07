@@ -24,7 +24,7 @@ public class BanCommand extends BaseCommand {
         super(plugin);
         name = "Ban";
         description = "Bans a player from a channel";
-        usage = "Usage: /ch ban <channel> <player>";
+        usage = "/ch ban <channel> <player>";
         minArgs = 1;
         maxArgs = 2;
         identifiers.add("ch ban");

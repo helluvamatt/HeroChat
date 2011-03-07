@@ -23,7 +23,7 @@ public class IgnoreCommand extends BaseCommand {
         super(plugin);
         name = "Ignore";
         description = "Ignores all messages from a player";
-        usage = "Usage: /ch ignore [player]";
+        usage = "/ch ignore [player]";
         minArgs = 1;
         maxArgs = 1;
         identifiers.add("ch ignore");

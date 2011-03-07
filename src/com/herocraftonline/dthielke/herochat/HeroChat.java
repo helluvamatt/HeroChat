@@ -21,6 +21,7 @@ import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import com.ensifera.animosity.craftirc.CraftIRC;
 import com.herocraftonline.dthielke.herochat.channels.ChannelManager;
 import com.herocraftonline.dthielke.herochat.command.CommandManager;
 import com.herocraftonline.dthielke.herochat.command.commands.BanCommand;
@@ -74,8 +75,12 @@ public class HeroChat extends JavaPlugin {
     private CommandManager commandManager;
     private ConfigManager configManager;
     private PermissionHelper permissions;
+    private CraftIRC craftIRC;
+    private String ircMessageFormat;
+    private String ircTag;
     private String tag;
     private HeroChatPlayerListener playerListener;
+    private HeroChatCraftIRCListener craftIRCListener;
     private boolean eventsRegistered = false;
 
     @Override
@@ -95,10 +100,9 @@ public class HeroChat extends JavaPlugin {
         if (permissions == null) {
             return;
         }
-
+        loadCraftIRC();
         registerEvents();
         registerCommands();
-
         PluginDescriptionFile desc = getDescription();
         log(desc.getName() + " version " + desc.getVersion() + " enabled.");
 
@@ -185,6 +189,23 @@ public class HeroChat extends JavaPlugin {
         return null;
     }
 
+    private void loadCraftIRC() {
+        Plugin p = this.getServer().getPluginManager().getPlugin("CraftIRC");
+        if (p != null) {
+            try {
+                craftIRC = (CraftIRC) p;
+                craftIRCListener = new HeroChatCraftIRCListener(this);
+                this.getServer().getPluginManager().registerEvent(Event.Type.CUSTOM_EVENT, craftIRCListener, Event.Priority.Normal, this);
+                log("CraftIRC found.");
+            } catch (ClassCastException ex) {
+                ex.printStackTrace();
+                log("Error encountered while connecting to CraftIRC!");
+                craftIRC = null;
+                craftIRCListener = null;
+            }
+        }
+    }
+
     public void log(String msg) {
         log.log(Level.INFO, "[HeroChat] " + msg);
     }
@@ -211,6 +232,26 @@ public class HeroChat extends JavaPlugin {
 
     public ConfigManager getConfigManager() {
         return configManager;
+    }
+
+    public CraftIRC getCraftIRC() {
+        return craftIRC == null ? null : craftIRC;
+    }
+
+    public void setIrcTag(String ircTag) {
+        this.ircTag = ircTag;
+    }
+
+    public String getIrcTag() {
+        return ircTag;
+    }
+
+    public void setIrcMessageFormat(String ircMessageFormat) {
+        this.ircMessageFormat = ircMessageFormat;
+    }
+
+    public String getIrcMessageFormat() {
+        return ircMessageFormat;
     }
 
 }

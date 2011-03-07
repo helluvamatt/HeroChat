@@ -23,13 +23,12 @@ public class WhoCommand extends BaseCommand {
         super(plugin);
         name = "Who";
         description = "Lists all users in your active channel";
-        usage = "Usage: /ch who";
+        usage = "/ch who";
         minArgs = 0;
         maxArgs = 0;
         identifiers.add("ch who");
     }
 
-    // TODO: BUG! Players showing up twice.
     @Override
     public void execute(CommandSender sender, String[] args) {
         if (sender instanceof Player) {

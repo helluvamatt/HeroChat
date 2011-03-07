@@ -35,6 +35,13 @@ public class CommandManager {
         for (BaseCommand cmd : commands) {
             StringBuilder tmpIdentifier = new StringBuilder();
             String[] tmpArgs = cmd.validate(input, tmpIdentifier);
+            if (tmpIdentifier.length() > identifier.length()) {
+                identifier = tmpIdentifier;
+                match = cmd;
+                if (tmpArgs != null) {
+                    trimmedArgs = tmpArgs;
+                }
+            }
             if (tmpArgs != null && tmpIdentifier.length() != 0) {
                 if (tmpIdentifier.length() > identifier.length()) {
                     identifier = tmpIdentifier;
@@ -45,11 +52,17 @@ public class CommandManager {
         }
 
         if (match != null) {
-            match.execute(sender, trimmedArgs);
-            return true;
+            if (trimmedArgs != null) {
+                match.execute(sender, trimmedArgs);
+                return true;
+            } else {
+                sender.sendMessage("§cCommand: " + match.getName());
+                sender.sendMessage("§cDescription: " + match.getDescription());
+                sender.sendMessage("§cUsage: " + match.getUsage());
+            }
         }
 
-        return false;
+        return true;
     }
 
     public void addCommand(BaseCommand command) {

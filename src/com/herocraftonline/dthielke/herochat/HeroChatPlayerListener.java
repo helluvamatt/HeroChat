@@ -13,8 +13,10 @@ import org.bukkit.event.player.PlayerChatEvent;
 import org.bukkit.event.player.PlayerEvent;
 import org.bukkit.event.player.PlayerListener;
 
+import com.ensifera.animosity.craftirc.CraftIRC;
 import com.herocraftonline.dthielke.herochat.channels.Channel;
 import com.herocraftonline.dthielke.herochat.channels.ChannelManager;
+import com.herocraftonline.dthielke.herochat.util.Messaging;
 
 public class HeroChatPlayerListener extends PlayerListener {
 
@@ -52,6 +54,13 @@ public class HeroChatPlayerListener extends PlayerListener {
                     c.addPlayer(name);
                 }
                 c.sendMessage(name, event.getMessage());
+                CraftIRC irc = plugin.getCraftIRC();
+                if (irc != null) {
+                    String ircMsg = Messaging.format(plugin, c, plugin.getIrcMessageFormat(), name, event.getMessage(), false);
+                    for (String tag : c.getIrcTags()) {
+                        plugin.getCraftIRC().sendMessageToTag(ircMsg, tag);
+                    }
+                }
             } else {
                 sender.sendMessage(plugin.getTag() + "You cannot speak in this channel");
             }

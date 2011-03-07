@@ -4,5 +4,6 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jre6"/>
 	<classpathentry kind="lib" path="C:/Users/David/My Dropbox/Programming/Eclipse/Workspace/lib/bukkit-0.0.1-SNAPSHOT.jar"/>
 	<classpathentry kind="lib" path="C:/Users/David/My Dropbox/Programming/Eclipse/Workspace/lib/Permissions.jar"/>
+	<classpathentry kind="lib" path="C:/Users/David/My Dropbox/Programming/Eclipse/Workspace/lib/CraftIRC.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

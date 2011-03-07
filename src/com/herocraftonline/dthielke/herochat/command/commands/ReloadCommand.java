@@ -20,7 +20,7 @@ public class ReloadCommand extends BaseCommand {
         super(plugin);
         name = "Reload";
         description = "Reloads the plugin";
-        usage = "Usage: /ch reload";
+        usage = "/ch reload";
         minArgs = 0;
         maxArgs = 0;
         identifiers.add("ch reload");

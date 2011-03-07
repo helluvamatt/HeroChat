@@ -26,7 +26,7 @@ public class ListCommand extends BaseCommand {
         super(plugin);
         name = "List";
         description = "Lists all publicly available channels";
-        usage = "Usage: /ch list [page#]";
+        usage = "/ch list [page#]";
         minArgs = 0;
         maxArgs = 1;
         identifiers.add("ch list");

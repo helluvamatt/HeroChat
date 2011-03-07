@@ -16,14 +16,14 @@ import com.herocraftonline.dthielke.herochat.command.BaseCommand;
 public class HelpCommand extends BaseCommand {
 
     private static final String[] HELP_ONE = { "§eHeroChat Help <Page 1/2>:", "/ch help [page#] §7- displays this menu",
-                                              "/ch <channel> §7- sets your active channel", "/ch who §7- lists players in your active channel",
-                                              "/ch list §7- lists publicly available channels", "/join <channel> §7- joins a channel",
+                                              "/ch <channel> [pass] §7- sets your active channel", "/ch who §7- lists players in your active channel",
+                                              "/ch list §7- lists publicly available channels", "/join <channel> [pass] §7- joins a channel",
                                               "/leave <channel> §7- leaves a channel", "/<channel> <msg> §7- sends a quick message to a channel",
                                               "/ch ignore §7- displays your ignore list", "/ch ignore <player> §7- toggles ignoring a player" };
     private static final String[] HELP_TWO = { "§eHeroChat Help <Page 2/2>:", "/ch create <name> <nick> [color:#] [-options]", "/ch remove <channel>",
                                               "/ch mod <channel> <player> §7- grants mod privileges", "/ch kick <channel> <player> §7- kicks a player",
                                               "/ch ban <channel> <player> §7- toggles banning a player", "/ch reload §7- reloads the config file" };
-    private static final String[] HELP_CREATE = { "Usage: /ch create <name> <nick> [color:#] [-options]", "Options (combinable, ie. -hsqf):",
+    private static final String[] HELP_CREATE = { "Usage: /ch create <name> <nick> [p:pass] [color:#] [-options]", "Options (combinable, ie. -hsqf):",
                                                  "-h   Hidden from /ch channels list", "-j   Show join and leave messages", "Admin-only options:",
                                                  "-a   Automatically joined by new users", "-q   Allow quick message shortcut",
                                                  "-f   Force users to stay in this channel" };
@@ -32,7 +32,7 @@ public class HelpCommand extends BaseCommand {
         super(plugin);
         name = "Help";
         description = "Displays the help menu";
-        usage = "Usage: /ch help [page#]";
+        usage = "/ch help [page#]";
         minArgs = 0;
         maxArgs = 1;
         identifiers.add("ch help");

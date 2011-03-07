@@ -152,6 +152,9 @@ public class Messaging {
 
     private static String createHealthBar(Player player) {
         int health = player.getHealth();
+        if (health < 0) {
+            health = 0;
+        }
         int fullBars = health / 4;
         int remainder = health % 4;
         String healthBar = "";
