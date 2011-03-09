@@ -111,8 +111,19 @@ public class Messaging {
 
             for (int i = 0; i < msg.length(); i++) {
                 String tmpLine = msg.substring(0, i + 1).replaceAll("\u00a7[0-9a-f]", "");
-                // System.out.println(msg.substring(0, i + 1) + " ---> " +
-                // tmpLine);
+                tmpLine = tmpLine.replace((char)134, 'a');
+                tmpLine = tmpLine.replace((char)132, 'a');
+                tmpLine = tmpLine.replace((char)148, 'o');
+                tmpLine = tmpLine.replace((char)143, 'A');
+                tmpLine = tmpLine.replace((char)142, 'A');
+                tmpLine = tmpLine.replace((char)153, 'O');
+                
+                tmpLine = tmpLine.replace((char)229, 'a');
+                tmpLine = tmpLine.replace((char)228, 'a');
+                tmpLine = tmpLine.replace((char)246, 'o');
+                tmpLine = tmpLine.replace((char)197, 'A');
+                tmpLine = tmpLine.replace((char)196, 'A');
+                tmpLine = tmpLine.replace((char)214, 'O');
                 if (fontMetrics.stringWidth(tmpLine) >= CHAT_LINE_LENGTH) {
                     lines.add(msg.substring(0, i));
                     msg = msg.substring(i);

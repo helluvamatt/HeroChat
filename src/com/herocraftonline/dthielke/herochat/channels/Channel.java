@@ -86,7 +86,7 @@ public class Channel {
             }
         }
         for (String other : players) {
-            if (!cm.isIgnoring(other, name)) {
+            if (!cm.isIgnoring(other, source)) {
                 Player receiver = plugin.getServer().getPlayer(other);
                 if (receiver != null) {
                     if (includeSender || !receiver.getName().equals(source)) {

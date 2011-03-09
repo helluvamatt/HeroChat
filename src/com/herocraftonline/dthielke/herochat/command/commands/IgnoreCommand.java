@@ -24,7 +24,7 @@ public class IgnoreCommand extends BaseCommand {
         name = "Ignore";
         description = "Ignores all messages from a player";
         usage = "/ch ignore [player]";
-        minArgs = 1;
+        minArgs = 0;
         maxArgs = 1;
         identifiers.add("ch ignore");
     }
