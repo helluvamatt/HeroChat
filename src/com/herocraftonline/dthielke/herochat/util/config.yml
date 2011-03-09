@@ -1,0 +1,108 @@
+globals:
+    craftIRC-tag: '#'
+    default-local-distance: 100
+    plugin-tag: '[HeroChat] '
+    default-channel: Global
+    default-message-format: '{color.CHANNEL}[{nick}] {color.WHITE}{prefix}{player}{suffix}{color.CHANNEL}: '
+    craftIRC-message-format: '[{nick}] {player}: '
+channels:
+    Staff:
+        craftIRC-tags: []
+        color: LIGHT_GREEN
+        nickname: staff
+        permissions:
+            speak: []
+            join: []
+        message-format: '{default}'
+        worlds: []
+        password: ''
+        lists:
+            bans: []
+            moderators: []
+        options:
+            hidden: true
+            shortcut-allowed: true
+            auto-join: true
+            local: false
+            join-messages: true
+            forced: false
+    Local:
+        craftIRC-tags: []
+        color: YELLOW
+        nickname: l
+        permissions:
+            speak: []
+            join: []
+        message-format: '{color.WHITE}{prefix}{player}{suffix}{color.CHANNEL}: '
+        worlds: []
+        password: ''
+        lists:
+            bans: []
+            moderators: []
+        options:
+            hidden: false
+            shortcut-allowed: true
+            auto-join: true
+            local: true
+            join-messages: false
+            forced: false
+    AlertSystem:
+        craftIRC-tags: []
+        color: ROSE
+        nickname: alert
+        permissions:
+            speak: []
+            join: []
+        message-format: '{color.RED}[ALERT]{color.CHANNEL}: '
+        worlds: []
+        password: ''
+        lists:
+            bans: []
+            moderators: []
+        options:
+            hidden: true
+            shortcut-allowed: true
+            auto-join: true
+            local: false
+            join-messages: false
+            forced: true
+    HelpMe:
+        craftIRC-tags: []
+        color: LIGHT_BLUE
+        nickname: h
+        permissions:
+            speak: []
+            join: []
+        message-format: '{default}'
+        worlds: []
+        password: ''
+        lists:
+            bans: []
+            moderators: []
+        options:
+            hidden: false
+            shortcut-allowed: true
+            auto-join: true
+            local: false
+            join-messages: false
+            forced: false
+    Global:
+        craftIRC-tags: []
+        color: GREEN
+        nickname: g
+        permissions:
+            speak: []
+            join: []
+        message-format: '{default}'
+        worlds: []
+        password: ''
+        lists:
+            bans: []
+            moderators: []
+        options:
+            hidden: false
+            shortcut-allowed: true
+            auto-join: true
+            local: false
+            join-messages: false
+            forced: false

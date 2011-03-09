@@ -10,6 +10,7 @@ package com.herocraftonline.dthielke.herochat.channels;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 
 import org.bukkit.entity.Player;
 
@@ -104,7 +105,7 @@ public class Channel {
     public void sendMessage(String name, String msg) {
         sendMessage(name, msg, msgFormat, true);
         String logMsg = Messaging.format(plugin, this, logFormat, name, msg, false);
-        plugin.log(logMsg);
+        plugin.log(Level.INFO, logMsg);
     }
 
     public void addPlayer(String name) {

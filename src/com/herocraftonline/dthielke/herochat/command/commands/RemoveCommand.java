@@ -9,6 +9,7 @@
 package com.herocraftonline.dthielke.herochat.command.commands;
 
 import java.util.List;
+import java.util.logging.Level;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -45,7 +46,6 @@ public class RemoveCommand extends BaseCommand {
                                 if (cm.getActiveChannel(s).equals(c)) {
                                     List<Channel> joined = cm.getJoinedChannels(s);
                                     cm.setActiveChannel(s, joined.get(0).getName());
-                                    plugin.log("Setting " + s + "'s active channel to " + joined.get(0).getName());
                                     Player p = plugin.getServer().getPlayer(s);
                                     if (p != null) {
                                         p.sendMessage(plugin.getTag() + "Set active channel to " + cm.getActiveChannel(s).getCName());
@@ -54,7 +54,13 @@ public class RemoveCommand extends BaseCommand {
                             }
                             cm.removeChannel(c);
                             sender.sendMessage(plugin.getTag() + "Channel " + c.getCName() + " §fremoved");
-                            plugin.getConfigManager().save();
+                            try {
+                                plugin.getConfigManager().save();
+                            } catch (Exception e) {
+                                plugin.log(Level.WARNING, "Error encountered while saving data. Disabling HeroChat.");
+                                plugin.getServer().getPluginManager().disablePlugin(plugin);
+                                return;
+                            }
                         } else {
                             sender.sendMessage(plugin.getTag() + "You cannot delete the default channel");
                         }

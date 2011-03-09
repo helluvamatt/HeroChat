@@ -15,6 +15,7 @@ import java.awt.image.BufferedImage;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -77,7 +78,7 @@ public class Messaging {
                 }
             } catch (Exception e) {
                 e.printStackTrace();
-                plugin.log("Error encountered while fetching prefixes/suffixes from Permissions. Is Permissions properly configured and up to date?");
+                plugin.log(Level.WARNING, "Error encountered while fetching prefixes/suffixes from Permissions. Is Permissions properly configured and up to date?");
             }
         }
 

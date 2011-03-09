@@ -72,7 +72,9 @@ public class HeroChatPlayerListener extends PlayerListener {
     public void onPlayerJoin(PlayerEvent event) {
         Player joiner = event.getPlayer();
         String name = joiner.getName();
-        plugin.getConfigManager().loadPlayer(name);
+        try {
+            plugin.getConfigManager().loadPlayer(name);
+        } catch (Exception e) {}
     }
 
     @Override

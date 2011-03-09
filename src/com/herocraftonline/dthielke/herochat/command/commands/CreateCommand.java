@@ -8,6 +8,8 @@
 
 package com.herocraftonline.dthielke.herochat.command.commands;
 
+import java.util.logging.Level;
+
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -61,7 +63,13 @@ public class CreateCommand extends BaseCommand {
                     cm.addChannel(c);
                     cm.setActiveChannel(name, c.getName());
                     sender.sendMessage(plugin.getTag() + "Created channel " + c.getCName());
-                    plugin.getConfigManager().save();
+                    try {
+                        plugin.getConfigManager().save();
+                    } catch (Exception e) {
+                        plugin.log(Level.WARNING, "Error encountered while saving data. Disabling HeroChat.");
+                        plugin.getServer().getPluginManager().disablePlugin(plugin);
+                        return;
+                    }
                 } else {
                     sender.sendMessage(plugin.getTag() + "Invalid syntax. Type /ch help create for info");
                 }

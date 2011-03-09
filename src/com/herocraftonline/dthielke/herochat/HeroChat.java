@@ -85,12 +85,14 @@ public class HeroChat extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        for (Player p : getServer().getOnlinePlayers()) {
-            configManager.savePlayer(p.getName());
-            configManager.save();
-        }
+        try {
+            for (Player p : getServer().getOnlinePlayers()) {
+                configManager.savePlayer(p.getName());
+                configManager.save();
+            }
+        } catch (Exception e) {}
         PluginDescriptionFile desc = getDescription();
-        log(desc.getName() + " version " + desc.getVersion() + " disabled.");
+        log(Level.INFO, desc.getName() + " version " + desc.getVersion() + " disabled.");
     }
 
     @Override
@@ -104,19 +106,26 @@ public class HeroChat extends JavaPlugin {
         registerEvents();
         registerCommands();
         PluginDescriptionFile desc = getDescription();
-        log(desc.getName() + " version " + desc.getVersion() + " enabled.");
+        log(Level.INFO, desc.getName() + " version " + desc.getVersion() + " enabled.");
+
+        configManager = new ConfigManager(this);
+        try {
+            configManager.load();
+        } catch (Exception e) {
+            log(Level.WARNING, "Error encountered while loading data. Check your config.yml and users.yml. Disabling HeroChat.");
+            this.getServer().getPluginManager().disablePlugin(this);
+            return;
+        }
+
+        for (Player p : getServer().getOnlinePlayers()) {
+            playerListener.onPlayerJoin(new PlayerEvent(Event.Type.PLAYER_JOIN, p));
+        }
 
         try {
-            configManager = new ConfigManager(this);
-            configManager.load();
-            for (Player p : getServer().getOnlinePlayers()) {
-                playerListener.onPlayerJoin(new PlayerEvent(Event.Type.PLAYER_JOIN, p));
-            }
             configManager.save();
         } catch (Exception e) {
-            log("Error encountered while loading settings.");
-            e.printStackTrace();
-            setEnabled(false);
+            log(Level.WARNING, "Error encountered while saving data. Disabling HeroChat.");
+            this.getServer().getPluginManager().disablePlugin(this);
             return;
         }
     }
@@ -179,7 +188,7 @@ public class HeroChat extends JavaPlugin {
             if (upToDate) {
                 PermissionHandler security = permissions.getHandler();
                 PermissionHelper ph = new PermissionHelper(security);
-                log("Permissions " + version + " found.");
+                log(Level.INFO, "Permissions " + version + " found.");
                 return ph;
             }
         }
@@ -196,18 +205,18 @@ public class HeroChat extends JavaPlugin {
                 craftIRC = (CraftIRC) p;
                 craftIRCListener = new HeroChatCraftIRCListener(this);
                 this.getServer().getPluginManager().registerEvent(Event.Type.CUSTOM_EVENT, craftIRCListener, Event.Priority.Normal, this);
-                log("CraftIRC found.");
+                log(Level.INFO, "CraftIRC found.");
             } catch (ClassCastException ex) {
                 ex.printStackTrace();
-                log("Error encountered while connecting to CraftIRC!");
+                log(Level.WARNING, "Error encountered while connecting to CraftIRC!");
                 craftIRC = null;
                 craftIRCListener = null;
             }
         }
     }
 
-    public void log(String msg) {
-        log.log(Level.INFO, "[HeroChat] " + msg);
+    public void log(Level level, String msg) {
+        log.log(level, "[HeroChat] " + msg);
     }
 
     public ChannelManager getChannelManager() {

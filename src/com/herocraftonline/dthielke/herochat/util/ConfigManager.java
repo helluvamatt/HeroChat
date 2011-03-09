@@ -9,8 +9,12 @@
 package com.herocraftonline.dthielke.herochat.util;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 
 import org.bukkit.util.config.Configuration;
 
@@ -33,16 +37,42 @@ public class ConfigManager {
         this.usersConfig = new Configuration(usersConfigFile);
     }
 
-    public void reload() {
+    public void reload() throws Exception {
         load();
     }
 
-    public void load() {
+    public void load() throws Exception {
+        checkForConfig();
+
         Configuration config = new Configuration(primaryConfigFile);
         config.load();
         loadChannels(config);
         loadGlobals(config);
+
         usersConfig.load();
+    }
+
+    private void checkForConfig() {
+        if (!primaryConfigFile.exists()) {
+            try {
+                primaryConfigFile.getParentFile().mkdir();
+                primaryConfigFile.createNewFile();
+                OutputStream output = new FileOutputStream(primaryConfigFile, false);
+                InputStream input = ConfigManager.class.getResourceAsStream("config.yml");
+                byte[] buf = new byte[8192];
+                while (true) {
+                    int length = input.read(buf);
+                    if (length < 0) {
+                        break;
+                    }
+                    output.write(buf, 0, length);
+                }
+                input.close();
+                output.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     private void loadGlobals(Configuration config) {
@@ -120,11 +150,11 @@ public class ConfigManager {
         } catch (Exception e) {}
     }
 
-    public void loadPlayer(String name) {
+    public void loadPlayer(String name) throws Exception {
         loadPlayer(name, usersConfig);
     }
 
-    private void loadPlayer(String name, Configuration config) {
+    private void loadPlayer(String name, Configuration config) throws Exception {
         ChannelManager cm = plugin.getChannelManager();
         try {
             String activeChannel = config.getString("users." + name + ".active-channel", cm.getDefaultChannel().getName());
@@ -154,7 +184,7 @@ public class ConfigManager {
         }
     }
 
-    public void save() {
+    public void save() throws Exception {
         Configuration config = new Configuration(primaryConfigFile);
         saveGlobals(config);
         saveChannels(config);
@@ -163,7 +193,7 @@ public class ConfigManager {
         usersConfig.save();
     }
 
-    private void saveGlobals(Configuration config) {
+    private void saveGlobals(Configuration config) throws Exception {
         ChannelManager cm = plugin.getChannelManager();
         String globals = "globals.";
         config.setProperty(globals + "plugin-tag", plugin.getTag());
@@ -174,7 +204,7 @@ public class ConfigManager {
         config.setProperty(globals + "default-local-distance", cm.getDefaultLocalDistance());
     }
 
-    private void saveChannels(Configuration config) {
+    private void saveChannels(Configuration config) throws Exception {
         Channel[] channels = plugin.getChannelManager().getChannels().toArray(new Channel[0]);
         for (Channel c : channels) {
             String root = "channels." + c.getName() + ".";
@@ -228,7 +258,7 @@ public class ConfigManager {
             config.setProperty("users." + name + ".joined-channels", names);
         } catch (Exception e) {
             e.printStackTrace();
-            plugin.log("Error saving player data. Delete your users.yml");
+            plugin.log(Level.WARNING, "Error saving player data. Delete your users.yml");
         }
     }
 }
