@@ -8,6 +8,7 @@
 
 package com.herocraftonline.dthielke.herochat;
 
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -79,6 +80,7 @@ public class HeroChat extends JavaPlugin {
     private String ircMessageFormat;
     private String ircTag;
     private String tag;
+    private List<String> censors;
     private HeroChatPlayerListener playerListener;
     private HeroChatCraftIRCListener craftIRCListener;
     private boolean eventsRegistered = false;
@@ -263,4 +265,11 @@ public class HeroChat extends JavaPlugin {
         return ircMessageFormat;
     }
 
+    public void setCensors(List<String> censors) {
+        this.censors = censors;
+    }
+
+    public List<String> getCensors() {
+        return censors;
+    }
 }

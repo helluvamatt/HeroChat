@@ -84,10 +84,12 @@ public class ConfigManager {
         String defaultChannel = config.getString(globals + "default-channel", cm.getChannels().get(0).getName());
         String defaultMsgFormat = config.getString(globals + "default-message-format", "{player}: ");
         int defaultLocalDistance = config.getInt(globals + "default-local-distance", 100);
+        List<String> censors = config.getStringList(globals + "censors", null);
 
         plugin.setTag(pluginTag);
         plugin.setIrcTag(ircTag);
         plugin.setIrcMessageFormat(ircMessageFormat);
+        plugin.setCensors(censors);
         cm.setDefaultChannel(cm.getChannel(defaultChannel));
         cm.setDefaultMsgFormat(defaultMsgFormat);
         cm.setDefaultLocalDistance(defaultLocalDistance);
@@ -202,6 +204,7 @@ public class ConfigManager {
         config.setProperty(globals + "default-channel", cm.getDefaultChannel().getName());
         config.setProperty(globals + "default-message-format", cm.getDefaultMsgFormat());
         config.setProperty(globals + "default-local-distance", cm.getDefaultLocalDistance());
+        config.setProperty(globals + "censors", plugin.getCensors());
     }
 
     private void saveChannels(Configuration config) throws Exception {

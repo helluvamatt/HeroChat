@@ -46,7 +46,7 @@ public class JoinCommand extends BaseCommand {
                         }
                     }
                     String password = c.getPassword();
-                    if (password.isEmpty() || (args.length == 2 && args[1].equals(password)) || plugin.getPermissions().isAdmin(player)) {
+                    if (password.isEmpty() || args.length == 2 && args[1].equals(password) || plugin.getPermissions().isAdmin(player)) {
                         if (!c.getPlayers().contains(name)) {
                             c.addPlayer(name);
                             sender.sendMessage(plugin.getTag() + "Joined channel " + c.getCName());

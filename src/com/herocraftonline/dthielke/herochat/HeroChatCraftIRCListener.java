@@ -10,7 +10,7 @@ import com.herocraftonline.dthielke.herochat.channels.Channel;
 public class HeroChatCraftIRCListener extends CustomEventListener implements Listener {
 
     private HeroChat plugin;
-    
+
     public HeroChatCraftIRCListener(HeroChat plugin) {
         this.plugin = plugin;
     }
@@ -69,5 +69,5 @@ public class HeroChatCraftIRCListener extends CustomEventListener implements Lis
             }
         }
     }
-    
+
 }

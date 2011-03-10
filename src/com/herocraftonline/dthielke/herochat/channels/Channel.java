@@ -92,9 +92,9 @@ public class Channel {
                 if (receiver != null) {
                     if (includeSender || !receiver.getName().equals(source)) {
                         if (worlds.isEmpty() || worlds.contains(receiver.getWorld().getName())) {
-                            //for (String line : formattedMsg) {
-                                receiver.sendMessage(formattedMsg);
-                            //}
+                            // for (String line : formattedMsg) {
+                            receiver.sendMessage(formattedMsg);
+                            // }
                         }
                     }
                 }

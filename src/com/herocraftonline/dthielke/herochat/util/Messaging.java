@@ -8,6 +8,8 @@
 
 package com.herocraftonline.dthielke.herochat.util;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -20,11 +22,43 @@ import com.herocraftonline.dthielke.herochat.channels.Channel;
 
 public class Messaging {
     private static final String[] HEALTH_COLORS = { "§0", "§4", "§6", "§e", "§2" };
+    private static char[] alternates = { '!', '@', '$', '|', '0', '1', '4', '3' };
+    private static char[] actuals = { 'i', 'a', 's', 'l', 'o', 'l', 'a', 'e' };
 
     public static String format(HeroChat plugin, Channel channel, String format, String name, String msg, boolean sentByPlayer) {
-        msg = msg.replaceAll("\u00a7", "");
+        msg = msg.replaceAll("§[0-9a-f]", "");
+        List<String> censors = plugin.getCensors();
+        for (String censor : censors) {
+            msg = censorMsg(msg, censor);
+        }
         String leader = createLeader(plugin, channel, format, name, msg, sentByPlayer);
         return leader + msg;
+    }
+
+    private static String censorMsg(String msg, String censor) {
+        Pattern pattern = Pattern.compile(censor, Pattern.CASE_INSENSITIVE);
+        Matcher matcher = pattern.matcher(msg);
+        while (matcher.find()) {
+            String match = matcher.group();
+            char[] replaceChars = new char[match.length()];
+            Arrays.fill(replaceChars, '*');
+            String replacement = new String(replaceChars);
+            msg = msg.substring(0, matcher.start()) + replacement + msg.substring(matcher.end());
+        }
+
+        String mod = msg;
+        for (int i = 0; i < alternates.length; i++) {
+            mod = mod.replace(alternates[i], actuals[i]);
+        }
+        matcher = pattern.matcher(mod);
+        while (matcher.find()) {
+            String match = matcher.group();
+            char[] replaceChars = new char[match.length()];
+            Arrays.fill(replaceChars, '*');
+            String replacement = new String(replaceChars);
+            msg = msg.substring(0, matcher.start()) + replacement + msg.substring(matcher.end());
+        }
+        return msg;
     }
 
     private static String createLeader(HeroChat plugin, Channel channel, String format, String name, String msg, boolean sentByPlayer) {
