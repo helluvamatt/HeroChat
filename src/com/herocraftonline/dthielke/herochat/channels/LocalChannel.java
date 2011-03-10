@@ -37,11 +37,11 @@ public class LocalChannel extends Channel {
             }
 
             List<Player> receivers = getListeners(sender);
-            List<String> formattedMsg = Messaging.formatWrapped(plugin, this, msgFormat, name, msg, true);
+            String formattedMsg = Messaging.format(plugin, this, msgFormat, name, msg, true);
             for (Player receiver : receivers) {
-                for (String line : formattedMsg) {
-                    receiver.sendMessage(line);
-                }
+                //for (String line : formattedMsg) {
+                    receiver.sendMessage(formattedMsg);
+                //}
             }
 
             if (receivers.size() == 1) {

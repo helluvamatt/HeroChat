@@ -73,7 +73,7 @@ public class Channel {
     }
 
     public void sendMessage(String source, String msg, String format, boolean sentByPlayer, boolean includeSender) {
-        List<String> formattedMsg = Messaging.formatWrapped(plugin, this, format, source, msg, sentByPlayer);
+        String formattedMsg = Messaging.format(plugin, this, format, source, msg, sentByPlayer);
         ChannelManager cm = plugin.getChannelManager();
         if (sentByPlayer) {
             Player sender = plugin.getServer().getPlayer(source);
@@ -92,9 +92,9 @@ public class Channel {
                 if (receiver != null) {
                     if (includeSender || !receiver.getName().equals(source)) {
                         if (worlds.isEmpty() || worlds.contains(receiver.getWorld().getName())) {
-                            for (String line : formattedMsg) {
-                                receiver.sendMessage(line);
-                            }
+                            //for (String line : formattedMsg) {
+                                receiver.sendMessage(formattedMsg);
+                            //}
                         }
                     }
                 }

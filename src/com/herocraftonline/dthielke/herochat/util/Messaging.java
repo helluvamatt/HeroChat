@@ -8,13 +8,6 @@
 
 package com.herocraftonline.dthielke.herochat.util;
 
-import java.awt.Font;
-import java.awt.FontMetrics;
-import java.awt.Graphics;
-import java.awt.image.BufferedImage;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -26,37 +19,10 @@ import com.herocraftonline.dthielke.herochat.HeroChat.ChatColor;
 import com.herocraftonline.dthielke.herochat.channels.Channel;
 
 public class Messaging {
-    private static final String FONT_NAME = "minecraft.ttf";
-    private static final int CHAT_LINE_LENGTH = 930;
     private static final String[] HEALTH_COLORS = { "§0", "§4", "§6", "§e", "§2" };
-    private static FontMetrics fontMetrics;
-
-    public static List<String> formatWrapped(HeroChat plugin, Channel channel, String format, String name, String msg, boolean sentByPlayer) {
-        if (fontMetrics == null) {
-            createFontMetrics();
-        }
-
-        String leader = createLeader(plugin, channel, format, name, msg, sentByPlayer);
-        List<String> msgLines = wrap(leader + msg, fontMetrics);
-
-        String firstLine = msgLines.get(0);
-        int colorIndex = firstLine.lastIndexOf("\u00a7");
-        String lastColor;
-        if (colorIndex == -1) {
-            lastColor = "";
-        } else {
-            lastColor = firstLine.substring(colorIndex, colorIndex + 2);
-        }
-
-        List<String> coloredLines = new ArrayList<String>();
-        for (int i = 0; i < msgLines.size(); i++) {
-            coloredLines.add(lastColor + msgLines.get(i));
-        }
-
-        return coloredLines;
-    }
 
     public static String format(HeroChat plugin, Channel channel, String format, String name, String msg, boolean sentByPlayer) {
+        msg = msg.replaceAll("\u00a7", "");
         String leader = createLeader(plugin, channel, format, name, msg, sentByPlayer);
         return leader + msg;
     }
@@ -78,7 +44,8 @@ public class Messaging {
                 }
             } catch (Exception e) {
                 e.printStackTrace();
-                plugin.log(Level.WARNING, "Error encountered while fetching prefixes/suffixes from Permissions. Is Permissions properly configured and up to date?");
+                plugin.log(Level.WARNING,
+                        "Error encountered while fetching prefixes/suffixes from Permissions. Is Permissions properly configured and up to date?");
             }
         }
 
@@ -101,65 +68,6 @@ public class Messaging {
         }
 
         return leader;
-    }
-
-    private static List<String> wrap(String msg, FontMetrics fontMetrics) {
-        msg = msg.replace(" ", "  ");
-        ArrayList<String> lines = new ArrayList<String>();
-
-        while (!msg.isEmpty()) {
-            boolean flag = false;
-
-            for (int i = 0; i < msg.length(); i++) {
-                String tmpLine = msg.substring(0, i + 1).replaceAll("\u00a7[0-9a-f]", "");
-                tmpLine = tmpLine.replace((char)134, 'a');
-                tmpLine = tmpLine.replace((char)132, 'a');
-                tmpLine = tmpLine.replace((char)148, 'o');
-                tmpLine = tmpLine.replace((char)143, 'A');
-                tmpLine = tmpLine.replace((char)142, 'A');
-                tmpLine = tmpLine.replace((char)153, 'O');
-                
-                tmpLine = tmpLine.replace((char)229, 'a');
-                tmpLine = tmpLine.replace((char)228, 'a');
-                tmpLine = tmpLine.replace((char)246, 'o');
-                tmpLine = tmpLine.replace((char)197, 'A');
-                tmpLine = tmpLine.replace((char)196, 'A');
-                tmpLine = tmpLine.replace((char)214, 'O');
-                if (fontMetrics.stringWidth(tmpLine) >= CHAT_LINE_LENGTH) {
-                    lines.add(msg.substring(0, i));
-                    msg = msg.substring(i);
-                    flag = true;
-                    break;
-                }
-            }
-
-            if (!flag) {
-                lines.add(msg);
-                break;
-            }
-        }
-
-        ArrayList<String> out = new ArrayList<String>();
-        for (String s : lines) {
-            out.add(s.replace("  ", " "));
-        }
-
-        return out;
-    }
-
-    private static void createFontMetrics() {
-        Graphics dummyGraphics = new BufferedImage(2, 2, BufferedImage.TYPE_4BYTE_ABGR_PRE).createGraphics();
-
-        try {
-            InputStream is = Messaging.class.getResourceAsStream(FONT_NAME);
-            Font font = Font.createFont(Font.TRUETYPE_FONT, is).deriveFont(24f);
-
-            is.close();
-
-            fontMetrics = dummyGraphics.getFontMetrics(font);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
     }
 
     private static String createHealthBar(Player player) {
