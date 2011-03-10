@@ -30,7 +30,8 @@ public class HeroChatPlayerListener extends PlayerListener {
     public void onPlayerCommandPreprocess(PlayerChatEvent event) {
         String input = event.getMessage().substring(1);
         String[] args = input.split(" ");
-        if (plugin.getChannelManager().getChannel(args[0]) != null) {
+        Channel c = plugin.getChannelManager().getChannel(args[0]);
+        if (c != null && c.isQuickMessagable()) {
             event.setCancelled(true);
             plugin.getCommandManager().dispatch(event.getPlayer(), null, "qm", args);
         }
