@@ -57,7 +57,7 @@ public abstract class BaseCommand {
         int n = identifiers.size();
         for (int i = 0; i < n; i++) {
             String identifier = identifiers.get(i).toLowerCase();
-            if (lower.startsWith(identifier)) {
+            if (lower.matches(identifier + "(\\s+.*|\\s*)")) {
                 index = i;
             }
         }

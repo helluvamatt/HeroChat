@@ -38,16 +38,7 @@ public class CommandManager {
             if (tmpIdentifier.length() > identifier.length()) {
                 identifier = tmpIdentifier;
                 match = cmd;
-                if (tmpArgs != null) {
-                    trimmedArgs = tmpArgs;
-                }
-            }
-            if (tmpArgs != null && tmpIdentifier.length() != 0) {
-                if (tmpIdentifier.length() > identifier.length()) {
-                    identifier = tmpIdentifier;
-                    trimmedArgs = tmpArgs;
-                    match = cmd;
-                }
+                trimmedArgs = tmpArgs;
             }
         }
 
