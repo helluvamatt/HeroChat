@@ -94,7 +94,7 @@ public class Messaging {
         leader = leader.replaceAll("\\{color.CHANNEL\\}", channel.getColor().str);
         leader = leader.replaceAll("\\{world\\}", world);
 
-        Matcher matcher = Pattern.compile("\\{color.[a-zA-Z]+\\}").matcher(leader);
+        Matcher matcher = Pattern.compile("\\{color.[a-zA-Z_]+\\}").matcher(leader);
         while (matcher.find()) {
             String match = matcher.group();
             String colorString = match.substring(7, match.length() - 1);
