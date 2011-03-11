@@ -47,22 +47,22 @@ import com.nijikokun.bukkit.Permissions.Permissions;
 public class HeroChat extends JavaPlugin {
 
     public enum ChatColor {
-        BLACK("§0"),
-        NAVY("§1"),
-        GREEN("§2"),
-        BLUE("§3"),
-        RED("§4"),
-        PURPLE("§5"),
-        GOLD("§6"),
-        LIGHT_GRAY("§7"),
-        GRAY("§8"),
-        DARK_PURPLE("§9"),
-        LIGHT_GREEN("§a"),
-        LIGHT_BLUE("§b"),
-        ROSE("§c"),
-        LIGHT_PURPLE("§d"),
-        YELLOW("§e"),
-        WHITE("§f");
+        BLACK("ï¿½0"),
+        NAVY("ï¿½1"),
+        GREEN("ï¿½2"),
+        BLUE("ï¿½3"),
+        RED("ï¿½4"),
+        PURPLE("ï¿½5"),
+        GOLD("ï¿½6"),
+        LIGHT_GRAY("ï¿½7"),
+        GRAY("ï¿½8"),
+        DARK_PURPLE("ï¿½9"),
+        LIGHT_GREEN("ï¿½a"),
+        LIGHT_BLUE("ï¿½b"),
+        ROSE("ï¿½c"),
+        LIGHT_PURPLE("ï¿½d"),
+        YELLOW("ï¿½e"),
+        WHITE("ï¿½f");
 
         public final String str;
 

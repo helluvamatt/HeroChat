@@ -1,3 +1,11 @@
+/**
+ * Copyright (C) 2011 DThielke <dave.thielke@gmail.com>
+ * 
+ * This work is licensed under the Creative Commons Attribution-NonCommercial-NoDerivs 3.0 Unported License.
+ * To view a copy of this license, visit http://creativecommons.org/licenses/by-nc-nd/3.0/ or send a letter to
+ * Creative Commons, 171 Second Street, Suite 300, San Francisco, California, 94105, USA.
+ **/
+
 package com.herocraftonline.dthielke.herochat;
 
 import org.bukkit.event.CustomEventListener;
@@ -42,7 +50,7 @@ public class HeroChatCraftIRCListener extends CustomEventListener implements Lis
                     channels = plugin.getChannelManager().getChannels().toArray(new Channel[0]);
                     for (Channel c : channels) {
                         if (c.getIrcTags().contains(channelTag)) {
-                            String joinMsg = "§f" + ircTag + sender + c.getColor().str + " has joined the channel";
+                            String joinMsg = "ï¿½f" + ircTag + sender + c.getColor().str + " has joined the channel";
                             c.sendMessage(ircTag + sender, joinMsg, Channel.joinFormat, false, false);
                         }
                     }
@@ -59,7 +67,7 @@ public class HeroChatCraftIRCListener extends CustomEventListener implements Lis
                     channels = plugin.getChannelManager().getChannels().toArray(new Channel[0]);
                     for (Channel c : channels) {
                         if (c.getIrcTags().contains(channelTag)) {
-                            String leaveMsg = "§f" + ircTag + sender + c.getColor().str + " has left the channel";
+                            String leaveMsg = "ï¿½f" + ircTag + sender + c.getColor().str + " has left the channel";
                             c.sendMessage(ircTag + sender, leaveMsg, Channel.joinFormat, false, false);
                         }
                     }

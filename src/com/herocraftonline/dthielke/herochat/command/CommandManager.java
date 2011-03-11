@@ -56,9 +56,9 @@ public class CommandManager {
                 match.execute(sender, trimmedArgs);
                 return true;
             } else {
-                sender.sendMessage("§cCommand: " + match.getName());
-                sender.sendMessage("§cDescription: " + match.getDescription());
-                sender.sendMessage("§cUsage: " + match.getUsage());
+                sender.sendMessage("ï¿½cCommand: " + match.getName());
+                sender.sendMessage("ï¿½cDescription: " + match.getDescription());
+                sender.sendMessage("ï¿½cUsage: " + match.getUsage());
             }
         }
 
