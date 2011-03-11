@@ -50,7 +50,7 @@ public class HeroChatCraftIRCListener extends CustomEventListener implements Lis
                     channels = plugin.getChannelManager().getChannels().toArray(new Channel[0]);
                     for (Channel c : channels) {
                         if (c.getIrcTags().contains(channelTag)) {
-                            String joinMsg = "�f" + ircTag + sender + c.getColor().str + " has joined the channel";
+                            String joinMsg = "§f" + ircTag + sender + c.getColor().str + " has joined the channel";
                             c.sendMessage(ircTag + sender, joinMsg, Channel.joinFormat, false, false);
                         }
                     }
@@ -67,7 +67,7 @@ public class HeroChatCraftIRCListener extends CustomEventListener implements Lis
                     channels = plugin.getChannelManager().getChannels().toArray(new Channel[0]);
                     for (Channel c : channels) {
                         if (c.getIrcTags().contains(channelTag)) {
-                            String leaveMsg = "�f" + ircTag + sender + c.getColor().str + " has left the channel";
+                            String leaveMsg = "§f" + ircTag + sender + c.getColor().str + " has left the channel";
                             c.sendMessage(ircTag + sender, leaveMsg, Channel.joinFormat, false, false);
                         }
                     }

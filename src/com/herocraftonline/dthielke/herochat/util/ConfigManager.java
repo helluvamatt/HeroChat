@@ -78,7 +78,7 @@ public class ConfigManager {
     private void loadGlobals(Configuration config) {
         String globals = "globals.";
         ChannelManager cm = plugin.getChannelManager();
-        String pluginTag = config.getString(globals + "plugin-tag", "[HeroChat] ").replace("&", "�");
+        String pluginTag = config.getString(globals + "plugin-tag", "[HeroChat] ").replace("&", "§");
         String ircTag = config.getString(globals + "craftIRC-tag", "#");
         String ircMessageFormat = config.getString(globals + "craftIRC-message-format", "[{nick}] {player}: ");
         String defaultChannel = config.getString(globals + "default-channel", cm.getChannels().get(0).getName());

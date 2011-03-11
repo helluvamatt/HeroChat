@@ -117,7 +117,7 @@ public class Channel {
                 if (p != null) {
                     displayName = p.getDisplayName();
                 }
-                String msg = "�f" + displayName + color.str + " has joined the channel";
+                String msg = "§f" + displayName + color.str + " has joined the channel";
                 sendMessage(name, msg, joinFormat, false, false);
             }
         }
@@ -132,7 +132,7 @@ public class Channel {
                 if (p != null) {
                     displayName = p.getDisplayName();
                 }
-                String msg = "�f" + displayName + color.str + " has left the channel";
+                String msg = "§f" + displayName + color.str + " has left the channel";
                 sendMessage(name, msg, joinFormat, false, false);
             }
         }

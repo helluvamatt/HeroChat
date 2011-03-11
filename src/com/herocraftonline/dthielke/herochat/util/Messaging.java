@@ -21,12 +21,12 @@ import com.herocraftonline.dthielke.herochat.HeroChat.ChatColor;
 import com.herocraftonline.dthielke.herochat.channels.Channel;
 
 public class Messaging {
-    private static final String[] HEALTH_COLORS = { "�0", "�4", "�6", "�e", "�2" };
+    private static final String[] HEALTH_COLORS = { "§0", "§4", "§6", "§e", "§2" };
     private static char[] alternates = { '!', '@', '$', '|', '0', '1', '4', '3' };
     private static char[] actuals = { 'i', 'a', 's', 'l', 'o', 'l', 'a', 'e' };
 
     public static String format(HeroChat plugin, Channel channel, String format, String name, String msg, boolean sentByPlayer) {
-        msg = msg.replaceAll("�[0-9a-f]", "");
+        msg = msg.replaceAll("§[0-9a-f]", "");
         List<String> censors = plugin.getCensors();
         for (String censor : censors) {
             msg = censorMsg(msg, censor);
