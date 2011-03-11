@@ -17,6 +17,7 @@ import java.util.regex.Pattern;
 import org.bukkit.entity.Player;
 
 import com.herocraftonline.dthielke.herochat.HeroChat;
+import com.herocraftonline.dthielke.herochat.HeroChat.ChatColor;
 import com.herocraftonline.dthielke.herochat.channels.Channel;
 
 public class Messaging {
@@ -92,7 +93,14 @@ public class Messaging {
         leader = leader.replaceAll("\\{player\\}", name);
         leader = leader.replaceAll("\\{healthbar\\}", healthBar);
         leader = leader.replaceAll("\\{color\\}", channel.getColor().str);
+        leader = leader.replaceAll("\\{color.CHANNEL\\}", channel.getColor().str);
         leader = leader.replaceAll("\\{world\\}", world);
+        Matcher matcher = Pattern.compile("\\{color.[a-zA-Z_]+\\}").matcher(leader);
+        while (matcher.find()) {
+            String match = matcher.group();
+            String colorString = match.substring(7, match.length() - 1);
+            leader = leader.replaceAll("\\Q" + match + "\\E", ChatColor.valueOf(colorString).str);
+        }
 
         return leader;
     }
