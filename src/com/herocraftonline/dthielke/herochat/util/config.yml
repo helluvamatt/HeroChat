@@ -1,11 +1,32 @@
 globals:
     craftIRC-tag: '#'
+    censors: []
     default-local-distance: 100
     plugin-tag: '[HeroChat] '
     default-channel: Global
-    default-message-format: '{color.CHANNEL}[{nick}] {color.WHITE}{prefix}{player}{suffix}{color.CHANNEL}: '
+    default-message-format: '{color}[{nick}] &f{prefix}{player}{suffix}{color}: '
     craftIRC-message-format: '[{nick}] {player}: '
 channels:
+    Local:
+        craftIRC-tags: []
+        color: YELLOW
+        nickname: l
+        permissions:
+            speak: []
+            join: []
+        message-format: '&f{prefix}{player}{suffix}{color}: '
+        worlds: []
+        password: ''
+        lists:
+            bans: []
+            moderators: []
+        options:
+            hidden: false
+            shortcut-allowed: true
+            auto-join: true
+            local: true
+            join-messages: false
+            forced: false
     Staff:
         craftIRC-tags: []
         color: LIGHT_GREEN
@@ -26,26 +47,6 @@ channels:
             local: false
             join-messages: true
             forced: false
-    Local:
-        craftIRC-tags: []
-        color: YELLOW
-        nickname: l
-        permissions:
-            speak: []
-            join: []
-        message-format: '{color.WHITE}{prefix}{player}{suffix}{color.CHANNEL}: '
-        worlds: []
-        password: ''
-        lists:
-            bans: []
-            moderators: []
-        options:
-            hidden: false
-            shortcut-allowed: true
-            auto-join: true
-            local: true
-            join-messages: false
-            forced: false
     AlertSystem:
         craftIRC-tags: []
         color: ROSE
@@ -53,7 +54,7 @@ channels:
         permissions:
             speak: []
             join: []
-        message-format: '{color.RED}[ALERT]{color.CHANNEL}: '
+        message-format: '&4[ALERT]{color}: '
         worlds: []
         password: ''
         lists:
@@ -66,10 +67,10 @@ channels:
             local: false
             join-messages: false
             forced: true
-    HelpMe:
+    Global:
         craftIRC-tags: []
-        color: LIGHT_BLUE
-        nickname: h
+        color: GREEN
+        nickname: g
         permissions:
             speak: []
             join: []
@@ -86,10 +87,10 @@ channels:
             local: false
             join-messages: false
             forced: false
-    Global:
+    HelpMe:
         craftIRC-tags: []
-        color: GREEN
-        nickname: g
+        color: LIGHT_BLUE
+        nickname: h
         permissions:
             speak: []
             join: []
