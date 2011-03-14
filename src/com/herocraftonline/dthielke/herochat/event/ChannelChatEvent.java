@@ -9,13 +9,13 @@ public class ChannelChatEvent extends ChannelEvent {
     protected String message;
     protected String format;
     protected boolean sentByPlayer;
-    
-    public ChannelChatEvent(Type type, Channel channel) {
-        super(type, channel);
-        source = "";
-        message = "";
-        format = "";
-        sentByPlayer = false;
+
+    public ChannelChatEvent(Type type, Channel channel, String source, String message, String format, boolean sentByPlayer) {
+        super(ChannelChatEvent.class.getSimpleName(), channel);
+        this.source = source;
+        this.message = message;
+        this.format = format;
+        this.sentByPlayer = sentByPlayer;
     }
 
     public String getSource() {

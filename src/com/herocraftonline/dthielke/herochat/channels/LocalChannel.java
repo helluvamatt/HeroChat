@@ -14,8 +14,10 @@ import java.util.logging.Level;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Event.Type;
 
 import com.herocraftonline.dthielke.herochat.HeroChat;
+import com.herocraftonline.dthielke.herochat.event.ChannelChatEvent;
 import com.herocraftonline.dthielke.herochat.util.Messaging;
 
 public class LocalChannel extends Channel {
@@ -29,25 +31,35 @@ public class LocalChannel extends Channel {
 
     @Override
     public void sendMessage(String name, String msg) {
-        Player sender = plugin.getServer().getPlayer(name);
-        if (sender != null) {
-            if (!worlds.isEmpty() && !worlds.contains(sender.getWorld().getName())) {
-                sender.sendMessage(plugin.getTag() + "You are not in the correct world for this channel");
-                return;
-            }
+        ChannelChatEvent event = new ChannelChatEvent(Type.CUSTOM_EVENT, this, name, msg, msgFormat, true);
+        plugin.getServer().getPluginManager().callEvent(event);
+        name = event.getSource();
+        msg = event.getMessage();
+        String format = event.getFormat();
+        boolean sentByPlayer = event.isSentByPlayer();
+        if (!event.isCancelled()) {
+            Player sender = plugin.getServer().getPlayer(name);
+            if (sender != null) {
 
-            List<Player> receivers = getListeners(sender);
-            String formattedMsg = Messaging.format(plugin, this, msgFormat, name, msg, true);
-            for (Player receiver : receivers) {
-                receiver.sendMessage(formattedMsg);
-            }
+                if (!worlds.isEmpty() && !worlds.contains(sender.getWorld().getName())) {
+                    sender.sendMessage(plugin.getTag() + "You are not in the correct world for this channel");
+                    return;
+                }
 
-            if (receivers.size() == 1) {
-                sender.sendMessage("§8No one hears you.");
+                String formattedMsg = Messaging.format(plugin, this, format, name, msg, sentByPlayer);
+                List<Player> receivers = getListeners(sender);
+                for (Player receiver : receivers) {
+                    receiver.sendMessage(formattedMsg);
+                }
+
+                if (receivers.size() == 1) {
+                    sender.sendMessage("§8No one hears you.");
+                }
             }
+            sendIRCMessage(name, msg);
+            String logMsg = Messaging.format(plugin, this, logFormat, name, msg, false);
+            plugin.log(Level.INFO, logMsg);
         }
-        String logMsg = Messaging.format(plugin, this, logFormat, name, msg, false);
-        plugin.log(Level.INFO, logMsg);
     }
 
     private List<Player> getListeners(Player origin) {

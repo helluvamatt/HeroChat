@@ -11,11 +11,9 @@ package com.herocraftonline.dthielke.herochat.command.commands;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import com.ensifera.animosity.craftirc.CraftIRC;
 import com.herocraftonline.dthielke.herochat.HeroChat;
 import com.herocraftonline.dthielke.herochat.channels.Channel;
 import com.herocraftonline.dthielke.herochat.command.BaseCommand;
-import com.herocraftonline.dthielke.herochat.util.Messaging;
 
 public class QuickMsgCommand extends BaseCommand {
 
@@ -44,13 +42,6 @@ public class QuickMsgCommand extends BaseCommand {
                             msg += args[i] + " ";
                         }
                         c.sendMessage(name, msg.trim());
-                        CraftIRC irc = plugin.getCraftIRC();
-                        if (irc != null) {
-                            String ircMsg = Messaging.format(plugin, c, plugin.getIrcMessageFormat(), name, msg.trim(), false);
-                            for (String tag : c.getIrcTags()) {
-                                plugin.getCraftIRC().sendMessageToTag(ircMsg, tag);
-                            }
-                        }
                     } else {
                         sender.sendMessage(plugin.getTag() + "You cannot speak in " + c.getCName());
                     }

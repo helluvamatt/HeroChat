@@ -13,9 +13,12 @@ import java.util.List;
 import java.util.logging.Level;
 
 import org.bukkit.entity.Player;
+import org.bukkit.event.Event.Type;
 
+import com.ensifera.animosity.craftirc.CraftIRC;
 import com.herocraftonline.dthielke.herochat.HeroChat;
 import com.herocraftonline.dthielke.herochat.HeroChat.ChatColor;
+import com.herocraftonline.dthielke.herochat.event.ChannelChatEvent;
 import com.herocraftonline.dthielke.herochat.util.Messaging;
 
 public class Channel {
@@ -73,37 +76,56 @@ public class Channel {
     }
 
     public void sendMessage(String source, String msg, String format, boolean sentByPlayer, boolean includeSender) {
-        String formattedMsg = Messaging.format(plugin, this, format, source, msg, sentByPlayer);
-        ChannelManager cm = plugin.getChannelManager();
-        if (sentByPlayer) {
-            Player sender = plugin.getServer().getPlayer(source);
-            if (sender != null) {
-                if (!worlds.isEmpty() && !worlds.contains(sender.getWorld().getName())) {
-                    sender.sendMessage(plugin.getTag() + "You are not in the correct world for this channel");
+        ChannelChatEvent event = new ChannelChatEvent(Type.CUSTOM_EVENT, this, source, msg, msgFormat, sentByPlayer);
+        plugin.getServer().getPluginManager().callEvent(event);
+        source = event.getSource();
+        msg = event.getMessage();
+        format = event.getFormat();
+        sentByPlayer = event.isSentByPlayer();
+        if (!event.isCancelled()) {
+            String formattedMsg = Messaging.format(plugin, this, format, source, msg, sentByPlayer);
+            ChannelManager cm = plugin.getChannelManager();
+            if (sentByPlayer) {
+                Player sender = plugin.getServer().getPlayer(source);
+                if (sender != null) {
+                    if (!worlds.isEmpty() && !worlds.contains(sender.getWorld().getName())) {
+                        sender.sendMessage(plugin.getTag() + "You are not in the correct world for this channel");
+                        return;
+                    }
+                } else {
                     return;
                 }
-            } else {
-                return;
             }
-        }
-        for (String other : players) {
-            if (!cm.isIgnoring(other, source)) {
-                Player receiver = plugin.getServer().getPlayer(other);
-                if (receiver != null) {
-                    if (includeSender || !receiver.getName().equals(source)) {
-                        if (worlds.isEmpty() || worlds.contains(receiver.getWorld().getName())) {
-                            receiver.sendMessage(formattedMsg);
+            for (String other : players) {
+                if (!cm.isIgnoring(other, source)) {
+                    Player receiver = plugin.getServer().getPlayer(other);
+                    if (receiver != null) {
+                        if (includeSender || !receiver.getName().equals(source)) {
+                            if (worlds.isEmpty() || worlds.contains(receiver.getWorld().getName())) {
+                                receiver.sendMessage(formattedMsg);
+                            }
                         }
                     }
                 }
             }
+            sendIRCMessage(source, msg);
+            String logMsg = Messaging.format(plugin, this, logFormat, source, msg, false);
+            plugin.log(Level.INFO, logMsg);
         }
     }
 
     public void sendMessage(String name, String msg) {
         sendMessage(name, msg, msgFormat, true);
-        String logMsg = Messaging.format(plugin, this, logFormat, name, msg, false);
-        plugin.log(Level.INFO, logMsg);
+    }
+
+    protected void sendIRCMessage(String source, String msg) {
+        CraftIRC irc = plugin.getCraftIRC();
+        if (irc != null) {
+            String ircMsg = Messaging.format(plugin, this, plugin.getIrcMessageFormat(), source, msg, false);
+            for (String tag : ircTags) {
+                plugin.getCraftIRC().sendMessageToTag(ircMsg, tag);
+            }
+        }
     }
 
     public void addPlayer(String name) {

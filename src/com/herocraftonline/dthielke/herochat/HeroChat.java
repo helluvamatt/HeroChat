@@ -114,6 +114,7 @@ public class HeroChat extends JavaPlugin {
         try {
             configManager.load();
         } catch (Exception e) {
+            e.printStackTrace();
             log(Level.WARNING, "Error encountered while loading data. Check your config.yml and users.yml. Disabling HeroChat.");
             this.getServer().getPluginManager().disablePlugin(this);
             return;
@@ -126,6 +127,7 @@ public class HeroChat extends JavaPlugin {
         try {
             configManager.save();
         } catch (Exception e) {
+            e.printStackTrace();
             log(Level.WARNING, "Error encountered while saving data. Disabling HeroChat.");
             this.getServer().getPluginManager().disablePlugin(this);
             return;

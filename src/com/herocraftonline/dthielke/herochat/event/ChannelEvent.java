@@ -9,7 +9,7 @@ public class ChannelEvent extends Event {
     protected Channel channel;
     protected boolean cancelled;
 
-    public ChannelEvent(final Event.Type type, final Channel channel) {
+    public ChannelEvent(final String type, final Channel channel) {
         super(type);
         this.channel = channel;
         this.cancelled = false;
