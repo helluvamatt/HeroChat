@@ -30,7 +30,7 @@ public class CreateCommand extends BaseCommand {
         description = "Creates a channel. Type /ch help create for info";
         usage = "/ch create <name> <nick> [p:pass] [color:#] [-options]";
         minArgs = 2;
-        maxArgs = 4;
+        maxArgs = 5;
         identifiers.add("ch create");
     }
 
