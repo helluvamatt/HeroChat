@@ -1,6 +1,6 @@
 globals:
     craftIRC-tag: '#'
-    censors: ['\bu+\W*m+a+d+(\W*br(a|o)+)?', 'some_other_word']
+    censors: ['\bu+\W*m+a+d+(\W*br(a|o)+)?', 'some_other_word;it's replacement']
     default-local-distance: 100
     plugin-tag: '[HeroChat] '
     default-channel: Global

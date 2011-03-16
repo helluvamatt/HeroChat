@@ -28,18 +28,18 @@ public class ReloadCommand extends BaseCommand {
 
     @Override
     public void execute(CommandSender sender, String[] args) {
+        boolean hasPermission = true;
         if (sender instanceof Player) {
             Player player = (Player) sender;
             if (plugin.getPermissions().isAdmin(player)) {
-                // plugin.getPluginLoader().disablePlugin(plugin);
-                plugin.onEnable();
-                // plugin.getConfigManager().reload();
                 sender.sendMessage(plugin.getTag() + "Plugin reloaded");
             } else {
                 sender.sendMessage(plugin.getTag() + "You do not have sufficient permission");
+                hasPermission = false;
             }
-        } else {
-            sender.sendMessage(plugin.getTag() + "You must be a player to use this command");
+        }
+        if (hasPermission) {
+            plugin.onEnable();
         }
     }
 

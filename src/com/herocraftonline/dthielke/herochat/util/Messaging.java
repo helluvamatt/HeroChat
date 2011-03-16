@@ -29,21 +29,29 @@ public class Messaging {
         msg = msg.replaceAll("§[0-9a-f]", "");
         List<String> censors = plugin.getCensors();
         for (String censor : censors) {
-            msg = censorMsg(msg, censor);
+            String[] split = censor.split(";", 2);
+            if (split.length == 1) {
+                msg = censorMsg(msg, censor, false, "");
+            } else {
+                msg = censorMsg(msg, split[0], true, split[1]);
+            }
         }
         String leader = createLeader(plugin, channel, format, name, msg, sentByPlayer);
         return leader + msg;
     }
 
-    private static String censorMsg(String msg, String censor) {
+    private static String censorMsg(String msg, String censor, boolean customReplacement, String replacement) {
         Pattern pattern = Pattern.compile(censor, Pattern.CASE_INSENSITIVE);
         Matcher matcher = pattern.matcher(msg);
         while (matcher.find()) {
             String match = matcher.group();
-            char[] replaceChars = new char[match.length()];
-            Arrays.fill(replaceChars, '*');
-            String replacement = new String(replaceChars);
+            if (!customReplacement) {
+                char[] replaceChars = new char[match.length()];
+                Arrays.fill(replaceChars, '*');
+                replacement = new String(replaceChars);
+            }
             msg = msg.substring(0, matcher.start()) + replacement + msg.substring(matcher.end());
+            matcher = pattern.matcher(msg);
         }
 
         String mod = msg;
@@ -53,10 +61,13 @@ public class Messaging {
         matcher = pattern.matcher(mod);
         while (matcher.find()) {
             String match = matcher.group();
-            char[] replaceChars = new char[match.length()];
-            Arrays.fill(replaceChars, '*');
-            String replacement = new String(replaceChars);
+            if (!customReplacement) {
+                char[] replaceChars = new char[match.length()];
+                Arrays.fill(replaceChars, '*');
+                replacement = new String(replaceChars);
+            }
             msg = msg.substring(0, matcher.start()) + replacement + msg.substring(matcher.end());
+            matcher = pattern.matcher(msg);
         }
         return msg;
     }
@@ -78,8 +89,7 @@ public class Messaging {
                 }
             } catch (Exception e) {
                 e.printStackTrace();
-                plugin.log(Level.WARNING,
-                        "Error encountered while fetching prefixes/suffixes from Permissions. Is Permissions properly configured and up to date?");
+                plugin.log(Level.WARNING, "Error encountered while fetching prefixes/suffixes from Permissions. Is Permissions properly configured and up to date?");
             }
         }
 
