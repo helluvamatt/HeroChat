@@ -68,6 +68,10 @@ public class PermissionHelper {
     public boolean isAdmin(Player p) {
         return security.has(p, "herochat.admin");
     }
+    
+    public boolean isAllowedColor(Player p) {
+        return security.has(p, "herochat.color");
+    }
 
     public boolean canCreate(Player p) {
         boolean admin = security.has(p, "herochat.admin");

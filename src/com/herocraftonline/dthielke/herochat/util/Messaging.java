@@ -25,8 +25,12 @@ public class Messaging {
     private static char[] alternates = { '!', '@', '$', '|', '0', '1', '4', '3' };
     private static char[] actuals = { 'i', 'a', 's', 'l', 'o', 'l', 'a', 'e' };
 
-    public static String format(HeroChat plugin, Channel channel, String format, String name, String msg, boolean sentByPlayer) {
-        msg = msg.replaceAll("§[0-9a-f]", "");
+    public static String format(HeroChat plugin, Channel channel, String format, String name, String msg, boolean sentByPlayer, boolean allowColor) {
+        if (allowColor) {
+            msg = msg.replaceAll("&([0-9a-f])","§$1");
+        } else {
+            msg = msg.replaceAll("§[0-9a-f]", "");
+        }
         List<String> censors = plugin.getCensors();
         for (String censor : censors) {
             String[] split = censor.split(";", 2);

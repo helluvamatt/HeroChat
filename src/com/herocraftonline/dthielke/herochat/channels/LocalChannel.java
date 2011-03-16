@@ -40,13 +40,12 @@ public class LocalChannel extends Channel {
         if (!event.isCancelled()) {
             Player sender = plugin.getServer().getPlayer(name);
             if (sender != null) {
-
                 if (!worlds.isEmpty() && !worlds.contains(sender.getWorld().getName())) {
                     sender.sendMessage(plugin.getTag() + "You are not in the correct world for this channel");
                     return;
                 }
 
-                String formattedMsg = Messaging.format(plugin, this, format, name, msg, sentByPlayer);
+                String formattedMsg = Messaging.format(plugin, this, format, name, msg, sentByPlayer, plugin.getPermissions().isAllowedColor(sender));
                 List<Player> receivers = getListeners(sender);
                 for (Player receiver : receivers) {
                     receiver.sendMessage(formattedMsg);
@@ -57,7 +56,7 @@ public class LocalChannel extends Channel {
                 }
             }
             sendIRCMessage(name, msg);
-            String logMsg = Messaging.format(plugin, this, logFormat, name, msg, false);
+            String logMsg = Messaging.format(plugin, this, logFormat, name, msg, false, false);
             plugin.log(Level.INFO, logMsg);
         }
     }

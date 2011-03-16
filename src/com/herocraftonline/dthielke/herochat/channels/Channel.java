@@ -83,11 +83,12 @@ public class Channel {
         format = event.getFormat();
         sentByPlayer = event.isSentByPlayer();
         if (!event.isCancelled()) {
-            String formattedMsg = Messaging.format(plugin, this, format, source, msg, sentByPlayer);
+            String formattedMsg;
             ChannelManager cm = plugin.getChannelManager();
             if (sentByPlayer) {
                 Player sender = plugin.getServer().getPlayer(source);
                 if (sender != null) {
+                    formattedMsg = Messaging.format(plugin, this, format, source, msg, sentByPlayer, plugin.getPermissions().isAllowedColor(sender));
                     if (!worlds.isEmpty() && !worlds.contains(sender.getWorld().getName())) {
                         sender.sendMessage(plugin.getTag() + "You are not in the correct world for this channel");
                         return;
@@ -95,6 +96,8 @@ public class Channel {
                 } else {
                     return;
                 }
+            } else {
+                formattedMsg = Messaging.format(plugin, this, format, source, msg, sentByPlayer, false);
             }
             for (String other : players) {
                 if (!cm.isIgnoring(other, source)) {
@@ -109,7 +112,7 @@ public class Channel {
                 }
             }
             sendIRCMessage(source, msg);
-            String logMsg = Messaging.format(plugin, this, logFormat, source, msg, false);
+            String logMsg = Messaging.format(plugin, this, logFormat, source, msg, false, false);
             plugin.log(Level.INFO, logMsg);
         }
     }
@@ -121,7 +124,7 @@ public class Channel {
     protected void sendIRCMessage(String source, String msg) {
         CraftIRC irc = plugin.getCraftIRC();
         if (irc != null) {
-            String ircMsg = Messaging.format(plugin, this, plugin.getIrcMessageFormat(), source, msg, false);
+            String ircMsg = Messaging.format(plugin, this, plugin.getIrcMessageFormat(), source, msg, false, false);
             for (String tag : ircTags) {
                 plugin.getCraftIRC().sendMessageToTag(ircMsg, tag);
             }
