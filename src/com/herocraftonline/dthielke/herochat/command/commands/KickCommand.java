@@ -24,7 +24,7 @@ public class KickCommand extends BaseCommand {
         super(plugin);
         name = "Kick";
         description = "Removes a player from a channel";
-        usage = "/ch kick <channel> <player>";
+        usage = "/ch kick §9<channel> <player>";
         minArgs = 2;
         maxArgs = 2;
         identifiers.add("ch kick");

@@ -45,6 +45,7 @@ public class Channel {
     protected List<String> blacklist;
     protected List<String> whitelist;
     protected List<String> voicelist;
+    protected List<String> mutelist;
     protected List<String> worlds;
     protected List<String> ircTags;
 
@@ -67,6 +68,7 @@ public class Channel {
         blacklist = new ArrayList<String>();
         whitelist = new ArrayList<String>();
         voicelist = new ArrayList<String>();
+        mutelist = new ArrayList<String>();
         worlds = new ArrayList<String>();
         ircTags = new ArrayList<String>();
     }
@@ -83,42 +85,57 @@ public class Channel {
         format = event.getFormat();
         sentByPlayer = event.isSentByPlayer();
         if (!event.isCancelled()) {
-            String formattedMsg;
-            ChannelManager cm = plugin.getChannelManager();
             if (sentByPlayer) {
                 Player sender = plugin.getServer().getPlayer(source);
                 if (sender != null) {
-                    formattedMsg = Messaging.format(plugin, this, format, source, msg, sentByPlayer, plugin.getPermissions().isAllowedColor(sender));
-                    if (!worlds.isEmpty() && !worlds.contains(sender.getWorld().getName())) {
-                        sender.sendMessage(plugin.getTag() + "You are not in the correct world for this channel");
-                        return;
+                    String group = plugin.getPermissions().getGroup(sender);
+                    if (voicelist.contains(group) || voicelist.isEmpty()) {
+                        if (!plugin.getChannelManager().getMutelist().contains(sender.getName())) {
+                            if (!mutelist.contains(sender.getName())) {
+                                if (worlds.isEmpty() || worlds.contains(sender.getWorld().getName())) {
+                                    boolean color = plugin.getPermissions().isAllowedColor(sender);
+                                    sendUncheckedMessage(source, msg, format, sentByPlayer, players, includeSender, color);
+                                } else {
+                                    sender.sendMessage(plugin.getTag() + "You are not in the correct world for " + getCName());
+                                }
+                            } else {
+                                sender.sendMessage(plugin.getTag() + "You are muted in " + getCName());
+                            }
+                        } else {
+                            sender.sendMessage(plugin.getTag() + "You are globally muted");
+                        }
+                    } else {
+                        sender.sendMessage(plugin.getTag() + "You cannot speak in " + getCName());
                     }
-                } else {
-                    return;
                 }
             } else {
-                formattedMsg = Messaging.format(plugin, this, format, source, msg, sentByPlayer, false);
+                sendUncheckedMessage(source, msg, format, sentByPlayer, players, includeSender, true);
             }
-            for (String other : players) {
-                if (!cm.isIgnoring(other, source)) {
-                    Player receiver = plugin.getServer().getPlayer(other);
-                    if (receiver != null) {
-                        if (includeSender || !receiver.getName().equals(source)) {
-                            if (worlds.isEmpty() || worlds.contains(receiver.getWorld().getName())) {
-                                receiver.sendMessage(formattedMsg);
-                            }
-                        }
-                    }
-                }
-            }
-            sendIRCMessage(source, msg);
-            String logMsg = Messaging.format(plugin, this, logFormat, source, msg, false, false);
-            plugin.log(Level.INFO, logMsg);
         }
     }
 
     public void sendMessage(String name, String msg) {
         sendMessage(name, msg, msgFormat, true);
+    }
+
+    protected void sendUncheckedMessage(String source, String msg, String format, boolean sentByPlayer, List<String> recipients, boolean includeSender, boolean color) {
+        String formattedMsg = Messaging.format(plugin, this, format, source, msg, sentByPlayer, color);
+        ChannelManager cm = plugin.getChannelManager();
+        for (String other : recipients) {
+            if (!cm.isIgnoring(other, source)) {
+                Player receiver = plugin.getServer().getPlayer(other);
+                if (receiver != null) {
+                    if (includeSender || !receiver.getName().equals(source)) {
+                        if (worlds.isEmpty() || worlds.contains(receiver.getWorld().getName())) {
+                            receiver.sendMessage(formattedMsg);
+                        }
+                    }
+                }
+            }
+        }
+        sendIRCMessage(source, msg);
+        String logMsg = Messaging.format(plugin, this, logFormat, source, msg, false, false);
+        plugin.log(Level.INFO, logMsg);
     }
 
     protected void sendIRCMessage(String source, String msg) {
@@ -295,6 +312,14 @@ public class Channel {
 
     public void setIrcTags(List<String> ircTags) {
         this.ircTags = ircTags;
+    }
+
+    public List<String> getMutelist() {
+        return mutelist;
+    }
+
+    public void setMutelist(List<String> mutelist) {
+        this.mutelist = mutelist;
     }
 
 }

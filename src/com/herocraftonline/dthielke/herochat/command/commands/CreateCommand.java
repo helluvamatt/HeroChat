@@ -27,11 +27,18 @@ public class CreateCommand extends BaseCommand {
     public CreateCommand(HeroChat plugin) {
         super(plugin);
         name = "Create";
-        description = "Creates a channel. Type /ch help create for info";
-        usage = "/ch create <name> <nick> [p:pass] [color:#] [-options]";
+        description = "Creates a channel";
+        usage = "/ch create §9<name> <nick> §8[p:pass] [color:#] [-options]";
         minArgs = 2;
         maxArgs = 5;
         identifiers.add("ch create");
+        notes.add("§cOptions (combinable, ie. -hsqf):");
+        notes.add("-h   Hidden from /ch channels list");
+        notes.add("-j   Show join and leave messages");
+        notes.add("§cAdmin-only options:");
+        notes.add("-a   Automatically joined by new users");
+        notes.add("-q   Allow quick message shortcut");
+        notes.add("-f   Force users to stay in this channel");
     }
 
     @Override

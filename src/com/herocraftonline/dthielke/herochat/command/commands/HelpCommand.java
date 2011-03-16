@@ -8,31 +8,21 @@
 
 package com.herocraftonline.dthielke.herochat.command.commands;
 
+import java.util.List;
+
 import org.bukkit.command.CommandSender;
 
 import com.herocraftonline.dthielke.herochat.HeroChat;
 import com.herocraftonline.dthielke.herochat.command.BaseCommand;
 
 public class HelpCommand extends BaseCommand {
-
-    private static final String[] HELP_ONE = { "§eHeroChat Help <Page 1/2>:", "/ch help [page#] §7- displays this menu",
-                                              "/ch <channel> [pass] §7- sets your active channel", "/ch who §7- lists players in your active channel",
-                                              "/ch list §7- lists publicly available channels", "/join <channel> [pass] §7- joins a channel",
-                                              "/leave <channel> §7- leaves a channel", "/<channel> <msg> §7- sends a quick message to a channel",
-                                              "/ch ignore §7- displays your ignore list", "/ch ignore <player> §7- toggles ignoring a player" };
-    private static final String[] HELP_TWO = { "§eHeroChat Help <Page 2/2>:", "/ch create <name> <nick> [color:#] [-options]", "/ch remove <channel>",
-                                              "/ch mod <channel> <player> §7- grants mod privileges", "/ch kick <channel> <player> §7- kicks a player",
-                                              "/ch ban <channel> <player> §7- toggles banning a player", "/ch reload §7- reloads the config file" };
-    private static final String[] HELP_CREATE = { "Usage: /ch create <name> <nick> [p:pass] [color:#] [-options]", "Options (combinable, ie. -hsqf):",
-                                                 "-h   Hidden from /ch channels list", "-j   Show join and leave messages", "Admin-only options:",
-                                                 "-a   Automatically joined by new users", "-q   Allow quick message shortcut",
-                                                 "-f   Force users to stay in this channel" };
+    private static final int CMDS_PER_PAGE = 8;
 
     public HelpCommand(HeroChat plugin) {
         super(plugin);
         name = "Help";
         description = "Displays the help menu";
-        usage = "/ch help [page#]";
+        usage = "/ch help §8[page#]";
         minArgs = 0;
         maxArgs = 1;
         identifiers.add("ch help");
@@ -40,26 +30,35 @@ public class HelpCommand extends BaseCommand {
 
     @Override
     public void execute(CommandSender sender, String[] args) {
-        String[] help;
-        if (args.length == 0 || args[0].equals("1")) {
-            help = HELP_ONE;
-        } else if (args[0].equals("2")) {
-            help = HELP_TWO;
-        } else if (args[0].equals("create")) {
-            help = HELP_CREATE;
-        } else {
-            help = HELP_ONE;
+        int page = 0;
+        if (args.length != 0) {
+            try {
+                page = Integer.parseInt(args[0]) - 1;
+            } catch (NumberFormatException e) {}
         }
 
-        if (help != HELP_CREATE) {
-            for (String s : help) {
-                sender.sendMessage("§a" + s.replace("HeroChat", plugin.getTag()));
-            }
-        } else {
-            for (String s : help) {
-                sender.sendMessage("§c" + s);
-            }
+        List<BaseCommand> commands = plugin.getCommandManager().getCommands();
+
+        int numPages = commands.size() / CMDS_PER_PAGE;
+        if (commands.size() % CMDS_PER_PAGE != 0) {
+            numPages++;
         }
+        
+        if (page >= numPages || page < 0) {
+            page = 0;
+        }
+        sender.sendMessage("§c-----[ " + "§f" + plugin.getTag().replace("[", "").replace("]","") + "Help <" + (page + 1) + "/" + numPages + ">§c ]-----");
+        int start = page * CMDS_PER_PAGE;
+        int end = start + CMDS_PER_PAGE;
+        if (end > commands.size()) {
+            end = commands.size();
+        }
+        for (int c = start; c < end; c++) {
+            BaseCommand cmd = commands.get(c);
+            sender.sendMessage("  §a" + cmd.getUsage());
+        }
+        
+        sender.sendMessage("§cFor more info on a particular command, type '/<command> ?'");
     }
 
 }

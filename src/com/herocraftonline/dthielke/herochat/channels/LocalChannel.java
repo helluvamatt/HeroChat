@@ -10,7 +10,6 @@ package com.herocraftonline.dthielke.herochat.channels;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -18,7 +17,6 @@ import org.bukkit.event.Event.Type;
 
 import com.herocraftonline.dthielke.herochat.HeroChat;
 import com.herocraftonline.dthielke.herochat.event.ChannelChatEvent;
-import com.herocraftonline.dthielke.herochat.util.Messaging;
 
 public class LocalChannel extends Channel {
 
@@ -40,29 +38,36 @@ public class LocalChannel extends Channel {
         if (!event.isCancelled()) {
             Player sender = plugin.getServer().getPlayer(name);
             if (sender != null) {
-                if (!worlds.isEmpty() && !worlds.contains(sender.getWorld().getName())) {
-                    sender.sendMessage(plugin.getTag() + "You are not in the correct world for this channel");
-                    return;
-                }
+                String group = plugin.getPermissions().getGroup(sender);
+                if (voicelist.contains(group) || voicelist.isEmpty()) {
+                    if (!plugin.getChannelManager().getMutelist().contains(sender.getName())) {
+                        if (!mutelist.contains(sender.getName())) {
+                            if (worlds.isEmpty() || worlds.contains(sender.getWorld().getName())) {
+                                List<String> recipients = getListeners(sender);
+                                boolean color = plugin.getPermissions().isAllowedColor(sender);
+                                sendUncheckedMessage(name, msg, format, sentByPlayer, recipients, true, color);
 
-                String formattedMsg = Messaging.format(plugin, this, format, name, msg, sentByPlayer, plugin.getPermissions().isAllowedColor(sender));
-                List<Player> receivers = getListeners(sender);
-                for (Player receiver : receivers) {
-                    receiver.sendMessage(formattedMsg);
-                }
-
-                if (receivers.size() == 1) {
-                    sender.sendMessage("§8No one hears you.");
+                                if (recipients.size() == 1) {
+                                    sender.sendMessage("§8No one hears you.");
+                                }
+                            } else {
+                                sender.sendMessage(plugin.getTag() + "You are not in the correct world for " + getCName());
+                            }
+                        } else {
+                            sender.sendMessage(plugin.getTag() + "You are muted in " + getCName());
+                        }
+                    } else {
+                        sender.sendMessage(plugin.getTag() + "You are globally muted");
+                    }
+                } else {
+                    sender.sendMessage(plugin.getTag() + "You cannot speak in " + getCName());
                 }
             }
-            sendIRCMessage(name, msg);
-            String logMsg = Messaging.format(plugin, this, logFormat, name, msg, false, false);
-            plugin.log(Level.INFO, logMsg);
         }
     }
 
-    private List<Player> getListeners(Player origin) {
-        List<Player> list = new ArrayList<Player>();
+    private List<String> getListeners(Player origin) {
+        List<String> list = new ArrayList<String>();
         Location sLoc = origin.getLocation();
         String sWorld = sLoc.getWorld().getName();
         for (String name : players) {
@@ -78,7 +83,7 @@ public class LocalChannel extends Channel {
                         int d = (int) Math.sqrt(dx + dz);
 
                         if (d <= distance) {
-                            list.add(player);
+                            list.add(player.getName());
                         }
                     }
                 }

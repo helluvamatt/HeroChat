@@ -15,4 +15,9 @@ commands:
   join:
     description: Joins a channel
     usage: /<command> channel
-    
+  mute:
+    description: Mutes a player for a single channel
+    usage: /<command> channel player
+  gmute:
+    description: Globally mutes a player
+    usage: /<command> player

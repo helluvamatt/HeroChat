@@ -25,11 +25,13 @@ public class ChannelManager {
     private int defaultLocalDistance;
     private HashMap<String, String> activeChannels;
     private HashMap<String, List<String>> ignoreLists;
+    private List<String> mutelist;
 
     public ChannelManager(HeroChat plugin) {
         this.plugin = plugin;
         activeChannels = new HashMap<String, String>();
         ignoreLists = new HashMap<String, List<String>>();
+        mutelist = new ArrayList<String>();
     }
 
     public String[] getPlayerList() {
@@ -166,6 +168,14 @@ public class ChannelManager {
 
     public int getDefaultLocalDistance() {
         return defaultLocalDistance;
+    }
+
+    public void setMutelist(List<String> mutelist) {
+        this.mutelist = mutelist;
+    }
+
+    public List<String> getMutelist() {
+        return mutelist;
     }
 
 }

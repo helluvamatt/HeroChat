@@ -21,7 +21,7 @@ public class QuickMsgCommand extends BaseCommand {
         super(plugin);
         name = "Quick Message";
         description = "Sends a message to a channel without changing focus";
-        usage = "/qm <channel> <msg>";
+        usage = "/§9<channel> §9<msg>";
         minArgs = 2;
         maxArgs = 1000;
         identifiers.add("qm");
@@ -35,16 +35,11 @@ public class QuickMsgCommand extends BaseCommand {
             Channel c = plugin.getChannelManager().getChannel(args[0]);
             if (c != null) {
                 if (c.getPlayers().contains(name)) {
-                    String group = plugin.getPermissions().getGroup(player);
-                    if (c.getVoicelist().contains(group) || c.getVoicelist().isEmpty()) {
-                        String msg = "";
-                        for (int i = 1; i < args.length; i++) {
-                            msg += args[i] + " ";
-                        }
-                        c.sendMessage(name, msg.trim());
-                    } else {
-                        sender.sendMessage(plugin.getTag() + "You cannot speak in " + c.getCName());
+                    String msg = "";
+                    for (int i = 1; i < args.length; i++) {
+                        msg += args[i] + " ";
                     }
+                    c.sendMessage(name, msg.trim());
                 } else {
                     sender.sendMessage(plugin.getTag() + "You are not in " + c.getCName());
                 }

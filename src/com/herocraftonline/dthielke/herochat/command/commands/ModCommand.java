@@ -21,7 +21,7 @@ public class ModCommand extends BaseCommand {
         super(plugin);
         name = "Mod";
         description = "Grants moderator privileges to a player";
-        usage = "/ch mod <channel> <player>";
+        usage = "/ch mod §9<channel> <player>";
         minArgs = 2;
         maxArgs = 2;
         identifiers.add("ch mod");

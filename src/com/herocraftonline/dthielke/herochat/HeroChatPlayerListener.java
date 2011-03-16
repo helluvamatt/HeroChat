@@ -8,8 +8,6 @@
 
 package com.herocraftonline.dthielke.herochat;
 
-import java.util.logging.Level;
-
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerChatEvent;
 import org.bukkit.event.player.PlayerEvent;
@@ -49,15 +47,10 @@ public class HeroChatPlayerListener extends PlayerListener {
         Channel c = cm.getActiveChannel(name);
 
         if (c != null) {
-            String group = plugin.getPermissions().getGroup(sender);
-            if (c.getVoicelist().contains(group) || c.getVoicelist().isEmpty()) {
-                if (!c.getPlayers().contains(name)) {
-                    c.addPlayer(name);
-                }
-                c.sendMessage(name, event.getMessage());
-            } else {
-                sender.sendMessage(plugin.getTag() + "You cannot speak in this channel");
+            if (!c.getPlayers().contains(name)) {
+                c.addPlayer(name);
             }
+            c.sendMessage(name, event.getMessage());
         }
         event.setCancelled(true);
     }
@@ -73,17 +66,10 @@ public class HeroChatPlayerListener extends PlayerListener {
 
     @Override
     public void onPlayerQuit(PlayerEvent event) {
-        long start, stop;
         Player quitter = event.getPlayer();
         String name = quitter.getName();
-        start = System.nanoTime();
         plugin.getConfigManager().savePlayer(name);
-        stop = System.nanoTime();
-        plugin.log(Level.INFO, "Save duration: " + (stop - start) / 1000 + "us | " + (stop - start) / 1000000 + "ms");
-        start = System.nanoTime();
         plugin.getChannelManager().removeFromAll(name);
-        stop = System.nanoTime();
-        plugin.log(Level.INFO, "Removal duration: " + (stop - start) / 1000 + "us | " + (stop - start) / 1000000 + "ms");
     }
 
 }

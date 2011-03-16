@@ -25,7 +25,7 @@ public class RemoveCommand extends BaseCommand {
         super(plugin);
         name = "Remove";
         description = "Removes a command";
-        usage = "/ch remove <channel>";
+        usage = "/ch remove §9<channel>";
         minArgs = 1;
         maxArgs = 1;
         identifiers.add("ch remove");

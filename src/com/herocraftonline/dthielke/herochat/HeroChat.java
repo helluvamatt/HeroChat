@@ -28,6 +28,7 @@ import com.herocraftonline.dthielke.herochat.command.CommandManager;
 import com.herocraftonline.dthielke.herochat.command.commands.BanCommand;
 import com.herocraftonline.dthielke.herochat.command.commands.CreateCommand;
 import com.herocraftonline.dthielke.herochat.command.commands.FocusCommand;
+import com.herocraftonline.dthielke.herochat.command.commands.GMuteCommand;
 import com.herocraftonline.dthielke.herochat.command.commands.HelpCommand;
 import com.herocraftonline.dthielke.herochat.command.commands.IgnoreCommand;
 import com.herocraftonline.dthielke.herochat.command.commands.JoinCommand;
@@ -35,6 +36,7 @@ import com.herocraftonline.dthielke.herochat.command.commands.KickCommand;
 import com.herocraftonline.dthielke.herochat.command.commands.LeaveCommand;
 import com.herocraftonline.dthielke.herochat.command.commands.ListCommand;
 import com.herocraftonline.dthielke.herochat.command.commands.ModCommand;
+import com.herocraftonline.dthielke.herochat.command.commands.MuteCommand;
 import com.herocraftonline.dthielke.herochat.command.commands.QuickMsgCommand;
 import com.herocraftonline.dthielke.herochat.command.commands.ReloadCommand;
 import com.herocraftonline.dthielke.herochat.command.commands.RemoveCommand;
@@ -153,20 +155,24 @@ public class HeroChat extends JavaPlugin {
 
     private void registerCommands() {
         commandManager = new CommandManager();
+        // page 1
         commandManager.addCommand(new HelpCommand(this));
-        commandManager.addCommand(new BanCommand(this));
         commandManager.addCommand(new ListCommand(this));
-        commandManager.addCommand(new CreateCommand(this));
-        commandManager.addCommand(new FocusCommand(this));
-        commandManager.addCommand(new IgnoreCommand(this));
-        commandManager.addCommand(new JoinCommand(this));
-        commandManager.addCommand(new KickCommand(this));
-        commandManager.addCommand(new LeaveCommand(this));
         commandManager.addCommand(new WhoCommand(this));
-        commandManager.addCommand(new ModCommand(this));
+        commandManager.addCommand(new FocusCommand(this));
+        commandManager.addCommand(new JoinCommand(this));
+        commandManager.addCommand(new LeaveCommand(this));
         commandManager.addCommand(new QuickMsgCommand(this));
-        commandManager.addCommand(new ReloadCommand(this));
+        commandManager.addCommand(new IgnoreCommand(this));
+        // page 2
+        commandManager.addCommand(new CreateCommand(this));
         commandManager.addCommand(new RemoveCommand(this));
+        commandManager.addCommand(new ModCommand(this));
+        commandManager.addCommand(new KickCommand(this));
+        commandManager.addCommand(new BanCommand(this));
+        commandManager.addCommand(new MuteCommand(this));
+        commandManager.addCommand(new GMuteCommand(this));
+        commandManager.addCommand(new ReloadCommand(this));
     }
 
     private PermissionHelper loadPermissions() {

@@ -24,7 +24,7 @@ public class BanCommand extends BaseCommand {
         super(plugin);
         name = "Ban";
         description = "Bans a player from a channel";
-        usage = "/ch ban <channel> <player>";
+        usage = "/ch ban §9<channel> <player>";
         minArgs = 1;
         maxArgs = 2;
         identifiers.add("ch ban");
@@ -36,8 +36,7 @@ public class BanCommand extends BaseCommand {
         Channel channel = cm.getChannel(args[0]);
         if (channel != null) {
             if (args.length == 1) {
-                List<String> bans = channel.getBlacklist();
-                displayBanList(sender, bans, channel);
+                displayBanList(sender, channel);
             } else {
                 if (sender instanceof Player) {
                     Player banner = (Player) sender;
@@ -79,8 +78,9 @@ public class BanCommand extends BaseCommand {
         }
     }
 
-    private void displayBanList(CommandSender sender, List<String> bans, Channel channel) {
+    private void displayBanList(CommandSender sender, Channel channel) {
         String banListMsg;
+        List<String> bans = channel.getBlacklist();
         if (bans.isEmpty()) {
             banListMsg = plugin.getTag() + "No one is currently banned from " + channel.getCName();
         } else {
