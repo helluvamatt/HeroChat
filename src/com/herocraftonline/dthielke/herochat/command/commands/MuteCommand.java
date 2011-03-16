@@ -16,7 +16,7 @@ public class MuteCommand extends BaseCommand {
         super(plugin);
         name = "Mute";
         description = "Prevents a player from speaking in a channel";
-        usage = "/ch mute §9<channel> §8[player]";
+        usage = "§e/ch mute §9<channel> §8[player] §eOR /mute §9<channel> §8[player]";
         minArgs = 1;
         maxArgs = 2;
         identifiers.add("ch mute");

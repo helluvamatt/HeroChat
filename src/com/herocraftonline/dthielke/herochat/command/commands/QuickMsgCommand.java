@@ -21,7 +21,7 @@ public class QuickMsgCommand extends BaseCommand {
         super(plugin);
         name = "Quick Message";
         description = "Sends a message to a channel without changing focus";
-        usage = "/§9<channel> §9<msg>";
+        usage = "§e/qm §9<channel> §9<msg> §eOR /§9<channel> §9<msg>";
         minArgs = 2;
         maxArgs = 1000;
         identifiers.add("qm");

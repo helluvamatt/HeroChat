@@ -15,7 +15,7 @@ public class GMuteCommand extends BaseCommand {
         super(plugin);
         name = "Global Mute";
         description = "Prevents a player from speaking in any channel";
-        usage = "/ch gmute §8[player]";
+        usage = "§e/ch gmute §8[player] §eOR /gmute §8[player]";
         minArgs = 0;
         maxArgs = 1;
         identifiers.add("ch gmute");

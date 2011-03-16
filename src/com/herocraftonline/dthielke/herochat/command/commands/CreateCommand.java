@@ -28,7 +28,7 @@ public class CreateCommand extends BaseCommand {
         super(plugin);
         name = "Create";
         description = "Creates a channel";
-        usage = "/ch create §9<name> <nick> §8[p:pass] [color:#] [-options]";
+        usage = "§e/ch create §9<name> <nick> §8[p:pass] [color:#] [-options]";
         minArgs = 2;
         maxArgs = 5;
         identifiers.add("ch create");

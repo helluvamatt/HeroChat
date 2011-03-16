@@ -22,7 +22,7 @@ public class HelpCommand extends BaseCommand {
         super(plugin);
         name = "Help";
         description = "Displays the help menu";
-        usage = "/ch help §8[page#]";
+        usage = "§e/ch help §8[page#]";
         minArgs = 0;
         maxArgs = 1;
         identifiers.add("ch help");

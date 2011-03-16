@@ -22,7 +22,7 @@ public class JoinCommand extends BaseCommand {
         super(plugin);
         name = "Join";
         description = "Joins a channel";
-        usage = "/ch join §9<channel> §8[password]";
+        usage = "§e/ch join §9<channel> §8[password]";
         minArgs = 1;
         maxArgs = 2;
         identifiers.add("ch join");
