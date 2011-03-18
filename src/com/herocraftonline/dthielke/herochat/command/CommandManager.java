@@ -43,7 +43,7 @@ public class CommandManager {
         }
 
         if (match != null) {
-            if (trimmedArgs == null || (args.length > 0 && args[args.length - 1].equals("?"))) {
+            if (trimmedArgs == null || (args.length > 0 && args[0].equals("?"))) {
                 sender.sendMessage("§cCommand:§e " + match.getName());
                 sender.sendMessage("§cDescription:§e " + match.getDescription());
                 sender.sendMessage("§cUsage:§e " + match.getUsage());
