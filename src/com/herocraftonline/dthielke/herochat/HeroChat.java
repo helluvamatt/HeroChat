@@ -151,7 +151,7 @@ public class HeroChat extends JavaPlugin {
         if (!eventsRegistered) {
             playerListener = new HeroChatPlayerListener(this);
             PluginManager pm = getServer().getPluginManager();
-            pm.registerEvent(Event.Type.PLAYER_CHAT, playerListener, Event.Priority.Low, this);
+            pm.registerEvent(Event.Type.PLAYER_CHAT, playerListener, Event.Priority.High, this);
             pm.registerEvent(Event.Type.PLAYER_JOIN, playerListener, Event.Priority.Normal, this);
             pm.registerEvent(Event.Type.PLAYER_QUIT, playerListener, Event.Priority.Normal, this);
             pm.registerEvent(Event.Type.PLAYER_COMMAND_PREPROCESS, playerListener, Event.Priority.Normal, this);
