@@ -8,6 +8,8 @@
 
 package com.herocraftonline.dthielke.herochat;
 
+import java.util.logging.Level;
+
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerChatEvent;
 import org.bukkit.event.player.PlayerEvent;
@@ -15,6 +17,7 @@ import org.bukkit.event.player.PlayerListener;
 
 import com.herocraftonline.dthielke.herochat.channels.Channel;
 import com.herocraftonline.dthielke.herochat.channels.ChannelManager;
+import com.herocraftonline.dthielke.herochat.util.Messaging;
 
 public class HeroChatPlayerListener extends PlayerListener {
 
@@ -42,15 +45,30 @@ public class HeroChatPlayerListener extends PlayerListener {
         }
 
         Player sender = event.getPlayer();
-        String name = sender.getName();
-        ChannelManager cm = plugin.getChannelManager();
-        Channel c = cm.getActiveChannel(name);
-
-        if (c != null) {
-            if (!c.getPlayers().contains(name)) {
-                c.addPlayer(name);
+        String senderName = sender.getName();
+        ConversationManager convos = plugin.getConversationManager();
+        if (convos.hasActive(sender)) {
+            Player receiver = convos.getTellee(sender);
+            String receiverName = receiver.getName();
+            if (!plugin.getChannelManager().isIgnoring(receiverName, senderName)) {
+                String message = event.getMessage();
+                String outgoing = Messaging.format(plugin, null, plugin.getOutgoingTellFormat(), senderName, message, true, plugin.getPermissions().isAllowedColor(sender));
+                String incoming = Messaging.format(plugin, null, plugin.getIncomingTellFormat(), senderName, message, true, plugin.getPermissions().isAllowedColor(sender));
+                receiver.sendMessage(outgoing);
+                sender.sendMessage(incoming);
+                plugin.log(Level.INFO, senderName + " -> " + receiverName + ": " + message);
+            } else {
+                sender.sendMessage(plugin.getTag() + "§c" + receiverName + " is ignoring you");
             }
-            c.sendMessage(name, event.getMessage());
+        } else {
+            ChannelManager cm = plugin.getChannelManager();
+            Channel c = cm.getActiveChannel(senderName);
+            if (c != null) {
+                if (!c.getPlayers().contains(senderName)) {
+                    c.addPlayer(senderName);
+                }
+                c.sendMessage(senderName, event.getMessage());
+            }
         }
         event.setCancelled(true);
     }
@@ -67,9 +85,19 @@ public class HeroChatPlayerListener extends PlayerListener {
     @Override
     public void onPlayerQuit(PlayerEvent event) {
         Player quitter = event.getPlayer();
-        String name = quitter.getName();
-        plugin.getConfigManager().savePlayer(name);
-        plugin.getChannelManager().removeFromAll(name);
+        String quitterName = quitter.getName();
+        plugin.getConfigManager().savePlayer(quitterName);
+        plugin.getChannelManager().removeFromAll(quitterName);
+
+        ConversationManager convos = plugin.getConversationManager();
+        if (convos.hasActive(quitter)) {
+            Player tellee = convos.getTellee(quitter);
+            if (convos.isActive(tellee, quitter)) {
+                convos.end(tellee);
+                tellee.sendMessage(plugin.getTag() + "§cEnded your conversation (Player logged out)");
+            }
+            convos.end(quitter);
+        }
     }
 
 }

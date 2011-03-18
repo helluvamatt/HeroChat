@@ -83,6 +83,8 @@ public class ConfigManager {
         String ircMessageFormat = config.getString(globals + "craftIRC-message-format", "[{nick}] {player}: ");
         String defaultChannel = config.getString(globals + "default-channel", cm.getChannels().get(0).getName());
         String defaultMsgFormat = config.getString(globals + "default-message-format", "{player}: ");
+        String incomingTellFormat = config.getString(globals + "incoming-tell-format", "{prefix}{player} &8->&d ");
+        String outgoingTellFormat = config.getString(globals + "outgoing-tell-format", "{prefix}{player} &8->&d ");
         int defaultLocalDistance = config.getInt(globals + "default-local-distance", 100);
         List<String> censors = config.getStringList(globals + "censors", null);
 
@@ -90,6 +92,8 @@ public class ConfigManager {
         plugin.setIrcTag(ircTag);
         plugin.setIrcMessageFormat(ircMessageFormat);
         plugin.setCensors(censors);
+        plugin.setIncomingTellFormat(incomingTellFormat);
+        plugin.setOutgoingTellFormat(outgoingTellFormat);
         cm.setDefaultChannel(cm.getChannel(defaultChannel));
         cm.setDefaultMsgFormat(defaultMsgFormat);
         cm.setDefaultLocalDistance(defaultLocalDistance);
@@ -201,6 +205,8 @@ public class ConfigManager {
         config.setProperty(globals + "plugin-tag", plugin.getTag());
         config.setProperty(globals + "craftIRC-tag", plugin.getIrcTag());
         config.setProperty(globals + "craftIRC-message-format", plugin.getIrcMessageFormat());
+        config.setProperty(globals + "incoming-tell-format", plugin.getIncomingTellFormat());
+        config.setProperty(globals + "outgoing-tell-format", plugin.getOutgoingTellFormat());
         config.setProperty(globals + "default-channel", cm.getDefaultChannel().getName());
         config.setProperty(globals + "default-message-format", cm.getDefaultMsgFormat());
         config.setProperty(globals + "default-local-distance", cm.getDefaultLocalDistance());

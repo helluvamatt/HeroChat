@@ -24,7 +24,7 @@ public class LeaveCommand extends BaseCommand {
         super(plugin);
         name = "Leave";
         description = "Leaves a channel";
-        usage = "§e/ch leave §9<channel>";
+        usage = "§e/ch leave §9<channel> §eOR /leave §9<channel>";
         minArgs = 1;
         maxArgs = 1;
         identifiers.add("ch leave");

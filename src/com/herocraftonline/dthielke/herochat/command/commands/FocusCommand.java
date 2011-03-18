@@ -22,7 +22,7 @@ public class FocusCommand extends BaseCommand {
         super(plugin);
         name = "Focus";
         description = "Directs all future messages to a channel";
-        usage = "§e/ch §9<channel> §8[password]";
+        usage = "§e/ch §9<channel> §8[pass]";
         minArgs = 1;
         maxArgs = 2;
         identifiers.add("ch");

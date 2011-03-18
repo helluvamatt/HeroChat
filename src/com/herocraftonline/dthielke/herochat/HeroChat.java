@@ -40,6 +40,7 @@ import com.herocraftonline.dthielke.herochat.command.commands.MuteCommand;
 import com.herocraftonline.dthielke.herochat.command.commands.QuickMsgCommand;
 import com.herocraftonline.dthielke.herochat.command.commands.ReloadCommand;
 import com.herocraftonline.dthielke.herochat.command.commands.RemoveCommand;
+import com.herocraftonline.dthielke.herochat.command.commands.TellCommand;
 import com.herocraftonline.dthielke.herochat.command.commands.ToggleCommand;
 import com.herocraftonline.dthielke.herochat.command.commands.WhoCommand;
 import com.herocraftonline.dthielke.herochat.util.ConfigManager;
@@ -77,12 +78,15 @@ public class HeroChat extends JavaPlugin {
     private Logger log = Logger.getLogger("Minecraft");
     private ChannelManager channelManager;
     private CommandManager commandManager;
+    private ConversationManager conversationManager;
     private ConfigManager configManager;
     private PermissionHelper permissions;
     private CraftIRC craftIRC;
     private String ircMessageFormat;
     private String ircTag;
     private String tag;
+    private String outgoingTellFormat;
+    private String incomingTellFormat;
     private List<String> censors;
     private HeroChatPlayerListener playerListener;
     private HeroChatCraftIRCListener craftIRCListener;
@@ -103,6 +107,7 @@ public class HeroChat extends JavaPlugin {
     @Override
     public void onEnable() {
         channelManager = new ChannelManager(this);
+        conversationManager = new ConversationManager();
         permissions = loadPermissions();
         if (permissions == null) {
             return;
@@ -157,7 +162,6 @@ public class HeroChat extends JavaPlugin {
     private void registerCommands() {
         commandManager = new CommandManager();
         // page 1
-        commandManager.addCommand(new HelpCommand(this));
         commandManager.addCommand(new ListCommand(this));
         commandManager.addCommand(new WhoCommand(this));
         commandManager.addCommand(new FocusCommand(this));
@@ -165,6 +169,7 @@ public class HeroChat extends JavaPlugin {
         commandManager.addCommand(new LeaveCommand(this));
         commandManager.addCommand(new QuickMsgCommand(this));
         commandManager.addCommand(new IgnoreCommand(this));
+        commandManager.addCommand(new TellCommand(this));
         // page 2
         commandManager.addCommand(new CreateCommand(this));
         commandManager.addCommand(new RemoveCommand(this));
@@ -176,6 +181,7 @@ public class HeroChat extends JavaPlugin {
         commandManager.addCommand(new ReloadCommand(this));
         // page 3
         commandManager.addCommand(new ToggleCommand(this));
+        commandManager.addCommand(new HelpCommand(this));
     }
 
     private PermissionHelper loadPermissions() {
@@ -229,7 +235,7 @@ public class HeroChat extends JavaPlugin {
     }
 
     public void log(Level level, String msg) {
-        log.log(level, "[HeroChat] " + msg);
+        log.log(level, "[HeroChat] " + msg.replaceAll("§[0-9a-f]", ""));
     }
 
     public ChannelManager getChannelManager() {
@@ -282,5 +288,25 @@ public class HeroChat extends JavaPlugin {
 
     public List<String> getCensors() {
         return censors;
+    }
+
+    public ConversationManager getConversationManager() {
+        return conversationManager;
+    }
+
+    public void setOutgoingTellFormat(String outgoingTellFormat) {
+        this.outgoingTellFormat = outgoingTellFormat;
+    }
+
+    public String getOutgoingTellFormat() {
+        return outgoingTellFormat;
+    }
+
+    public void setIncomingTellFormat(String incomingTellFormat) {
+        this.incomingTellFormat = incomingTellFormat;
+    }
+
+    public String getIncomingTellFormat() {
+        return incomingTellFormat;
     }
 }

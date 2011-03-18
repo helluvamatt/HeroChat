@@ -24,7 +24,7 @@ import com.herocraftonline.dthielke.herochat.util.Messaging;
 public class Channel {
 
     public static final String logFormat = "[{nick}] {player}: ";
-    public static final String joinFormat = "{color.CHANNEL}[{nick}] ";
+    public static final String joinFormat = "{color}[{nick}] ";
 
     protected HeroChat plugin;
 
@@ -80,7 +80,7 @@ public class Channel {
     }
 
     public void sendMessage(String source, String msg, String format, boolean sentByPlayer, boolean includeSender) {
-        ChannelChatEvent event = new ChannelChatEvent(Type.CUSTOM_EVENT, this, source, msg, msgFormat, sentByPlayer);
+        ChannelChatEvent event = new ChannelChatEvent(Type.CUSTOM_EVENT, this, source, msg, format, sentByPlayer);
         plugin.getServer().getPluginManager().callEvent(event);
         source = event.getSource();
         msg = event.getMessage();
@@ -142,8 +142,7 @@ public class Channel {
             }
         }
         sendIRCMessage(source, msg);
-        String logMsg = Messaging.format(plugin, this, logFormat, source, msg, false, false);
-        plugin.log(Level.INFO, logMsg);
+        plugin.log(Level.INFO, formattedMsg);
     }
 
     protected void sendIRCMessage(String source, String msg) {

@@ -27,7 +27,7 @@ public class Messaging {
 
     public static String format(HeroChat plugin, Channel channel, String format, String name, String msg, boolean sentByPlayer, boolean allowColor) {
         if (allowColor) {
-            msg = msg.replaceAll("&([0-9a-f])","§$1");
+            msg = msg.replaceAll("&([0-9a-f])", "§$1");
         } else {
             msg = msg.replaceAll("§[0-9a-f]", "");
         }
@@ -102,12 +102,14 @@ public class Messaging {
         leader = leader.replaceAll("&([0-9a-f])", "§$1");
         leader = leader.replaceAll("\\{prefix\\}", prefix);
         leader = leader.replaceAll("\\{suffix\\}", suffix);
-        leader = leader.replaceAll("\\{nick\\}", channel.getNick());
-        leader = leader.replaceAll("\\{name\\}", channel.getName());
+        if (channel != null) {
+            leader = leader.replaceAll("\\{nick\\}", channel.getNick());
+            leader = leader.replaceAll("\\{name\\}", channel.getName());
+            leader = leader.replaceAll("\\{color\\}", channel.getColor().str);
+            leader = leader.replaceAll("\\{color.CHANNEL\\}", channel.getColor().str);
+        }
         leader = leader.replaceAll("\\{player\\}", name);
         leader = leader.replaceAll("\\{healthbar\\}", healthBar);
-        leader = leader.replaceAll("\\{color\\}", channel.getColor().str);
-        leader = leader.replaceAll("\\{color.CHANNEL\\}", channel.getColor().str);
         leader = leader.replaceAll("\\{world\\}", world);
         Matcher matcher = Pattern.compile("\\{color.[a-zA-Z_]+\\}").matcher(leader);
         while (matcher.find()) {
