@@ -57,14 +57,14 @@ public class ListCommand extends BaseCommand {
             p = pages;
         }
 
-        sender.sendMessage(plugin.getTag() + "Channel list <Page " + p + "/" + pages + ">");
+        sender.sendMessage("§c-----[ " + "§f" + "Channel List <" + p + "/" + pages + ">§c ]-----");
         for (int i = 0; i < CHANNELS_PER_PAGE; i++) {
             int index = (p - 1) * CHANNELS_PER_PAGE + i;
             if (index >= visible.size()) {
                 break;
             }
             Channel c = visible.get(index);
-            String msg = c.getColor().str + "[" + c.getNick() + "] " + c.getName();
+            String msg = "  " + c.getColor().str + "[" + c.getNick() + "] " + c.getName();
             if (c.getPlayers().contains(name)) {
                 msg = msg.concat(" *");
             }

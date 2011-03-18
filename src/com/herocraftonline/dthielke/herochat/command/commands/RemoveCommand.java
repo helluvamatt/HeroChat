@@ -48,12 +48,12 @@ public class RemoveCommand extends BaseCommand {
                                     cm.setActiveChannel(s, joined.get(0).getName());
                                     Player p = plugin.getServer().getPlayer(s);
                                     if (p != null) {
-                                        p.sendMessage(plugin.getTag() + "Set active channel to " + cm.getActiveChannel(s).getCName());
+                                        p.sendMessage(plugin.getTag() + "§cSet active channel to " + cm.getActiveChannel(s).getCName());
                                     }
                                 }
                             }
                             cm.removeChannel(c);
-                            sender.sendMessage(plugin.getTag() + "Channel " + c.getCName() + " §fremoved");
+                            sender.sendMessage(plugin.getTag() + "§cChannel " + c.getCName() + " §fremoved");
                             try {
                                 plugin.getConfigManager().save();
                             } catch (Exception e) {
@@ -62,19 +62,19 @@ public class RemoveCommand extends BaseCommand {
                                 return;
                             }
                         } else {
-                            sender.sendMessage(plugin.getTag() + "You cannot delete the default channel");
+                            sender.sendMessage(plugin.getTag() + "§cYou cannot delete the default channel");
                         }
                     } else {
-                        sender.sendMessage(plugin.getTag() + "You cannot delete the last channel");
+                        sender.sendMessage(plugin.getTag() + "§cYou cannot delete the last channel");
                     }
                 } else {
-                    sender.sendMessage(plugin.getTag() + "You do not have sufficient permission");
+                    sender.sendMessage(plugin.getTag() + "§cYou do not have sufficient permission");
                 }
             } else {
-                sender.sendMessage(plugin.getTag() + "Channel not found");
+                sender.sendMessage(plugin.getTag() + "§cChannel not found");
             }
         } else {
-            sender.sendMessage(plugin.getTag() + "You must be a player to use this command");
+            sender.sendMessage(plugin.getTag() + "§cYou must be a player to use this command");
         }
     }
 

@@ -40,28 +40,28 @@ public class MuteCommand extends BaseCommand {
                             if (!(plugin.getPermissions().isAdmin(mutee) || channel.getModerators().contains(name))) {
                                 if (channel.getMutelist().contains(name)) {
                                     channel.getMutelist().remove(name);
-                                    muter.sendMessage(plugin.getTag() + name + " has been unmuted in " + channel.getCName());
-                                    mutee.sendMessage(plugin.getTag() + "You have been unmuted in " + channel.getCName());
+                                    muter.sendMessage(plugin.getTag() + "§c" + name + " has been unmuted in " + channel.getCName());
+                                    mutee.sendMessage(plugin.getTag() + "§cYou have been unmuted in " + channel.getCName());
                                 } else {
                                     channel.getMutelist().add(name);
-                                    muter.sendMessage(plugin.getTag() + name + " has been muted in " + channel.getCName());
-                                    mutee.sendMessage(plugin.getTag() + "You have been muted in " + channel.getCName());
+                                    muter.sendMessage(plugin.getTag() + "§c" + name + " has been muted in " + channel.getCName());
+                                    mutee.sendMessage(plugin.getTag() + "§cYou have been muted in " + channel.getCName());
                                 }
                             } else {
-                                muter.sendMessage(plugin.getTag() + "You cannot mute " + name + " in " + channel.getCName());
+                                muter.sendMessage(plugin.getTag() + "§cYou cannot mute " + name + " in " + channel.getCName());
                             }
                         } else {
-                            muter.sendMessage(plugin.getTag() + "Player not found");
+                            muter.sendMessage(plugin.getTag() + "§cPlayer not found");
                         }
                     } else {
-                        muter.sendMessage(plugin.getTag() + "You do not have sufficient permission");
+                        muter.sendMessage(plugin.getTag() + "§cYou do not have sufficient permission");
                     }
                 } else {
-                    sender.sendMessage(plugin.getTag() + "You must be a player to use this command");
+                    sender.sendMessage(plugin.getTag() + "§cYou must be a player to use this command");
                 }
             }
         } else {
-            sender.sendMessage(plugin.getTag() + "Channel not found");
+            sender.sendMessage(plugin.getTag() + "§cChannel not found");
         }
     }
     
@@ -69,9 +69,9 @@ public class MuteCommand extends BaseCommand {
         String muteListMsg;
         List<String> mutes = channel.getMutelist();
         if (mutes.isEmpty()) {
-            muteListMsg = plugin.getTag() + "No one is currently muted in " + channel.getCName();
+            muteListMsg = plugin.getTag() + "§cNo one is currently muted in " + channel.getCName();
         } else {
-            muteListMsg = "Currently muted in " + channel.getCName() + "§f: ";
+            muteListMsg = "§cCurrently muted in " + channel.getCName() + "§f: ";
             for (String s : mutes) {
                 muteListMsg += s + ",";
             }

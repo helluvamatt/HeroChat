@@ -42,23 +42,23 @@ public class LeaveCommand extends BaseCommand {
                 if (c.getPlayers().contains(name)) {
                     if (!c.isForced()) {
                         c.removePlayer(name);
-                        sender.sendMessage(plugin.getTag() + "Left channel " + c.getCName());
+                        sender.sendMessage(plugin.getTag() + "§cLeft channel " + c.getCName());
                         if (cm.getActiveChannel(name).equals(c)) {
                             List<Channel> joined = cm.getJoinedChannels(name);
                             cm.setActiveChannel(name, joined.get(0).getName());
-                            sender.sendMessage(plugin.getTag() + "Set active channel to " + cm.getActiveChannel(name).getCName());
+                            sender.sendMessage(plugin.getTag() + "§cSet active channel to " + cm.getActiveChannel(name).getCName());
                         }
                     } else {
-                        sender.sendMessage(plugin.getTag() + "You cannot leave " + c.getCName());
+                        sender.sendMessage(plugin.getTag() + "§cYou cannot leave " + c.getCName());
                     }
                 } else {
-                    sender.sendMessage(plugin.getTag() + "You are not in " + c.getCName());
+                    sender.sendMessage(plugin.getTag() + "§cYou are not in " + c.getCName());
                 }
             } else {
-                sender.sendMessage(plugin.getTag() + "Channel not found");
+                sender.sendMessage(plugin.getTag() + "§cChannel not found");
             }
         } else {
-            sender.sendMessage(plugin.getTag() + "You must be a player to use this command");
+            sender.sendMessage(plugin.getTag() + "§cYou must be a player to use this command");
         }
     }
 

@@ -40,6 +40,7 @@ import com.herocraftonline.dthielke.herochat.command.commands.MuteCommand;
 import com.herocraftonline.dthielke.herochat.command.commands.QuickMsgCommand;
 import com.herocraftonline.dthielke.herochat.command.commands.ReloadCommand;
 import com.herocraftonline.dthielke.herochat.command.commands.RemoveCommand;
+import com.herocraftonline.dthielke.herochat.command.commands.ToggleCommand;
 import com.herocraftonline.dthielke.herochat.command.commands.WhoCommand;
 import com.herocraftonline.dthielke.herochat.util.ConfigManager;
 import com.herocraftonline.dthielke.herochat.util.PermissionHelper;
@@ -173,6 +174,8 @@ public class HeroChat extends JavaPlugin {
         commandManager.addCommand(new MuteCommand(this));
         commandManager.addCommand(new GMuteCommand(this));
         commandManager.addCommand(new ReloadCommand(this));
+        // page 3
+        commandManager.addCommand(new ToggleCommand(this));
     }
 
     private PermissionHelper loadPermissions() {

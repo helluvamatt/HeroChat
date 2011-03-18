@@ -1,8 +1,8 @@
 globals:
     craftIRC-tag: '#'
-    censors: ['\bu+\W*m+a+d+(\W*br(a|o)+)?', 'some_other_word;it's replacement']
+    censors: ['\bu+\W*m+a+d+(\W*br(a|o)+)?', 'some_other_word;replacement']
     default-local-distance: 100
-    plugin-tag: '[HeroChat] '
+    plugin-tag: '&e[HeroChat] '
     default-channel: Global
     default-message-format: '{color}[{nick}] &f{prefix}{player}{suffix}{color}: '
     craftIRC-message-format: '[{nick}] {player}: '
@@ -33,7 +33,7 @@ channels:
         nickname: staff
         permissions:
             speak: []
-            join: []
+            join: [admins, mods]
         message-format: '{default}'
         worlds: []
         password: ''
@@ -52,7 +52,7 @@ channels:
         color: ROSE
         nickname: alert
         permissions:
-            speak: []
+            speak: [admins, mods]
             join: []
         message-format: '&4[ALERT]{color}: '
         worlds: []
@@ -61,7 +61,7 @@ channels:
             bans: []
             moderators: []
         options:
-            hidden: true
+            hidden: false
             shortcut-allowed: true
             auto-join: true
             local: false

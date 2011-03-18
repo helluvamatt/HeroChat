@@ -39,22 +39,22 @@ public class ModCommand extends BaseCommand {
                     if (mod != null) {
                         if (!c.getModerators().contains(mod.getName())) {
                             c.getModerators().add(mod.getName());
-                            sender.sendMessage(plugin.getTag() + mod.getName() + " is now moderating " + c.getCName());
-                            mod.sendMessage(plugin.getTag() + "You are now moderating " + c.getCName());
+                            sender.sendMessage(plugin.getTag() + "§c" + mod.getName() + " is now moderating " + c.getCName());
+                            mod.sendMessage(plugin.getTag() + "§cYou are now moderating " + c.getCName());
                         } else {
-                            sender.sendMessage(plugin.getTag() + mod.getName() + " is already moderating " + c.getCName());
+                            sender.sendMessage(plugin.getTag() + "§c" + mod.getName() + " is already moderating " + c.getCName());
                         }
                     } else {
-                        sender.sendMessage(plugin.getTag() + "Player not found");
+                        sender.sendMessage(plugin.getTag() + "§cPlayer not found");
                     }
                 } else {
-                    sender.sendMessage(plugin.getTag() + "You do not have sufficient permission");
+                    sender.sendMessage(plugin.getTag() + "§cYou do not have sufficient permission");
                 }
             } else {
-                sender.sendMessage(plugin.getTag() + "Channel not found");
+                sender.sendMessage(plugin.getTag() + "§cChannel not found");
             }
         } else {
-            sender.sendMessage(plugin.getTag() + "You must be a player to use this command");
+            sender.sendMessage(plugin.getTag() + "§cYou must be a player to use this command");
         }
     }
 

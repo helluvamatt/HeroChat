@@ -37,7 +37,7 @@ public class WhoCommand extends BaseCommand {
             Channel c = plugin.getChannelManager().getActiveChannel(name);
             if (c != null) {
                 List<String> players = c.getPlayers();
-                String playerList = "Currently in " + c.getCName() + "§f: ";
+                String playerList = "§cCurrently in " + c.getCName() + "§f: ";
                 for (String pName : players) {
                     Player p = plugin.getServer().getPlayer(pName);
                     if (p != null) {
@@ -54,7 +54,7 @@ public class WhoCommand extends BaseCommand {
                 sender.sendMessage(playerList);
             }
         } else {
-            sender.sendMessage(plugin.getTag() + "You must be a player to use this command");
+            sender.sendMessage(plugin.getTag() + "§cYou must be a player to use this command");
         }
     }
 

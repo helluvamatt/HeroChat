@@ -38,29 +38,33 @@ public class LocalChannel extends Channel {
         if (!event.isCancelled()) {
             Player sender = plugin.getServer().getPlayer(name);
             if (sender != null) {
-                String group = plugin.getPermissions().getGroup(sender);
-                if (voicelist.contains(group) || voicelist.isEmpty()) {
-                    if (!plugin.getChannelManager().getMutelist().contains(sender.getName())) {
-                        if (!mutelist.contains(sender.getName())) {
-                            if (worlds.isEmpty() || worlds.contains(sender.getWorld().getName())) {
-                                List<String> recipients = getListeners(sender);
-                                boolean color = plugin.getPermissions().isAllowedColor(sender);
-                                sendUncheckedMessage(name, msg, format, sentByPlayer, recipients, true, color);
+                if (enabled || plugin.getPermissions().isAdmin(sender) || moderators.contains(name)) {
+                    String group = plugin.getPermissions().getGroup(sender);
+                    if (voicelist.contains(group) || voicelist.isEmpty()) {
+                        if (!plugin.getChannelManager().getMutelist().contains(sender.getName())) {
+                            if (!mutelist.contains(sender.getName())) {
+                                if (worlds.isEmpty() || worlds.contains(sender.getWorld().getName())) {
+                                    List<String> recipients = getListeners(sender);
+                                    boolean color = plugin.getPermissions().isAllowedColor(sender);
+                                    sendUncheckedMessage(name, msg, format, sentByPlayer, recipients, true, color);
 
-                                if (recipients.size() == 1) {
-                                    sender.sendMessage("§8No one hears you.");
+                                    if (recipients.size() == 1) {
+                                        sender.sendMessage("§8No one hears you.");
+                                    }
+                                } else {
+                                    sender.sendMessage(plugin.getTag() + "You are not in the correct world for " + getCName());
                                 }
                             } else {
-                                sender.sendMessage(plugin.getTag() + "You are not in the correct world for " + getCName());
+                                sender.sendMessage(plugin.getTag() + "You are muted in " + getCName());
                             }
                         } else {
-                            sender.sendMessage(plugin.getTag() + "You are muted in " + getCName());
+                            sender.sendMessage(plugin.getTag() + "You are globally muted");
                         }
                     } else {
-                        sender.sendMessage(plugin.getTag() + "You are globally muted");
+                        sender.sendMessage(plugin.getTag() + "You cannot speak in " + getCName());
                     }
                 } else {
-                    sender.sendMessage(plugin.getTag() + "You cannot speak in " + getCName());
+                    sender.sendMessage(plugin.getTag() + "This channel is disabled");
                 }
             }
         }

@@ -41,13 +41,13 @@ public class QuickMsgCommand extends BaseCommand {
                     }
                     c.sendMessage(name, msg.trim());
                 } else {
-                    sender.sendMessage(plugin.getTag() + "You are not in " + c.getCName());
+                    sender.sendMessage(plugin.getTag() + "§cYou are not in " + c.getCName());
                 }
             } else {
-                sender.sendMessage(plugin.getTag() + "Channel not found");
+                sender.sendMessage(plugin.getTag() + "§cChannel not found");
             }
         } else {
-            sender.sendMessage(plugin.getTag() + "You must be a player to use this command");
+            sender.sendMessage(plugin.getTag() + "§cYou must be a player to use this command");
         }
     }
 

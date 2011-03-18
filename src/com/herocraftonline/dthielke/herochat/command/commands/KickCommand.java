@@ -44,30 +44,30 @@ public class KickCommand extends BaseCommand {
                         if (!(plugin.getPermissions().isAdmin(kickee) || channel.getModerators().contains(name))) {
                             if (channel.getPlayers().contains(name)) {
                                 channel.removePlayer(name);
-                                kicker.sendMessage(plugin.getTag() + name + " has been kicked from " + channel.getCName());
-                                kickee.sendMessage(plugin.getTag() + "You have been kicked from " + channel.getCName());
+                                kicker.sendMessage(plugin.getTag() + "§c" + name + " has been kicked from " + channel.getCName());
+                                kickee.sendMessage(plugin.getTag() + "§cYou have been kicked from " + channel.getCName());
                                 if (cm.getActiveChannel(name).equals(channel)) {
                                     List<Channel> joined = cm.getJoinedChannels(name);
                                     cm.setActiveChannel(name, joined.get(0).getName());
-                                    kickee.sendMessage(plugin.getTag() + "Set active channel to " + cm.getActiveChannel(name).getCName());
+                                    kickee.sendMessage(plugin.getTag() + "§cSet active channel to " + cm.getActiveChannel(name).getCName());
                                 }
                             } else {
-                                kicker.sendMessage(plugin.getTag() + name + " is not in " + channel.getCName());
+                                kicker.sendMessage(plugin.getTag() + "§c" + name + " is not in " + channel.getCName());
                             }
                         } else {
-                            kicker.sendMessage(plugin.getTag() + "You cannot kick " + name + " from " + channel.getCName());
+                            kicker.sendMessage(plugin.getTag() + "§cYou cannot kick " + name + " from " + channel.getCName());
                         }
                     } else {
-                        kicker.sendMessage(plugin.getTag() + "Player not found");
+                        kicker.sendMessage(plugin.getTag() + "§cPlayer not found");
                     }
                 } else {
-                    kicker.sendMessage(plugin.getTag() + "You do not have sufficient permission");
+                    kicker.sendMessage(plugin.getTag() + "§cYou do not have sufficient permission");
                 }
             } else {
-                sender.sendMessage(plugin.getTag() + "You must be a player to use this command");
+                sender.sendMessage(plugin.getTag() + "§cYou must be a player to use this command");
             }
         } else {
-            sender.sendMessage(plugin.getTag() + "Channel not found");
+            sender.sendMessage(plugin.getTag() + "§cChannel not found");
         }
     }
 

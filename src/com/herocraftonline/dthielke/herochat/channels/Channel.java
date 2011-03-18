@@ -34,6 +34,7 @@ public class Channel {
     protected String msgFormat;
     protected ChatColor color;
 
+    protected boolean enabled;
     protected boolean verbose;
     protected boolean hidden;
     protected boolean forced;
@@ -57,6 +58,7 @@ public class Channel {
         this.msgFormat = "{default}";
         this.color = ChatColor.WHITE;
 
+        enabled = true;
         verbose = false;
         hidden = false;
         forced = false;
@@ -88,28 +90,34 @@ public class Channel {
             if (sentByPlayer) {
                 Player sender = plugin.getServer().getPlayer(source);
                 if (sender != null) {
-                    String group = plugin.getPermissions().getGroup(sender);
-                    if (voicelist.contains(group) || voicelist.isEmpty()) {
-                        if (!plugin.getChannelManager().getMutelist().contains(sender.getName())) {
-                            if (!mutelist.contains(sender.getName())) {
-                                if (worlds.isEmpty() || worlds.contains(sender.getWorld().getName())) {
-                                    boolean color = plugin.getPermissions().isAllowedColor(sender);
-                                    sendUncheckedMessage(source, msg, format, sentByPlayer, players, includeSender, color);
+                    if (enabled || plugin.getPermissions().isAdmin(sender) || moderators.contains(source)) {
+                        String group = plugin.getPermissions().getGroup(sender);
+                        if (voicelist.contains(group) || voicelist.isEmpty()) {
+                            if (!plugin.getChannelManager().getMutelist().contains(sender.getName())) {
+                                if (!mutelist.contains(sender.getName())) {
+                                    if (worlds.isEmpty() || worlds.contains(sender.getWorld().getName())) {
+                                        boolean color = plugin.getPermissions().isAllowedColor(sender);
+                                        sendUncheckedMessage(source, msg, format, sentByPlayer, players, includeSender, color);
+                                    } else {
+                                        sender.sendMessage(plugin.getTag() + "You are not in the correct world for " + getCName());
+                                    }
                                 } else {
-                                    sender.sendMessage(plugin.getTag() + "You are not in the correct world for " + getCName());
+                                    sender.sendMessage(plugin.getTag() + "You are muted in " + getCName());
                                 }
                             } else {
-                                sender.sendMessage(plugin.getTag() + "You are muted in " + getCName());
+                                sender.sendMessage(plugin.getTag() + "You are globally muted");
                             }
                         } else {
-                            sender.sendMessage(plugin.getTag() + "You are globally muted");
+                            sender.sendMessage(plugin.getTag() + "You cannot speak in " + getCName());
                         }
                     } else {
-                        sender.sendMessage(plugin.getTag() + "You cannot speak in " + getCName());
+                        sender.sendMessage(plugin.getTag() + "This channel is disabled");
                     }
                 }
             } else {
-                sendUncheckedMessage(source, msg, format, sentByPlayer, players, includeSender, true);
+                if (enabled) {
+                    sendUncheckedMessage(source, msg, format, sentByPlayer, players, includeSender, true);
+                }
             }
         }
     }
@@ -320,6 +328,14 @@ public class Channel {
 
     public void setMutelist(List<String> mutelist) {
         this.mutelist = mutelist;
+    }
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
     }
 
 }

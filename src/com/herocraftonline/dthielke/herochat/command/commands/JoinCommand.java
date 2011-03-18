@@ -41,7 +41,7 @@ public class JoinCommand extends BaseCommand {
                     if (!c.getWhitelist().isEmpty()) {
                         String group = plugin.getPermissions().getGroup(player);
                         if (!c.getWhitelist().contains(group)) {
-                            sender.sendMessage(plugin.getTag() + "You cannot join this channel");
+                            sender.sendMessage(plugin.getTag() + "§cYou cannot join this channel");
                             return;
                         }
                     }
@@ -49,21 +49,21 @@ public class JoinCommand extends BaseCommand {
                     if (password.isEmpty() || args.length == 2 && args[1].equals(password) || plugin.getPermissions().isAdmin(player)) {
                         if (!c.getPlayers().contains(name)) {
                             c.addPlayer(name);
-                            sender.sendMessage(plugin.getTag() + "Joined channel " + c.getCName());
+                            sender.sendMessage(plugin.getTag() + "§cJoined channel " + c.getCName());
                         } else {
-                            sender.sendMessage(plugin.getTag() + "You are already in " + c.getCName());
+                            sender.sendMessage(plugin.getTag() + "§cYou are already in " + c.getCName());
                         }
                     } else {
-                        sender.sendMessage(plugin.getTag() + "Wrong password for " + c.getCName());
+                        sender.sendMessage(plugin.getTag() + "§cWrong password for " + c.getCName());
                     }
                 } else {
-                    sender.sendMessage(plugin.getTag() + "You are banned from " + c.getCName());
+                    sender.sendMessage(plugin.getTag() + "§cYou are banned from " + c.getCName());
                 }
             } else {
-                sender.sendMessage(plugin.getTag() + "Channel not found");
+                sender.sendMessage(plugin.getTag() + "§cChannel not found");
             }
         } else {
-            sender.sendMessage(plugin.getTag() + "You must be a player to use this command");
+            sender.sendMessage(plugin.getTag() + "§cYou must be a player to use this command");
         }
     }
 

@@ -49,18 +49,18 @@ public class CreateCommand extends BaseCommand {
             if (plugin.getPermissions().canCreate(creator)) {
                 for (String reserved : RESERVED_NAMES) {
                     if (args[0].equalsIgnoreCase(reserved)) {
-                        sender.sendMessage(plugin.getTag() + "That name is reserved");
+                        sender.sendMessage(plugin.getTag() + "§cThat name is reserved");
                         return;
                     } else if (args[1].equalsIgnoreCase(reserved)) {
-                        sender.sendMessage(plugin.getTag() + "That nick is reserved");
+                        sender.sendMessage(plugin.getTag() + "§cThat nick is reserved");
                         return;
                     }
                 }
                 if (cm.getChannel(args[0]) != null) {
-                    sender.sendMessage(plugin.getTag() + "That name is taken");
+                    sender.sendMessage(plugin.getTag() + "§cThat name is taken");
                     return;
                 } else if (cm.getChannel(args[1]) != null) {
-                    sender.sendMessage(plugin.getTag() + "That nick is taken");
+                    sender.sendMessage(plugin.getTag() + "§cThat nick is taken");
                     return;
                 }
                 Channel c = createChannel(args, plugin.getPermissions().isAdmin(creator));
@@ -70,7 +70,7 @@ public class CreateCommand extends BaseCommand {
                     c.addPlayer(name);
                     cm.addChannel(c);
                     cm.setActiveChannel(name, c.getName());
-                    sender.sendMessage(plugin.getTag() + "Created channel " + c.getCName());
+                    sender.sendMessage(plugin.getTag() + "§cCreated channel " + c.getCName());
                     try {
                         plugin.getConfigManager().save();
                     } catch (Exception e) {
@@ -79,13 +79,13 @@ public class CreateCommand extends BaseCommand {
                         return;
                     }
                 } else {
-                    sender.sendMessage(plugin.getTag() + "Invalid syntax. Type /ch help create for info");
+                    sender.sendMessage(plugin.getTag() + "§cInvalid syntax. Type /ch create ? for info");
                 }
             } else {
-                sender.sendMessage(plugin.getTag() + "You cannot create channels");
+                sender.sendMessage(plugin.getTag() + "§cYou cannot create channels");
             }
         } else {
-            sender.sendMessage(plugin.getTag() + "You must be a player to create channels");
+            sender.sendMessage(plugin.getTag() + "§cYou must be a player to create channels");
         }
     }
 

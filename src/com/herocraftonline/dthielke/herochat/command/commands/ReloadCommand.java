@@ -32,9 +32,9 @@ public class ReloadCommand extends BaseCommand {
         if (sender instanceof Player) {
             Player player = (Player) sender;
             if (plugin.getPermissions().isAdmin(player)) {
-                sender.sendMessage(plugin.getTag() + "Plugin reloaded");
+                sender.sendMessage(plugin.getTag() + "§cPlugin reloaded");
             } else {
-                sender.sendMessage(plugin.getTag() + "You do not have sufficient permission");
+                sender.sendMessage(plugin.getTag() + "§cYou do not have sufficient permission");
                 hasPermission = false;
             }
         }

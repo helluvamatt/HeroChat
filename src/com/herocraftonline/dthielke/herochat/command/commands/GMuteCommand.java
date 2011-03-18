@@ -37,24 +37,24 @@ public class GMuteCommand extends BaseCommand {
                         if (!(plugin.getPermissions().isAdmin(mutee))) {
                             if (cm.getMutelist().contains(name)) {
                                 cm.getMutelist().remove(name);
-                                muter.sendMessage(plugin.getTag() + name + " has been globally unmuted");
-                                mutee.sendMessage(plugin.getTag() + "You have been globally unmuted");
+                                muter.sendMessage(plugin.getTag() + "§c" + name + " has been globally unmuted");
+                                mutee.sendMessage(plugin.getTag() + "§cYou have been globally unmuted");
                             } else {
                                 cm.getMutelist().add(name);
-                                muter.sendMessage(plugin.getTag() + name + " has been globally muted");
-                                mutee.sendMessage(plugin.getTag() + "You have been globally muted");
+                                muter.sendMessage(plugin.getTag() + "§c" + name + " has been globally muted");
+                                mutee.sendMessage(plugin.getTag() + "§cYou have been globally muted");
                             }
                         } else {
-                            muter.sendMessage(plugin.getTag() + "You cannot globally mute " + name);
+                            muter.sendMessage(plugin.getTag() + "§cYou cannot globally mute " + name);
                         }
                     } else {
-                        muter.sendMessage(plugin.getTag() + "Player not found");
+                        muter.sendMessage(plugin.getTag() + "§cPlayer not found");
                     }
                 } else {
-                    muter.sendMessage(plugin.getTag() + "You do not have sufficient permission");
+                    muter.sendMessage(plugin.getTag() + "§cYou do not have sufficient permission");
                 }
             } else {
-                sender.sendMessage(plugin.getTag() + "You must be a player to use this command");
+                sender.sendMessage(plugin.getTag() + "§cYou must be a player to use this command");
             }
         }
     }
@@ -63,7 +63,7 @@ public class GMuteCommand extends BaseCommand {
         String muteListMsg;
         List<String> mutes = plugin.getChannelManager().getMutelist();
         if (mutes.isEmpty()) {
-            muteListMsg = plugin.getTag() + "No one is currently muted";
+            muteListMsg = plugin.getTag() + "§cNo one is currently muted";
         } else {
             muteListMsg = "Currently muted: ";
             for (String s : mutes) {

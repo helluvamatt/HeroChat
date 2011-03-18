@@ -47,34 +47,34 @@ public class BanCommand extends BaseCommand {
                             if (!(plugin.getPermissions().isAdmin(banee) || channel.getModerators().contains(name))) {
                                 if (channel.getBlacklist().contains(name)) {
                                     channel.getBlacklist().remove(name);
-                                    banner.sendMessage(plugin.getTag() + name + " has been unbanned from " + channel.getCName());
-                                    banee.sendMessage(plugin.getTag() + "You have been unbanned from " + channel.getCName());
+                                    banner.sendMessage(plugin.getTag() + name + "§c has been unbanned from " + channel.getCName());
+                                    banee.sendMessage(plugin.getTag() + "§cYou have been unbanned from " + channel.getCName());
                                 } else {
                                     channel.getBlacklist().add(name);
                                     channel.removePlayer(name);
-                                    banner.sendMessage(plugin.getTag() + name + " has been banned from " + channel.getCName());
-                                    banee.sendMessage(plugin.getTag() + "You have been banned from " + channel.getCName());
+                                    banner.sendMessage(plugin.getTag() + name + "§c has been banned from " + channel.getCName());
+                                    banee.sendMessage(plugin.getTag() + "§cYou have been banned from " + channel.getCName());
                                     if (cm.getActiveChannel(name).equals(channel)) {
                                         List<Channel> joined = cm.getJoinedChannels(name);
                                         cm.setActiveChannel(name, joined.get(0).getName());
-                                        banee.sendMessage(plugin.getTag() + "Set active channel to " + cm.getActiveChannel(name).getCName());
+                                        banee.sendMessage(plugin.getTag() + "§cSet active channel to " + cm.getActiveChannel(name).getCName());
                                     }
                                 }
                             } else {
-                                banner.sendMessage(plugin.getTag() + "You cannot ban " + name + " from " + channel.getCName());
+                                banner.sendMessage(plugin.getTag() + "§cYou cannot ban " + name + " from " + channel.getCName());
                             }
                         } else {
-                            banner.sendMessage(plugin.getTag() + "Player not found");
+                            banner.sendMessage(plugin.getTag() + "§cPlayer not found");
                         }
                     } else {
-                        banner.sendMessage(plugin.getTag() + "You do not have sufficient permission");
+                        banner.sendMessage(plugin.getTag() + "§cYou do not have sufficient permission");
                     }
                 } else {
-                    sender.sendMessage(plugin.getTag() + "You must be a player to use this command");
+                    sender.sendMessage(plugin.getTag() + "§cYou must be a player to use this command");
                 }
             }
         } else {
-            sender.sendMessage(plugin.getTag() + "Channel not found");
+            sender.sendMessage(plugin.getTag() + "§cChannel not found");
         }
     }
 
@@ -82,7 +82,7 @@ public class BanCommand extends BaseCommand {
         String banListMsg;
         List<String> bans = channel.getBlacklist();
         if (bans.isEmpty()) {
-            banListMsg = plugin.getTag() + "No one is currently banned from " + channel.getCName();
+            banListMsg = plugin.getTag() + "§cNo one is currently banned from " + channel.getCName();
         } else {
             banListMsg = "Currently banned from " + channel.getCName() + "§f: ";
             for (String s : bans) {

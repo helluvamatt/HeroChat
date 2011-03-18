@@ -40,18 +40,18 @@ public class IgnoreCommand extends BaseCommand {
                 if (ignoree != null) {
                     toggleIgnore(ignorer, ignoree);
                 } else {
-                    sender.sendMessage(plugin.getTag() + "Player not found");
+                    sender.sendMessage(plugin.getTag() + "§cPlayer not found");
                 }
             }
         } else {
-            sender.sendMessage(plugin.getTag() + "You must be a player to use this command");
+            sender.sendMessage(plugin.getTag() + "§cYou must be a player to use this command");
         }
     }
 
     private void displayIgnoreList(Player player, List<String> ignoreList) {
         String ignoreListMsg;
         if (ignoreList.isEmpty()) {
-            ignoreListMsg = plugin.getTag() + "Currently ignoring no one.";
+            ignoreListMsg = plugin.getTag() + "§cCurrently ignoring no one.";
         } else {
             ignoreListMsg = "Currently ignoring: ";
             for (String s : ignoreList) {
@@ -64,22 +64,22 @@ public class IgnoreCommand extends BaseCommand {
 
     private void toggleIgnore(Player ignorer, Player ignoree) {
         if (plugin.getPermissions().isAdmin(ignoree)) {
-            ignorer.sendMessage(plugin.getTag() + "You can't ignore admins");
+            ignorer.sendMessage(plugin.getTag() + "§cYou can't ignore admins");
             return;
         }
 
         if (ignorer.getName().equals(ignoree.getName())) {
-            ignorer.sendMessage(plugin.getTag() + "You cannot ignore yourself");
+            ignorer.sendMessage(plugin.getTag() + "§cYou cannot ignore yourself");
             return;
         }
 
         ChannelManager cm = plugin.getChannelManager();
         if (cm.isIgnoring(ignorer.getName(), ignoree.getName())) {
             cm.removeIgnore(ignorer.getName(), ignoree.getName());
-            ignorer.sendMessage(plugin.getTag() + "No longer ignoring " + ignoree.getName());
+            ignorer.sendMessage(plugin.getTag() + "§cNo longer ignoring " + ignoree.getName());
         } else {
             cm.addIgnore(ignorer.getName(), ignoree.getName());
-            ignorer.sendMessage(plugin.getTag() + "Now ignoring " + ignoree.getName());
+            ignorer.sendMessage(plugin.getTag() + "§cNow ignoring " + ignoree.getName());
         }
     }
 
