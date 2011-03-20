@@ -141,7 +141,9 @@ public class Channel {
                 }
             }
         }
-        sendIRCMessage(source, msg);
+        if (sentByPlayer) {
+            sendIRCMessage(source, msg);
+        }
         plugin.log(Level.INFO, formattedMsg);
     }
 
