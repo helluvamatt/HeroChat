@@ -98,19 +98,19 @@ public class Messaging {
         }
 
         String leader = format;
-        leader = leader.replaceAll("\\{default\\}", plugin.getChannelManager().getDefaultMsgFormat());
+        leader = leader.replace("{default}", plugin.getChannelManager().getDefaultMsgFormat());
         leader = leader.replaceAll("&([0-9a-f])", "§$1");
-        leader = leader.replaceAll("\\{prefix\\}", prefix);
-        leader = leader.replaceAll("\\{suffix\\}", suffix);
+        leader = leader.replace("{prefix}", prefix);
+        leader = leader.replace("{suffix}", suffix);
         if (channel != null) {
-            leader = leader.replaceAll("\\{nick\\}", channel.getNick());
-            leader = leader.replaceAll("\\{name\\}", channel.getName());
-            leader = leader.replaceAll("\\{color\\}", channel.getColor().str);
-            leader = leader.replaceAll("\\{color.CHANNEL\\}", channel.getColor().str);
+            leader = leader.replace("{nick}", channel.getNick());
+            leader = leader.replace("{name}", channel.getName());
+            leader = leader.replace("{color}", channel.getColor().str);
+            leader = leader.replace("{color.CHANNEL}", channel.getColor().str);
         }
-        leader = leader.replaceAll("\\{player\\}", name);
-        leader = leader.replaceAll("\\{healthbar\\}", healthBar);
-        leader = leader.replaceAll("\\{world\\}", world);
+        leader = leader.replace("{player}", name);
+        leader = leader.replace("{healthbar}", healthBar);
+        leader = leader.replace("{world}", world);
         Matcher matcher = Pattern.compile("\\{color.[a-zA-Z_]+\\}").matcher(leader);
         while (matcher.find()) {
             String match = matcher.group();
