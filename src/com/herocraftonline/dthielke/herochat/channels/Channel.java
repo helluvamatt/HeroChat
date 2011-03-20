@@ -150,7 +150,7 @@ public class Channel {
     protected void sendIRCMessage(String source, String msg) {
         CraftIRC irc = plugin.getCraftIRC();
         if (irc != null) {
-            String ircMsg = Messaging.format(plugin, this, plugin.getIrcMessageFormat(), source, msg, false, false);
+            String ircMsg = Messaging.format(plugin, this, plugin.getIrcMessageFormat(), source, msg, true, false);
             for (String tag : ircTags) {
                 plugin.getCraftIRC().sendMessageToTag(ircMsg, tag);
             }
