@@ -29,7 +29,7 @@ public class ToggleCommand extends BaseCommand {
         if (args.length == 0) {
             if (sender instanceof Player) {
                 Player muter = (Player) sender;
-                if (muter == null || plugin.getPermissions().isAdmin(muter)) {
+                if (muter == null || plugin.getPermissionManager().isAdmin(muter)) {
                     if (allEnabled) {
                         for (Channel c : cm.getChannels()) {
                             c.setEnabled(false);
@@ -54,7 +54,7 @@ public class ToggleCommand extends BaseCommand {
             if (channel != null) {
                 if (sender instanceof Player) {
                     Player muter = (Player) sender;
-                    if (muter == null || plugin.getPermissions().isAdmin(muter) || channel.getModerators().contains(muter.getName())) {
+                    if (muter == null || plugin.getPermissionManager().isAdmin(muter) || channel.getModerators().contains(muter.getName())) {
                         if (channel.isEnabled()) {
                             channel.setEnabled(false);
                             sender.sendMessage(plugin.getTag() + "§cDisabled " + channel.getCName());

@@ -63,7 +63,7 @@ public class IgnoreCommand extends BaseCommand {
     }
 
     private void toggleIgnore(Player ignorer, Player ignoree) {
-        if (plugin.getPermissions().isAdmin(ignoree)) {
+        if (plugin.getPermissionManager().isAdmin(ignoree)) {
             ignorer.sendMessage(plugin.getTag() + "§cYou can't ignore admins");
             return;
         }

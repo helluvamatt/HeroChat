@@ -39,14 +39,14 @@ public class JoinCommand extends BaseCommand {
             if (c != null) {
                 if (!c.getBlacklist().contains(name)) {
                     if (!c.getWhitelist().isEmpty()) {
-                        String group = plugin.getPermissions().getGroup(player);
+                        String group = plugin.getPermissionManager().getGroup(player);
                         if (!c.getWhitelist().contains(group)) {
                             sender.sendMessage(plugin.getTag() + "§cYou cannot join this channel");
                             return;
                         }
                     }
                     String password = c.getPassword();
-                    if (password.isEmpty() || args.length == 2 && args[1].equals(password) || plugin.getPermissions().isAdmin(player)) {
+                    if (password.isEmpty() || args.length == 2 && args[1].equals(password) || plugin.getPermissionManager().isAdmin(player)) {
                         if (!c.getPlayers().contains(name)) {
                             c.addPlayer(name);
                             sender.sendMessage(plugin.getTag() + "§cJoined channel " + c.getCName());

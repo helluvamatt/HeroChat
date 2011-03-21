@@ -1,4 +1,4 @@
-package com.herocraftonline.dthielke.herochat;
+package com.herocraftonline.dthielke.herochat.channels;
 
 import java.util.HashMap;
 

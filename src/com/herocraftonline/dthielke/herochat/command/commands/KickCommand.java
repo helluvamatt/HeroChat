@@ -37,11 +37,11 @@ public class KickCommand extends BaseCommand {
         if (channel != null) {
             if (sender instanceof Player) {
                 Player kicker = (Player) sender;
-                if (plugin.getPermissions().isAdmin(kicker) || channel.getModerators().contains(kicker.getName())) {
+                if (plugin.getPermissionManager().isAdmin(kicker) || channel.getModerators().contains(kicker.getName())) {
                     Player kickee = plugin.getServer().getPlayer(args[1]);
                     if (kickee != null) {
                         String name = kickee.getName();
-                        if (!(plugin.getPermissions().isAdmin(kickee) || channel.getModerators().contains(name))) {
+                        if (!(plugin.getPermissionManager().isAdmin(kickee) || channel.getModerators().contains(name))) {
                             if (channel.getPlayers().contains(name)) {
                                 channel.removePlayer(name);
                                 kicker.sendMessage(plugin.getTag() + "§c" + name + " has been kicked from " + channel.getCName());

@@ -47,7 +47,7 @@ public class ChannelManager {
     public void joinAutoChannels(String name) {
         Player player = plugin.getServer().getPlayer(name);
         if (player != null) {
-            String group = plugin.getPermissions().getGroup(player);
+            String group = plugin.getPermissionManager().getGroup(player);
             for (Channel c : channels) {
                 if (c.isAutoJoined()) {
                     if (c.getWhitelist().isEmpty() || c.getWhitelist().contains(group)) {

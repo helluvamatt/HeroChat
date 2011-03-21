@@ -38,14 +38,14 @@ public class LocalChannel extends Channel {
         if (!event.isCancelled()) {
             Player sender = plugin.getServer().getPlayer(name);
             if (sender != null) {
-                if (enabled || plugin.getPermissions().isAdmin(sender) || moderators.contains(name)) {
-                    String group = plugin.getPermissions().getGroup(sender);
+                if (enabled || plugin.getPermissionManager().isAdmin(sender) || moderators.contains(name)) {
+                    String group = plugin.getPermissionManager().getGroup(sender);
                     if (voicelist.contains(group) || voicelist.isEmpty()) {
                         if (!plugin.getChannelManager().getMutelist().contains(sender.getName())) {
                             if (!mutelist.contains(sender.getName())) {
                                 if (worlds.isEmpty() || worlds.contains(sender.getWorld().getName())) {
                                     List<String> recipients = getListeners(sender);
-                                    boolean color = plugin.getPermissions().isAllowedColor(sender);
+                                    boolean color = plugin.getPermissionManager().isAllowedColor(sender);
                                     sendUncheckedMessage(name, msg, format, sentByPlayer, recipients, true, color);
 
                                     if (recipients.size() == 1) {

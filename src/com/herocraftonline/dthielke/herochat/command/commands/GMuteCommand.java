@@ -30,11 +30,11 @@ public class GMuteCommand extends BaseCommand {
         } else {
             if (sender instanceof Player) {
                 Player muter = (Player) sender;
-                if (plugin.getPermissions().isAdmin(muter)) {
+                if (plugin.getPermissionManager().isAdmin(muter)) {
                     Player mutee = plugin.getServer().getPlayer(args[0]);
                     if (mutee != null) {
                         String name = mutee.getName();
-                        if (!(plugin.getPermissions().isAdmin(mutee))) {
+                        if (!(plugin.getPermissionManager().isAdmin(mutee))) {
                             if (cm.getMutelist().contains(name)) {
                                 cm.getMutelist().remove(name);
                                 muter.sendMessage(plugin.getTag() + "§c" + name + " has been globally unmuted");

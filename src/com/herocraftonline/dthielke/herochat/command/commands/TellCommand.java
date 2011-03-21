@@ -3,8 +3,8 @@ package com.herocraftonline.dthielke.herochat.command.commands;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import com.herocraftonline.dthielke.herochat.ConversationManager;
 import com.herocraftonline.dthielke.herochat.HeroChat;
+import com.herocraftonline.dthielke.herochat.channels.ConversationManager;
 import com.herocraftonline.dthielke.herochat.command.BaseCommand;
 
 public class TellCommand extends BaseCommand {

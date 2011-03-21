@@ -38,7 +38,7 @@ public class RemoveCommand extends BaseCommand {
             ChannelManager cm = plugin.getChannelManager();
             Channel c = cm.getChannel(args[0]);
             if (c != null) {
-                if (plugin.getPermissions().isAdmin(player) || c.getModerators().contains(player.getName())) {
+                if (plugin.getPermissionManager().isAdmin(player) || c.getModerators().contains(player.getName())) {
                     if (cm.getChannels().size() > 1) {
                         if (!c.equals(cm.getDefaultChannel())) {
                             String[] players = cm.getPlayerList();

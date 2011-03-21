@@ -34,7 +34,7 @@ public class ModCommand extends BaseCommand {
             String name = player.getName();
             Channel c = plugin.getChannelManager().getChannel(args[0]);
             if (c != null) {
-                if (c.getModerators().contains(name) || plugin.getPermissions().isAdmin(player)) {
+                if (c.getModerators().contains(name) || plugin.getPermissionManager().isAdmin(player)) {
                     Player mod = plugin.getServer().getPlayer(args[1]);
                     if (mod != null) {
                         if (!c.getModerators().contains(mod.getName())) {

@@ -40,11 +40,11 @@ public class BanCommand extends BaseCommand {
             } else {
                 if (sender instanceof Player) {
                     Player banner = (Player) sender;
-                    if (plugin.getPermissions().isAdmin(banner) || channel.getModerators().contains(banner.getName())) {
+                    if (plugin.getPermissionManager().isAdmin(banner) || channel.getModerators().contains(banner.getName())) {
                         Player banee = plugin.getServer().getPlayer(args[1]);
                         if (banee != null) {
                             String name = banee.getName();
-                            if (!(plugin.getPermissions().isAdmin(banee) || channel.getModerators().contains(name))) {
+                            if (!(plugin.getPermissionManager().isAdmin(banee) || channel.getModerators().contains(name))) {
                                 if (channel.getBlacklist().contains(name)) {
                                     channel.getBlacklist().remove(name);
                                     banner.sendMessage(plugin.getTag() + name + "§c has been unbanned from " + channel.getCName());

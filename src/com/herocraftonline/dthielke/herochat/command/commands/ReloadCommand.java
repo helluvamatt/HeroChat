@@ -31,7 +31,7 @@ public class ReloadCommand extends BaseCommand {
         boolean hasPermission = true;
         if (sender instanceof Player) {
             Player player = (Player) sender;
-            if (plugin.getPermissions().isAdmin(player)) {
+            if (plugin.getPermissionManager().isAdmin(player)) {
                 sender.sendMessage(plugin.getTag() + "§cPlugin reloaded");
             } else {
                 sender.sendMessage(plugin.getTag() + "§cYou do not have sufficient permission");

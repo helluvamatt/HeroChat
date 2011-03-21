@@ -46,7 +46,7 @@ public class CreateCommand extends BaseCommand {
         ChannelManager cm = plugin.getChannelManager();
         if (sender instanceof Player) {
             Player creator = (Player) sender;
-            if (plugin.getPermissions().canCreate(creator)) {
+            if (plugin.getPermissionManager().canCreate(creator)) {
                 for (String reserved : RESERVED_NAMES) {
                     if (args[0].equalsIgnoreCase(reserved)) {
                         sender.sendMessage(plugin.getTag() + "§cThat name is reserved");
@@ -63,7 +63,7 @@ public class CreateCommand extends BaseCommand {
                     sender.sendMessage(plugin.getTag() + "§cThat nick is taken");
                     return;
                 }
-                Channel c = createChannel(args, plugin.getPermissions().isAdmin(creator));
+                Channel c = createChannel(args, plugin.getPermissionManager().isAdmin(creator));
                 if (c != null) {
                     String name = creator.getName();
                     c.getModerators().add(name);

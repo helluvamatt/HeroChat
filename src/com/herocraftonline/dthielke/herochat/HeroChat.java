@@ -16,6 +16,8 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
+import org.bukkit.event.Event.Priority;
+import org.bukkit.event.Event.Type;
 import org.bukkit.event.player.PlayerEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
@@ -24,6 +26,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import com.ensifera.animosity.craftirc.CraftIRC;
 import com.herocraftonline.dthielke.herochat.channels.ChannelManager;
+import com.herocraftonline.dthielke.herochat.channels.ConversationManager;
 import com.herocraftonline.dthielke.herochat.command.CommandManager;
 import com.herocraftonline.dthielke.herochat.command.commands.BanCommand;
 import com.herocraftonline.dthielke.herochat.command.commands.CreateCommand;
@@ -44,7 +47,7 @@ import com.herocraftonline.dthielke.herochat.command.commands.TellCommand;
 import com.herocraftonline.dthielke.herochat.command.commands.ToggleCommand;
 import com.herocraftonline.dthielke.herochat.command.commands.WhoCommand;
 import com.herocraftonline.dthielke.herochat.util.ConfigManager;
-import com.herocraftonline.dthielke.herochat.util.PermissionHelper;
+import com.herocraftonline.dthielke.herochat.util.PermissionManager;
 import com.nijiko.permissions.PermissionHandler;
 import com.nijikokun.bukkit.Permissions.Permissions;
 
@@ -80,7 +83,7 @@ public class HeroChat extends JavaPlugin {
     private CommandManager commandManager;
     private ConversationManager conversationManager;
     private ConfigManager configManager;
-    private PermissionHelper permissions;
+    private PermissionManager permissionManager;
     private CraftIRC craftIRC;
     private String ircMessageFormat;
     private String ircTag;
@@ -88,15 +91,15 @@ public class HeroChat extends JavaPlugin {
     private String outgoingTellFormat;
     private String incomingTellFormat;
     private List<String> censors;
+    private HeroChatServerListener serverListener;
     private HeroChatPlayerListener playerListener;
     private HeroChatCraftIRCListener craftIRCListener;
     private boolean eventsRegistered = false;
 
-    @Override
     public void onDisable() {
         try {
-            for (Player p : getServer().getOnlinePlayers()) {
-                configManager.savePlayer(p.getName());
+            for (Player player : getServer().getOnlinePlayers()) {
+                configManager.savePlayer(player.getName());
                 configManager.save();
             }
         } catch (Exception e) {}
@@ -104,22 +107,15 @@ public class HeroChat extends JavaPlugin {
         log(Level.INFO, desc.getName() + " version " + desc.getVersion() + " disabled.");
     }
 
-    @Override
     public void onEnable() {
         channelManager = new ChannelManager(this);
         conversationManager = new ConversationManager();
-        permissions = loadPermissions();
-        if (permissions == null) {
-            return;
-        }
-        loadCraftIRC();
+        permissionManager = new PermissionManager(null);
         registerEvents();
         registerCommands();
-        PluginDescriptionFile desc = getDescription();
-        log(Level.INFO, desc.getName() + " version " + desc.getVersion() + " enabled.");
 
-        configManager = new ConfigManager(this);
         try {
+            configManager = new ConfigManager(this);
             configManager.load();
         } catch (Exception e) {
             e.printStackTrace();
@@ -128,8 +124,8 @@ public class HeroChat extends JavaPlugin {
             return;
         }
 
-        for (Player p : getServer().getOnlinePlayers()) {
-            playerListener.onPlayerJoin(new PlayerEvent(Event.Type.PLAYER_JOIN, p));
+        for (Player player : getServer().getOnlinePlayers()) {
+            playerListener.onPlayerJoin(new PlayerEvent(Event.Type.PLAYER_JOIN, player));
         }
 
         try {
@@ -140,6 +136,12 @@ public class HeroChat extends JavaPlugin {
             this.getServer().getPluginManager().disablePlugin(this);
             return;
         }
+
+        PluginDescriptionFile desc = getDescription();
+        log(Level.INFO, desc.getName() + " version " + desc.getVersion() + " enabled.");
+
+        loadPermissions();
+        loadCraftIRC();
     }
 
     @Override
@@ -150,11 +152,13 @@ public class HeroChat extends JavaPlugin {
     private void registerEvents() {
         if (!eventsRegistered) {
             playerListener = new HeroChatPlayerListener(this);
-            PluginManager pm = getServer().getPluginManager();
-            pm.registerEvent(Event.Type.PLAYER_CHAT, playerListener, Event.Priority.High, this);
-            pm.registerEvent(Event.Type.PLAYER_JOIN, playerListener, Event.Priority.Normal, this);
-            pm.registerEvent(Event.Type.PLAYER_QUIT, playerListener, Event.Priority.Normal, this);
-            pm.registerEvent(Event.Type.PLAYER_COMMAND_PREPROCESS, playerListener, Event.Priority.Normal, this);
+            serverListener = new HeroChatServerListener(this);
+            PluginManager pluginManager = getServer().getPluginManager();
+            pluginManager.registerEvent(Type.PLAYER_CHAT, playerListener, Priority.High, this);
+            pluginManager.registerEvent(Type.PLAYER_JOIN, playerListener, Priority.Normal, this);
+            pluginManager.registerEvent(Type.PLAYER_QUIT, playerListener, Priority.Normal, this);
+            pluginManager.registerEvent(Type.PLAYER_COMMAND_PREPROCESS, playerListener, Priority.Normal, this);
+            pluginManager.registerEvent(Type.PLUGIN_ENABLE, serverListener, Priority.Normal, this);
             eventsRegistered = true;
         }
     }
@@ -184,52 +188,34 @@ public class HeroChat extends JavaPlugin {
         commandManager.addCommand(new HelpCommand(this));
     }
 
-    private PermissionHelper loadPermissions() {
-        Plugin p = this.getServer().getPluginManager().getPlugin("Permissions");
-        if (p != null) {
-            Permissions permissions = (Permissions) p;
-            if (!permissions.isEnabled()) {
-                this.getServer().getPluginManager().enablePlugin(permissions);
-            }
-            boolean upToDate = true;
-            String version = permissions.getDescription().getVersion();
-            String[] split = version.split("\\.");
-            try {
-                for (int i = 0; i < split.length; i++) {
-                    int v = Integer.parseInt(split[i]);
-                    if (v < PermissionHelper.MIN_VERSION[i]) {
-                        upToDate = false;
-                    }
-                }
-            } catch (NumberFormatException e) {
-                upToDate = false;
-            }
-            if (upToDate) {
+    public void loadPermissions() {
+        Plugin plugin = this.getServer().getPluginManager().getPlugin("Permissions");
+        if (plugin != null) {
+            if (plugin.isEnabled()) {
+                Permissions permissions = (Permissions) plugin;
                 PermissionHandler security = permissions.getHandler();
-                PermissionHelper ph = new PermissionHelper(security);
-                log(Level.INFO, "Permissions " + version + " found.");
-                return ph;
+                PermissionManager ph = new PermissionManager(security);
+                this.permissionManager = ph;
+                log(Level.INFO, "Permissions " + Permissions.version + " found.");
             }
         }
-
-        log.log(Level.WARNING, "Permissions 2.5.1 or higher not found! Please update Permissions. Disabling HeroChat.");
-        this.getPluginLoader().disablePlugin(this);
-        return null;
     }
 
-    private void loadCraftIRC() {
-        Plugin p = this.getServer().getPluginManager().getPlugin("CraftIRC");
-        if (p != null) {
-            try {
-                craftIRC = (CraftIRC) p;
-                craftIRCListener = new HeroChatCraftIRCListener(this);
-                this.getServer().getPluginManager().registerEvent(Event.Type.CUSTOM_EVENT, craftIRCListener, Event.Priority.Normal, this);
-                log(Level.INFO, "CraftIRC found.");
-            } catch (ClassCastException ex) {
-                ex.printStackTrace();
-                log(Level.WARNING, "Error encountered while connecting to CraftIRC!");
-                craftIRC = null;
-                craftIRCListener = null;
+    public void loadCraftIRC() {
+        Plugin plugin = this.getServer().getPluginManager().getPlugin("CraftIRC");
+        if (plugin != null) {
+            if (plugin.isEnabled()) {
+                try {
+                    craftIRC = (CraftIRC) plugin;
+                    craftIRCListener = new HeroChatCraftIRCListener(this);
+                    this.getServer().getPluginManager().registerEvent(Event.Type.CUSTOM_EVENT, craftIRCListener, Event.Priority.Normal, this);
+                    log(Level.INFO, "CraftIRC found.");
+                } catch (ClassCastException ex) {
+                    ex.printStackTrace();
+                    log(Level.WARNING, "Error encountered while connecting to CraftIRC!");
+                    craftIRC = null;
+                    craftIRCListener = null;
+                }
             }
         }
     }
@@ -246,8 +232,8 @@ public class HeroChat extends JavaPlugin {
         return commandManager;
     }
 
-    public PermissionHelper getPermissions() {
-        return permissions;
+    public PermissionManager getPermissionManager() {
+        return permissionManager;
     }
 
     public void setTag(String tag) {

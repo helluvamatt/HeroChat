@@ -90,13 +90,13 @@ public class Channel {
             if (sentByPlayer) {
                 Player sender = plugin.getServer().getPlayer(source);
                 if (sender != null) {
-                    if (enabled || plugin.getPermissions().isAdmin(sender) || moderators.contains(source)) {
-                        String group = plugin.getPermissions().getGroup(sender);
+                    if (enabled || plugin.getPermissionManager().isAdmin(sender) || moderators.contains(source)) {
+                        String group = plugin.getPermissionManager().getGroup(sender);
                         if (voicelist.contains(group) || voicelist.isEmpty()) {
                             if (!plugin.getChannelManager().getMutelist().contains(sender.getName())) {
                                 if (!mutelist.contains(sender.getName())) {
                                     if (worlds.isEmpty() || worlds.contains(sender.getWorld().getName())) {
-                                        boolean color = plugin.getPermissions().isAllowedColor(sender);
+                                        boolean color = plugin.getPermissionManager().isAllowedColor(sender);
                                         sendUncheckedMessage(source, msg, format, sentByPlayer, players, includeSender, color);
                                     } else {
                                         sender.sendMessage(plugin.getTag() + "You are not in the correct world for " + getCName());

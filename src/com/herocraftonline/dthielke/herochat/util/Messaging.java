@@ -85,8 +85,8 @@ public class Messaging {
             try {
                 Player sender = plugin.getServer().getPlayer(name);
                 if (sender != null) {
-                    prefix = plugin.getPermissions().getPrefix(sender);
-                    suffix = plugin.getPermissions().getSuffix(sender);
+                    prefix = plugin.getPermissionManager().getPrefix(sender);
+                    suffix = plugin.getPermissionManager().getSuffix(sender);
                     world = sender.getWorld().getName();
                     name = sender.getDisplayName();
                     healthBar = createHealthBar(sender);

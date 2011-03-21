@@ -17,6 +17,7 @@ import org.bukkit.event.player.PlayerListener;
 
 import com.herocraftonline.dthielke.herochat.channels.Channel;
 import com.herocraftonline.dthielke.herochat.channels.ChannelManager;
+import com.herocraftonline.dthielke.herochat.channels.ConversationManager;
 import com.herocraftonline.dthielke.herochat.util.Messaging;
 
 public class HeroChatPlayerListener extends PlayerListener {
@@ -52,8 +53,8 @@ public class HeroChatPlayerListener extends PlayerListener {
             String receiverName = receiver.getName();
             if (!plugin.getChannelManager().isIgnoring(receiverName, senderName)) {
                 String message = event.getMessage();
-                String outgoing = Messaging.format(plugin, null, plugin.getOutgoingTellFormat(), senderName, message, true, plugin.getPermissions().isAllowedColor(sender));
-                String incoming = Messaging.format(plugin, null, plugin.getIncomingTellFormat(), senderName, message, true, plugin.getPermissions().isAllowedColor(sender));
+                String outgoing = Messaging.format(plugin, null, plugin.getOutgoingTellFormat(), senderName, message, true, plugin.getPermissionManager().isAllowedColor(sender));
+                String incoming = Messaging.format(plugin, null, plugin.getIncomingTellFormat(), senderName, message, true, plugin.getPermissionManager().isAllowedColor(sender));
                 receiver.sendMessage(outgoing);
                 sender.sendMessage(incoming);
                 plugin.log(Level.INFO, senderName + " -> " + receiverName + ": " + message);

@@ -41,7 +41,7 @@ public class WhoCommand extends BaseCommand {
                 for (String pName : players) {
                     Player p = plugin.getServer().getPlayer(pName);
                     if (p != null) {
-                        if (plugin.getPermissions().isAdmin(p)) {
+                        if (plugin.getPermissionManager().isAdmin(p)) {
                             pName = "@" + pName;
                         } else if (c.getModerators().contains(pName)) {
                             pName += "*";
