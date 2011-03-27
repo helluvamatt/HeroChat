@@ -14,8 +14,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
 
+import org.bukkit.entity.Player;
 import org.bukkit.util.config.Configuration;
 
 import com.herocraftonline.dthielke.herochat.HeroChat;
@@ -27,14 +27,13 @@ import com.herocraftonline.dthielke.herochat.channels.LocalChannel;
 public class ConfigManager {
     protected HeroChat plugin;
     protected File primaryConfigFile;
-    protected File usersConfigFile;
-    protected Configuration usersConfig;
+    protected File usersConfigFolder;
 
     public ConfigManager(HeroChat plugin) {
         this.plugin = plugin;
         this.primaryConfigFile = new File(plugin.getDataFolder(), "config.yml");
-        this.usersConfigFile = new File(plugin.getDataFolder(), "users.yml");
-        this.usersConfig = new Configuration(usersConfigFile);
+        this.usersConfigFolder = new File(plugin.getDataFolder(), "users/");
+        usersConfigFolder.mkdirs();
     }
 
     public void reload() throws Exception {
@@ -42,17 +41,15 @@ public class ConfigManager {
     }
 
     public void load() throws Exception {
-        checkForConfig();
+        checkConfig();
 
         Configuration config = new Configuration(primaryConfigFile);
         config.load();
         loadChannels(config);
         loadGlobals(config);
-
-        usersConfig.load();
     }
 
-    private void checkForConfig() {
+    private void checkConfig() {
         if (!primaryConfigFile.exists()) {
             try {
                 primaryConfigFile.getParentFile().mkdir();
@@ -131,6 +128,7 @@ public class ConfigManager {
             c.setHidden(config.getBoolean(options + "hidden", false));
             c.setAutoJoined(config.getBoolean(options + "auto-join", false));
             c.setForced(config.getBoolean(options + "forced", false));
+            c.setCrossWorld(config.getBoolean(options + "cross-world-chat", true));
 
             String lists = root + "lists.";
             c.setBlacklist(config.getStringList(lists + "bans", null));
@@ -145,48 +143,40 @@ public class ConfigManager {
         plugin.getChannelManager().setChannels(list);
     }
 
-    @SuppressWarnings("unused")
-    private void loadPlayers() {
-        Configuration config = new Configuration(usersConfigFile);
-        config.load();
+    public void loadPlayer(String name) {
+        File userConfigFile = new File(usersConfigFolder, name + ".yml");
         try {
-            for (String name : config.getKeys("users")) {
-                loadPlayer(name, config);
-            }
-        } catch (Exception e) {}
-    }
+            Configuration config = new Configuration(userConfigFile);
+            config.load();
+            ChannelManager channelManager = plugin.getChannelManager();
+            try {
+                String activeChannelName = config.getString("active-channel", channelManager.getDefaultChannel().getName());
+                Channel activeChannel = channelManager.getChannel(activeChannelName);
+                if (activeChannel != null) {
+                    channelManager.setActiveChannel(name, activeChannelName);
+                } else {
+                    channelManager.setActiveChannel(name, channelManager.getDefaultChannel().getName());
+                }
 
-    public void loadPlayer(String name) throws Exception {
-        loadPlayer(name, usersConfig);
-    }
-
-    private void loadPlayer(String name, Configuration config) throws Exception {
-        ChannelManager cm = plugin.getChannelManager();
-        try {
-            String activeChannel = config.getString("users." + name + ".active-channel", cm.getDefaultChannel().getName());
-            Channel a = cm.getChannel(activeChannel);
-            if (a != null) {
-                cm.setActiveChannel(name, activeChannel);
-            } else {
-                cm.setActiveChannel(name, cm.getDefaultChannel().getName());
-            }
-
-            List<String> joinedChannels = config.getStringList("users." + name + ".joined-channels", null);
-            if (joinedChannels.isEmpty()) {
-                cm.joinAutoChannels(name);
-            } else {
-                for (String s : joinedChannels) {
-                    Channel c = cm.getChannel(s);
-                    if (c != null) {
-                        if (!c.getBlacklist().contains(name)) {
-                            c.addPlayer(name);
+                List<String> joinedChannels = config.getStringList("joined-channels", null);
+                if (joinedChannels.isEmpty()) {
+                    channelManager.joinAutoChannels(name);
+                } else {
+                    for (String s : joinedChannels) {
+                        Channel c = channelManager.getChannel(s);
+                        if (c != null) {
+                            if (!c.getBlacklist().contains(name)) {
+                                c.addPlayer(name);
+                            }
                         }
                     }
                 }
+            } catch (Exception e) {
+                channelManager.setActiveChannel(name, channelManager.getDefaultChannel().getName());
+                channelManager.joinAutoChannels(name);
             }
         } catch (Exception e) {
-            cm.setActiveChannel(name, cm.getDefaultChannel().getName());
-            cm.joinAutoChannels(name);
+            e.printStackTrace();
         }
     }
 
@@ -195,8 +185,10 @@ public class ConfigManager {
         saveGlobals(config);
         saveChannels(config);
         config.save();
-
-        usersConfig.save();
+        
+        for (Player player : plugin.getServer().getOnlinePlayers()) {
+            savePlayer(player.getName());
+        }
     }
 
     private void saveGlobals(Configuration config) throws Exception {
@@ -231,6 +223,7 @@ public class ConfigManager {
             config.setProperty(options + "auto-join", c.isAutoJoined());
             config.setProperty(options + "local", c instanceof LocalChannel);
             config.setProperty(options + "forced", c.isForced());
+            config.setProperty(options + "cross-world-chat", c.isCrossWorld());
 
             String lists = root + "lists.";
             config.setProperty(lists + "bans", c.getBlacklist());
@@ -242,32 +235,22 @@ public class ConfigManager {
         }
     }
 
-    @SuppressWarnings("unused")
-    private void savePlayers() {
-        for (String name : plugin.getChannelManager().getPlayerList()) {
-            savePlayer(name, usersConfig);
-        }
-        usersConfig.save();
-    }
-
     public void savePlayer(String name) {
-        savePlayer(name, usersConfig);
-    }
-
-    private void savePlayer(String name, Configuration config) {
+        File userConfigFile = new File(usersConfigFolder, name + ".yml");
         try {
-            ChannelManager cm = plugin.getChannelManager();
-            Channel active = cm.getActiveChannel(name);
-            List<Channel> joined = cm.getJoinedChannels(name);
-            List<String> names = new ArrayList<String>();
-            for (Channel c : joined) {
-                names.add(c.getName());
+            Configuration config = new Configuration(userConfigFile);
+            ChannelManager configManager = plugin.getChannelManager();
+            Channel active = configManager.getActiveChannel(name);
+            List<Channel> joinedChannels = configManager.getJoinedChannels(name);
+            List<String> joinedChannelNames = new ArrayList<String>();
+            for (Channel channel : joinedChannels) {
+                joinedChannelNames.add(channel.getName());
             }
-            config.setProperty("users." + name + ".active-channel", active.getName());
-            config.setProperty("users." + name + ".joined-channels", names);
+            config.setProperty("active-channel", active.getName());
+            config.setProperty("joined-channels", joinedChannelNames);
+            config.save();
         } catch (Exception e) {
             e.printStackTrace();
-            plugin.log(Level.WARNING, "Error saving player data. Delete your users.yml");
         }
     }
 }

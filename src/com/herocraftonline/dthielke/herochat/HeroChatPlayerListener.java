@@ -89,6 +89,7 @@ public class HeroChatPlayerListener extends PlayerListener {
         String quitterName = quitter.getName();
         plugin.getConfigManager().savePlayer(quitterName);
         plugin.getChannelManager().removeFromAll(quitterName);
+        plugin.getChannelManager().setActiveChannel(quitterName, null);
 
         ConversationManager convos = plugin.getConversationManager();
         if (convos.hasActive(quitter)) {

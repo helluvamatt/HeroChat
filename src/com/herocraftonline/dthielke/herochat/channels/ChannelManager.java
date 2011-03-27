@@ -82,7 +82,11 @@ public class ChannelManager {
     }
 
     public void setActiveChannel(String player, String channel) {
-        activeChannels.put(player, channel);
+        if (channel != null) {
+            activeChannels.put(player, channel);
+        } else {
+            activeChannels.remove(player);
+        }
     }
 
     public boolean isIgnoring(String ignorer, String ignoree) {

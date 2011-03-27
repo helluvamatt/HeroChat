@@ -142,6 +142,8 @@ public class HeroChat extends JavaPlugin {
 
         loadPermissions();
         loadCraftIRC();
+        checkConflict("iChat");
+        checkConflict("EssentialsChat");
     }
 
     @Override
@@ -218,6 +220,19 @@ public class HeroChat extends JavaPlugin {
                 }
             }
         }
+    }
+    
+    private void checkConflict(String pluginName) {
+        Plugin plugin = this.getServer().getPluginManager().getPlugin(pluginName);
+        if (plugin != null) {
+            if (plugin.isEnabled()) {
+                issueConflictWarning(plugin);
+            }
+        }
+    }
+    
+    public void issueConflictWarning(Plugin conflict) {
+        log(Level.WARNING, "Conflicting plugin detected: " + conflict.getDescription().getName() + ". If you experience issues, please try disabling this plugin.");
     }
 
     public void log(Level level, String msg) {

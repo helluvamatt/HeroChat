@@ -1,5 +1,5 @@
 name: HeroChat
-version: 4.7.6
+version: 4.8.0
 main: com.herocraftonline.dthielke.herochat.HeroChat
 description: Provides fully configurable chat channels.
 commands:
@@ -23,4 +23,7 @@ commands:
     usage: /<command> player
   tell:
     description: Starts or ends a private conversation
+    usage: /<command> player
+  ignore:
+    description: Ignores a player
     usage: /<command> player

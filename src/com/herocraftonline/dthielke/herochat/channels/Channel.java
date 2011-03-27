@@ -40,6 +40,7 @@ public class Channel {
     protected boolean forced;
     protected boolean autoJoined;
     protected boolean quickMessagable;
+    protected boolean crossWorld;
 
     protected List<String> players;
     protected List<String> moderators;
@@ -64,6 +65,7 @@ public class Channel {
         forced = false;
         autoJoined = false;
         quickMessagable = false;
+        crossWorld = true;
 
         players = new ArrayList<String>();
         moderators = new ArrayList<String>();
@@ -135,7 +137,9 @@ public class Channel {
                 if (receiver != null) {
                     if (includeSender || !receiver.getName().equals(source)) {
                         if (worlds.isEmpty() || worlds.contains(receiver.getWorld().getName())) {
-                            receiver.sendMessage(formattedMsg);
+                            if (crossWorld || !sentByPlayer || (plugin.getServer().getPlayer(source).getWorld().getName().equals(receiver.getWorld().getName()))) {
+                                receiver.sendMessage(formattedMsg);
+                            }
                         }
                     }
                 }
@@ -337,6 +341,14 @@ public class Channel {
 
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
+    }
+
+    public boolean isCrossWorld() {
+        return crossWorld;
+    }
+
+    public void setCrossWorld(boolean crossWorld) {
+        this.crossWorld = crossWorld;
     }
 
 }
