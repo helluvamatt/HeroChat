@@ -100,8 +100,8 @@ public class HeroChat extends JavaPlugin {
         try {
             for (Player player : getServer().getOnlinePlayers()) {
                 configManager.savePlayer(player.getName());
-                configManager.save();
             }
+            configManager.save();
         } catch (Exception e) {}
         PluginDescriptionFile desc = getDescription();
         log(Level.INFO, desc.getName() + " version " + desc.getVersion() + " disabled.");

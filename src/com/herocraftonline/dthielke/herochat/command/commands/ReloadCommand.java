@@ -39,6 +39,9 @@ public class ReloadCommand extends BaseCommand {
             }
         }
         if (hasPermission) {
+            for (Player player : plugin.getServer().getOnlinePlayers()) {
+                plugin.getConfigManager().savePlayer(player.getName());
+            }
             plugin.onEnable();
         }
     }
