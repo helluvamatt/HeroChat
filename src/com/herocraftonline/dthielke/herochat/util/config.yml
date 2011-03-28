@@ -6,6 +6,8 @@ globals:
     default-channel: Global
     default-message-format: '{color}[{nick}] &f{prefix}{player}{suffix}{color}: '
     craftIRC-message-format: '[{nick}] {player}: '
+    incoming-tell-format: '&8From {player}: &d'
+    outgoing-tell-format: '&8To {receiver}: &d'
 channels:
     Local:
         craftIRC-tags: []

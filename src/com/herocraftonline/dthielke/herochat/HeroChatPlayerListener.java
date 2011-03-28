@@ -53,10 +53,10 @@ public class HeroChatPlayerListener extends PlayerListener {
             String receiverName = receiver.getName();
             if (!plugin.getChannelManager().isIgnoring(receiverName, senderName)) {
                 String message = event.getMessage();
-                String outgoing = Messaging.format(plugin, null, plugin.getOutgoingTellFormat(), senderName, message, true, plugin.getPermissionManager().isAllowedColor(sender));
-                String incoming = Messaging.format(plugin, null, plugin.getIncomingTellFormat(), senderName, message, true, plugin.getPermissionManager().isAllowedColor(sender));
-                receiver.sendMessage(outgoing);
-                sender.sendMessage(incoming);
+                String outgoing = Messaging.format(plugin, null, plugin.getOutgoingTellFormat(), senderName, receiverName, message, true, plugin.getPermissionManager().isAllowedColor(sender));
+                String incoming = Messaging.format(plugin, null, plugin.getIncomingTellFormat(), senderName, receiverName, message, true, plugin.getPermissionManager().isAllowedColor(sender));
+                receiver.sendMessage(incoming);
+                sender.sendMessage(outgoing);
                 plugin.log(Level.INFO, senderName + " -> " + receiverName + ": " + message);
             } else {
                 sender.sendMessage(plugin.getTag() + "§c" + receiverName + " is ignoring you");

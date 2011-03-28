@@ -53,7 +53,7 @@ public class RemoveCommand extends BaseCommand {
                                 }
                             }
                             cm.removeChannel(c);
-                            sender.sendMessage(plugin.getTag() + "§cChannel " + c.getCName() + " §fremoved");
+                            sender.sendMessage(plugin.getTag() + "§cChannel " + c.getCName() + " §cremoved");
                             try {
                                 plugin.getConfigManager().save();
                             } catch (Exception e) {

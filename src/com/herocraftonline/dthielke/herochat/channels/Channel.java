@@ -129,7 +129,7 @@ public class Channel {
     }
 
     protected void sendUncheckedMessage(String source, String msg, String format, boolean sentByPlayer, List<String> recipients, boolean includeSender, boolean color) {
-        String formattedMsg = Messaging.format(plugin, this, format, source, msg, sentByPlayer, color);
+        String formattedMsg = Messaging.format(plugin, this, format, source, "", msg, sentByPlayer, color);
         ChannelManager cm = plugin.getChannelManager();
         for (String other : recipients) {
             if (!cm.isIgnoring(other, source)) {
@@ -154,7 +154,7 @@ public class Channel {
     protected void sendIRCMessage(String source, String msg) {
         CraftIRC irc = plugin.getCraftIRC();
         if (irc != null) {
-            String ircMsg = Messaging.format(plugin, this, plugin.getIrcMessageFormat(), source, msg, true, false);
+            String ircMsg = Messaging.format(plugin, this, plugin.getIrcMessageFormat(), source, "", msg, true, false);
             for (String tag : ircTags) {
                 plugin.getCraftIRC().sendMessageToTag(ircMsg, tag);
             }

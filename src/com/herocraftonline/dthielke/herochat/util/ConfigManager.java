@@ -14,6 +14,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 
 import org.bukkit.entity.Player;
 import org.bukkit.util.config.Configuration;
@@ -174,6 +175,7 @@ public class ConfigManager {
             } catch (Exception e) {
                 channelManager.setActiveChannel(name, channelManager.getDefaultChannel().getName());
                 channelManager.joinAutoChannels(name);
+                plugin.log(Level.INFO, "Loaded default settings for " + name);
             }
         } catch (Exception e) {
             e.printStackTrace();

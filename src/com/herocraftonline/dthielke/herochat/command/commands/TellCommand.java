@@ -1,11 +1,14 @@
 package com.herocraftonline.dthielke.herochat.command.commands;
 
+import java.util.logging.Level;
+
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.herocraftonline.dthielke.herochat.HeroChat;
 import com.herocraftonline.dthielke.herochat.channels.ConversationManager;
 import com.herocraftonline.dthielke.herochat.command.BaseCommand;
+import com.herocraftonline.dthielke.herochat.util.Messaging;
 
 public class TellCommand extends BaseCommand {
 
@@ -13,9 +16,9 @@ public class TellCommand extends BaseCommand {
         super(plugin);
         name = "Tell";
         description = "Starts or ends a private conversation";
-        usage = "§e/ch tell §9<player> §eOR /tell §9<player>";
+        usage = "§e/ch tell §9<player> §8[msg] §eOR /tell §9<player> §8[msg]";
         minArgs = 0;
-        maxArgs = 1;
+        maxArgs = 100000;
         identifiers.add("tell");
         identifiers.add("ch tell");
     }
@@ -35,10 +38,27 @@ public class TellCommand extends BaseCommand {
                 } else {
                     teller.sendMessage(plugin.getTag() + "§cPlayer not found");
                 }
-            } else {
+            } else if (args.length == 0) {
                 if (cm.hasActive(teller)) {
                     cm.end(teller);
                     teller.sendMessage(plugin.getTag() + "§cEnded your conversation");
+                }
+            } else {
+                Player tellee = plugin.getServer().getPlayer(args[0]);
+                if (tellee != null) {
+                    if (tellee != teller) {
+                        String msg = "";
+                        for (int i = 1; i < args.length; i++) {
+                            msg += args[i] + " ";
+                        }
+                        String outgoing = Messaging.format(plugin, null, plugin.getOutgoingTellFormat(), teller.getName(), tellee.getName(), msg, true, plugin.getPermissionManager().isAllowedColor(teller));
+                        String incoming = Messaging.format(plugin, null, plugin.getIncomingTellFormat(), teller.getName(), tellee.getName(), msg, true, plugin.getPermissionManager().isAllowedColor(teller));
+                        tellee.sendMessage(incoming);
+                        teller.sendMessage(outgoing);
+                        plugin.log(Level.INFO, teller.getName() + " -> " + tellee.getName() + ": " + msg);
+                    }
+                } else {
+                    teller.sendMessage(plugin.getTag() + "§cPlayer not found");
                 }
             }
         }

@@ -25,7 +25,7 @@ public class Messaging {
     private static char[] alternates = { '!', '@', '$', '|', '0', '1', '4', '3' };
     private static char[] actuals = { 'i', 'a', 's', 'l', 'o', 'l', 'a', 'e' };
 
-    public static String format(HeroChat plugin, Channel channel, String format, String name, String msg, boolean sentByPlayer, boolean allowColor) {
+    public static String format(HeroChat plugin, Channel channel, String format, String sender, String receiver, String msg, boolean sentByPlayer, boolean allowColor) {
         if (allowColor) {
             msg = msg.replaceAll("&([0-9a-f])", "§$1");
         } else {
@@ -40,7 +40,7 @@ public class Messaging {
                 msg = censorMsg(msg, split[0], true, split[1]);
             }
         }
-        String leader = createLeader(plugin, channel, format, name, msg, sentByPlayer);
+        String leader = createLeader(plugin, channel, format, sender, receiver, msg, sentByPlayer);
         return leader + msg;
     }
 
@@ -76,19 +76,19 @@ public class Messaging {
         return msg;
     }
 
-    private static String createLeader(HeroChat plugin, Channel channel, String format, String name, String msg, boolean sentByPlayer) {
+    private static String createLeader(HeroChat plugin, Channel channel, String format, String senderName, String receiverName, String msg, boolean sentByPlayer) {
         String prefix = "";
         String suffix = "";
         String world = "";
         String healthBar = "";
         if (sentByPlayer) {
             try {
-                Player sender = plugin.getServer().getPlayer(name);
+                Player sender = plugin.getServer().getPlayer(senderName);
                 if (sender != null) {
                     prefix = plugin.getPermissionManager().getPrefix(sender);
                     suffix = plugin.getPermissionManager().getSuffix(sender);
                     world = sender.getWorld().getName();
-                    name = sender.getDisplayName();
+                    senderName = sender.getDisplayName();
                     healthBar = createHealthBar(sender);
                 }
             } catch (Exception e) {
@@ -108,7 +108,8 @@ public class Messaging {
             leader = leader.replace("{color}", channel.getColor().str);
             leader = leader.replace("{color.CHANNEL}", channel.getColor().str);
         }
-        leader = leader.replace("{player}", name);
+        leader = leader.replace("{player}", senderName);
+        leader = leader.replace("{receiver}", receiverName);
         leader = leader.replace("{healthbar}", healthBar);
         leader = leader.replace("{world}", world);
         Matcher matcher = Pattern.compile("\\{color.[a-zA-Z_]+\\}").matcher(leader);
