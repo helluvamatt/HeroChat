@@ -14,6 +14,7 @@ import org.bukkit.entity.Player;
 import com.herocraftonline.dthielke.herochat.HeroChat;
 import com.herocraftonline.dthielke.herochat.channels.Channel;
 import com.herocraftonline.dthielke.herochat.channels.ChannelManager;
+import com.herocraftonline.dthielke.herochat.channels.ConversationManager;
 import com.herocraftonline.dthielke.herochat.command.BaseCommand;
 
 public class FocusCommand extends BaseCommand {
@@ -53,6 +54,11 @@ public class FocusCommand extends BaseCommand {
                             sender.sendMessage(plugin.getTag() + "§cWrong password for " + c.getCName());
                             return;
                         }
+                    }
+                    ConversationManager convos = plugin.getConversationManager();
+                    if (convos.hasActive(player)) {
+                        convos.end(player);
+                        sender.sendMessage(plugin.getTag() + "§cEnded your conversation");
                     }
                     cm.setActiveChannel(name, c.getName());
                     sender.sendMessage(plugin.getTag() + "§cSet focus on " + c.getCName());
