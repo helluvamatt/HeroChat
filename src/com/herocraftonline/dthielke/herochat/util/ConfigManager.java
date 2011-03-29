@@ -166,7 +166,9 @@ public class ConfigManager {
                     for (String s : joinedChannels) {
                         Channel c = channelManager.getChannel(s);
                         if (c != null) {
-                            if (!c.getBlacklist().contains(name)) {
+                            List<String> whitelist = c.getWhitelist();
+                            String group = plugin.getPermissionManager().getGroup(plugin.getServer().getPlayer(name));
+                            if (!c.getBlacklist().contains(name) && (whitelist.isEmpty() || whitelist.contains(group))) {
                                 c.addPlayer(name);
                             }
                         }
