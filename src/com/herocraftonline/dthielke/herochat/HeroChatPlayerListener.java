@@ -12,8 +12,10 @@ import java.util.logging.Level;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerChatEvent;
-import org.bukkit.event.player.PlayerEvent;
+import org.bukkit.event.player.PlayerCommandPreprocessEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerListener;
+import org.bukkit.event.player.PlayerQuitEvent;
 
 import com.herocraftonline.dthielke.herochat.channels.Channel;
 import com.herocraftonline.dthielke.herochat.channels.ChannelManager;
@@ -29,7 +31,7 @@ public class HeroChatPlayerListener extends PlayerListener {
     }
 
     @Override
-    public void onPlayerCommandPreprocess(PlayerChatEvent event) {
+    public void onPlayerCommandPreprocess(PlayerCommandPreprocessEvent event) {
         String input = event.getMessage().substring(1);
         String[] args = input.split(" ");
         Channel c = plugin.getChannelManager().getChannel(args[0]);
@@ -75,7 +77,7 @@ public class HeroChatPlayerListener extends PlayerListener {
     }
 
     @Override
-    public void onPlayerJoin(PlayerEvent event) {
+    public void onPlayerJoin(PlayerJoinEvent event) {
         Player joiner = event.getPlayer();
         String name = joiner.getName();
         try {
@@ -84,7 +86,7 @@ public class HeroChatPlayerListener extends PlayerListener {
     }
 
     @Override
-    public void onPlayerQuit(PlayerEvent event) {
+    public void onPlayerQuit(PlayerQuitEvent event) {
         Player quitter = event.getPlayer();
         String quitterName = quitter.getName();
         plugin.getConfigManager().savePlayer(quitterName);

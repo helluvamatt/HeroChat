@@ -18,7 +18,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.Event.Priority;
 import org.bukkit.event.Event.Type;
-import org.bukkit.event.player.PlayerEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
@@ -125,7 +125,7 @@ public class HeroChat extends JavaPlugin {
         }
 
         for (Player player : getServer().getOnlinePlayers()) {
-            playerListener.onPlayerJoin(new PlayerEvent(Event.Type.PLAYER_JOIN, player));
+            playerListener.onPlayerJoin(new PlayerJoinEvent(player, ""));
         }
 
         try {
