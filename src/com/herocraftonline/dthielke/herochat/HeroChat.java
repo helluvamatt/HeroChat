@@ -198,7 +198,7 @@ public class HeroChat extends JavaPlugin {
                 PermissionHandler security = permissions.getHandler();
                 PermissionManager ph = new PermissionManager(security);
                 this.permissionManager = ph;
-                log(Level.INFO, "Permissions " + Permissions.version + " found.");
+                log(Level.INFO, "Permissions " + permissions.getDescription().getVersion() + " found.");
             }
         }
     }
@@ -211,7 +211,7 @@ public class HeroChat extends JavaPlugin {
                     craftIRC = (CraftIRC) plugin;
                     craftIRCListener = new HeroChatCraftIRCListener(this);
                     this.getServer().getPluginManager().registerEvent(Event.Type.CUSTOM_EVENT, craftIRCListener, Event.Priority.Normal, this);
-                    log(Level.INFO, "CraftIRC found.");
+                    log(Level.INFO, "CraftIRC " + craftIRC.getDescription().getVersion() + " found.");
                 } catch (ClassCastException ex) {
                     ex.printStackTrace();
                     log(Level.WARNING, "Error encountered while connecting to CraftIRC!");
