@@ -30,7 +30,6 @@ public class Messaging {
             msg = msg.replaceAll("§[0-9a-f]", "");
         }
         List<String> censors = plugin.getCensors();
-        System.out.println("msg: " + msg);
         for (String censor : censors) {
             String[] split = censor.split(";", 2);
             if (split.length == 1) {
@@ -44,13 +43,11 @@ public class Messaging {
     }
 
     private static String censorMsg(String msg, String censor, boolean customReplacement, String replacement) {
-        System.out.println("   censor: " + censor);
         Pattern pattern = Pattern.compile(censor, Pattern.CASE_INSENSITIVE);
         Matcher matcher = pattern.matcher(msg);
         StringBuilder censoredMsg = new StringBuilder();
         while (matcher.find()) {
             String match = matcher.group();
-            System.out.println("      match: " + match);
             if (!customReplacement) {
                 char[] replaceChars = new char[match.length()];
                 Arrays.fill(replaceChars, '*');
