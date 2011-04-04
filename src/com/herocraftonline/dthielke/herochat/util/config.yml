@@ -1,7 +1,6 @@
 globals:
     craftIRC-tag: '#'
     censors: ['\bu+\W*m+a+d+(\W*br(a|o)+)?', 'some_other_word;replacement']
-    default-local-distance: 100
     plugin-tag: '&e[HeroChat] '
     default-channel: Global
     default-message-format: '{color}[{nick}] &f{prefix}{player}{suffix}{color}: '
@@ -11,6 +10,7 @@ globals:
 channels:
     Local:
         craftIRC-tags: []
+        local-distance: 100
         color: YELLOW
         nickname: l
         permissions:

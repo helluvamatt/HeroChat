@@ -22,7 +22,6 @@ public class ChannelManager {
     private List<Channel> channels;
     private Channel defaultChannel;
     private String defaultMsgFormat;
-    private int defaultLocalDistance;
     private HashMap<String, String> activeChannels;
     private HashMap<String, List<String>> ignoreLists;
     private List<String> mutelist;
@@ -165,15 +164,6 @@ public class ChannelManager {
     public String getDefaultMsgFormat() {
         return defaultMsgFormat;
     }
-
-    public void setDefaultLocalDistance(int defaultLocalDistance) {
-        this.defaultLocalDistance = defaultLocalDistance;
-    }
-
-    public int getDefaultLocalDistance() {
-        return defaultLocalDistance;
-    }
-
     public void setMutelist(List<String> mutelist) {
         this.mutelist = mutelist;
     }

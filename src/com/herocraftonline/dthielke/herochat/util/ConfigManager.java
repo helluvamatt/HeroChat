@@ -83,7 +83,6 @@ public class ConfigManager {
         String defaultMsgFormat = config.getString(globals + "default-message-format", "{player}: ");
         String incomingTellFormat = config.getString(globals + "incoming-tell-format", "{prefix}{player} &8->&d ");
         String outgoingTellFormat = config.getString(globals + "outgoing-tell-format", "{prefix}{player} &8->&d ");
-        int defaultLocalDistance = config.getInt(globals + "default-local-distance", 100);
         List<String> censors = config.getStringList(globals + "censors", null);
 
         plugin.setTag(pluginTag);
@@ -94,14 +93,6 @@ public class ConfigManager {
         plugin.setOutgoingTellFormat(outgoingTellFormat);
         cm.setDefaultChannel(cm.getChannel(defaultChannel));
         cm.setDefaultMsgFormat(defaultMsgFormat);
-        cm.setDefaultLocalDistance(defaultLocalDistance);
-
-        for (Channel c : cm.getChannels()) {
-            if (c instanceof LocalChannel) {
-                LocalChannel l = (LocalChannel) c;
-                l.setDistance(cm.getDefaultLocalDistance());
-            }
-        }
     }
 
     private void loadChannels(Configuration config) {
@@ -111,6 +102,7 @@ public class ConfigManager {
             Channel c;
             if (config.getBoolean(root + "options.local", false)) {
                 c = new LocalChannel(plugin);
+                ((LocalChannel)c).setDistance(config.getInt(root + "local-distance", 100));
             } else {
                 c = new Channel(plugin);
             }
@@ -205,7 +197,6 @@ public class ConfigManager {
         config.setProperty(globals + "outgoing-tell-format", plugin.getOutgoingTellFormat());
         config.setProperty(globals + "default-channel", cm.getDefaultChannel().getName());
         config.setProperty(globals + "default-message-format", cm.getDefaultMsgFormat());
-        config.setProperty(globals + "default-local-distance", cm.getDefaultLocalDistance());
         config.setProperty(globals + "censors", plugin.getCensors());
     }
 
@@ -219,6 +210,9 @@ public class ConfigManager {
             config.setProperty(root + "message-format", c.getMsgFormat());
             config.setProperty(root + "worlds", c.getWorlds());
             config.setProperty(root + "craftIRC-tags", c.getIrcTags());
+            if (c instanceof LocalChannel) {
+                config.setProperty(root + "local-distance", ((LocalChannel)c).getDistance());
+            }
 
             String options = root + "options.";
             config.setProperty(options + "join-messages", c.isVerbose());
