@@ -22,8 +22,6 @@ import com.herocraftonline.dthielke.herochat.channels.Channel;
 
 public class Messaging {
     private static final String[] HEALTH_COLORS = { "§0", "§4", "§6", "§e", "§2" };
-    private static char[] alternates = { '!', '@', '$', '|', '0', '1', '4', '3' };
-    private static char[] actuals = { 'i', 'a', 's', 'l', 'o', 'l', 'a', 'e' };
 
     public static String format(HeroChat plugin, Channel channel, String format, String sender, String receiver, String msg, boolean sentByPlayer, boolean allowColor) {
         if (allowColor) {
@@ -32,6 +30,7 @@ public class Messaging {
             msg = msg.replaceAll("§[0-9a-f]", "");
         }
         List<String> censors = plugin.getCensors();
+        System.out.println("msg: " + msg);
         for (String censor : censors) {
             String[] split = censor.split(";", 2);
             if (split.length == 1) {
@@ -45,35 +44,25 @@ public class Messaging {
     }
 
     private static String censorMsg(String msg, String censor, boolean customReplacement, String replacement) {
+        System.out.println("   censor: " + censor);
         Pattern pattern = Pattern.compile(censor, Pattern.CASE_INSENSITIVE);
         Matcher matcher = pattern.matcher(msg);
+        StringBuilder censoredMsg = new StringBuilder();
         while (matcher.find()) {
             String match = matcher.group();
+            System.out.println("      match: " + match);
             if (!customReplacement) {
                 char[] replaceChars = new char[match.length()];
                 Arrays.fill(replaceChars, '*');
                 replacement = new String(replaceChars);
             }
-            msg = msg.substring(0, matcher.start()) + replacement + msg.substring(matcher.end());
+            censoredMsg.append(msg.substring(0, matcher.start()) + replacement);
+            msg = msg.substring(matcher.end());
             matcher = pattern.matcher(msg);
         }
-
-        String mod = msg;
-        for (int i = 0; i < alternates.length; i++) {
-            mod = mod.replace(alternates[i], actuals[i]);
-        }
-        matcher = pattern.matcher(mod);
-        while (matcher.find()) {
-            String match = matcher.group();
-            if (!customReplacement) {
-                char[] replaceChars = new char[match.length()];
-                Arrays.fill(replaceChars, '*');
-                replacement = new String(replaceChars);
-            }
-            msg = msg.substring(0, matcher.start()) + replacement + msg.substring(matcher.end());
-            matcher = pattern.matcher(msg);
-        }
-        return msg;
+        censoredMsg.append(msg);
+        
+        return censoredMsg.toString();
     }
 
     private static String createLeader(HeroChat plugin, Channel channel, String format, String senderName, String receiverName, String msg, boolean sentByPlayer) {

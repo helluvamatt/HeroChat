@@ -78,10 +78,14 @@ public class Channel {
     }
 
     public void sendMessage(String source, String msg, String format, boolean sentByPlayer) {
-        sendMessage(source, msg, format, sentByPlayer, true);
+        sendMessage(source, msg, format, players, sentByPlayer, true);
+    }
+    
+    public void sendMessage(String source, String msg, String format, boolean sentByPlayer, boolean includeSender) {
+        sendMessage(source, msg, format, players, sentByPlayer, includeSender);
     }
 
-    public void sendMessage(String source, String msg, String format, boolean sentByPlayer, boolean includeSender) {
+    public void sendMessage(String source, String msg, String format, List<String> recipients, boolean sentByPlayer, boolean includeSender) {
         ChannelChatEvent event = new ChannelChatEvent(Type.CUSTOM_EVENT, this, source, msg, format, sentByPlayer);
         plugin.getServer().getPluginManager().callEvent(event);
         source = event.getSource();
@@ -171,7 +175,7 @@ public class Channel {
                     displayName = p.getDisplayName();
                 }
                 String msg = "§f" + displayName + color.str + " has joined the channel";
-                sendMessage(name, msg, joinFormat, false, false);
+                sendMessage(name, msg, joinFormat, players, false, false);
             }
         }
     }
@@ -186,7 +190,7 @@ public class Channel {
                     displayName = p.getDisplayName();
                 }
                 String msg = "§f" + displayName + color.str + " has left the channel";
-                sendMessage(name, msg, joinFormat, false, false);
+                sendMessage(name, msg, joinFormat, players, false, false);
             }
         }
     }
