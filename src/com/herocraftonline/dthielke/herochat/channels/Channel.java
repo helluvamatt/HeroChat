@@ -80,7 +80,7 @@ public class Channel {
     public void sendMessage(String source, String msg, String format, boolean sentByPlayer) {
         sendMessage(source, msg, format, players, sentByPlayer, true);
     }
-    
+
     public void sendMessage(String source, String msg, String format, boolean sentByPlayer, boolean includeSender) {
         sendMessage(source, msg, format, players, sentByPlayer, includeSender);
     }
@@ -135,14 +135,17 @@ public class Channel {
     protected void sendUncheckedMessage(String source, String msg, String format, boolean sentByPlayer, List<String> recipients, boolean includeSender, boolean color) {
         String formattedMsg = Messaging.format(plugin, this, format, source, "", msg, sentByPlayer, color);
         ChannelManager cm = plugin.getChannelManager();
-        for (String other : recipients) {
-            if (!cm.isIgnoring(other, source)) {
-                Player receiver = plugin.getServer().getPlayer(other);
-                if (receiver != null) {
-                    if (includeSender || !receiver.getName().equals(source)) {
-                        if (worlds.isEmpty() || worlds.contains(receiver.getWorld().getName())) {
-                            if (crossWorld || !sentByPlayer || (plugin.getServer().getPlayer(source).getWorld().getName().equals(receiver.getWorld().getName()))) {
-                                receiver.sendMessage(formattedMsg);
+        for (String recipientName : recipients) {
+            if (players.contains(recipientName)) {
+                if (!cm.isIgnoring(recipientName, source)) {
+                    Player recipient = plugin.getServer().getPlayer(recipientName);
+                    if (recipient != null) {
+                        if (includeSender || !recipient.getName().equals(source)) {
+                            String world = recipient.getWorld().getName();
+                            if (worlds.isEmpty() || worlds.contains(world)) {
+                                if (crossWorld || !sentByPlayer || (plugin.getServer().getPlayer(source).getWorld().getName().equals(world))) {
+                                    recipient.sendMessage(formattedMsg);
+                                }
                             }
                         }
                     }
