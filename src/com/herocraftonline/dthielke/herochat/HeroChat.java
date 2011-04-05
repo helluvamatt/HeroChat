@@ -25,6 +25,7 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.ensifera.animosity.craftirc.CraftIRC;
+import com.herocraftonline.dthielke.herochat.channels.Channel;
 import com.herocraftonline.dthielke.herochat.channels.ChannelManager;
 import com.herocraftonline.dthielke.herochat.channels.ConversationManager;
 import com.herocraftonline.dthielke.herochat.command.CommandManager;
@@ -199,6 +200,17 @@ public class HeroChat extends JavaPlugin {
                 PermissionManager ph = new PermissionManager(security);
                 this.permissionManager = ph;
                 log(Level.INFO, "Permissions " + permissions.getDescription().getVersion() + " found.");
+                
+                for (Player player : getServer().getOnlinePlayers()) {
+                    String name = player.getName();
+                    String group = permissionManager.getGroup(player);
+                    List<Channel> joinedChannels = channelManager.getJoinedChannels(name);
+                    for (Channel channel : joinedChannels) {
+                        if (group != null && !channel.getWhitelist().contains(group) && !channel.getWhitelist().isEmpty()) {
+                            channel.removePlayer(name);
+                        }
+                    }
+                }
             }
         }
     }

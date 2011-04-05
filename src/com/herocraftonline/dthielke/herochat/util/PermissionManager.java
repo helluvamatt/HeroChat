@@ -26,7 +26,7 @@ public class PermissionManager {
             String name = p.getName();
             return security.getGroup(world, name);
         } else {
-            return "";
+            return null;
         }
     }
 

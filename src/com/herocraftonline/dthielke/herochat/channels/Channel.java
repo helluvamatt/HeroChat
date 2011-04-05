@@ -98,7 +98,7 @@ public class Channel {
                 if (sender != null) {
                     if (enabled || plugin.getPermissionManager().isAdmin(sender) || moderators.contains(source)) {
                         String group = plugin.getPermissionManager().getGroup(sender);
-                        if (voicelist.contains(group) || voicelist.isEmpty()) {
+                        if (group == null || voicelist.contains(group) || voicelist.isEmpty()) {
                             if (!plugin.getChannelManager().getMutelist().contains(sender.getName())) {
                                 if (!mutelist.contains(sender.getName())) {
                                     if (worlds.isEmpty() || worlds.contains(sender.getWorld().getName())) {

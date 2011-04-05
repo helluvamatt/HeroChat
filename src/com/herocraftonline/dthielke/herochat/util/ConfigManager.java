@@ -102,7 +102,7 @@ public class ConfigManager {
             Channel c;
             if (config.getBoolean(root + "options.local", false)) {
                 c = new LocalChannel(plugin);
-                ((LocalChannel)c).setDistance(config.getInt(root + "local-distance", 100));
+                ((LocalChannel) c).setDistance(config.getInt(root + "local-distance", 100));
             } else {
                 c = new Channel(plugin);
             }
@@ -160,7 +160,7 @@ public class ConfigManager {
                         if (c != null) {
                             List<String> whitelist = c.getWhitelist();
                             String group = plugin.getPermissionManager().getGroup(plugin.getServer().getPlayer(name));
-                            if (!c.getBlacklist().contains(name) && (whitelist.isEmpty() || whitelist.contains(group))) {
+                            if (!c.getBlacklist().contains(name) && (whitelist.isEmpty() || group == null || whitelist.contains(group))) {
                                 c.addPlayer(name);
                             }
                         }
@@ -181,7 +181,7 @@ public class ConfigManager {
         saveGlobals(config);
         saveChannels(config);
         config.save();
-        
+
         for (Player player : plugin.getServer().getOnlinePlayers()) {
             savePlayer(player.getName());
         }
@@ -211,7 +211,7 @@ public class ConfigManager {
             config.setProperty(root + "worlds", c.getWorlds());
             config.setProperty(root + "craftIRC-tags", c.getIrcTags());
             if (c instanceof LocalChannel) {
-                config.setProperty(root + "local-distance", ((LocalChannel)c).getDistance());
+                config.setProperty(root + "local-distance", ((LocalChannel) c).getDistance());
             }
 
             String options = root + "options.";
