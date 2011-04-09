@@ -49,7 +49,8 @@ public class Channel {
     protected List<String> voicelist;
     protected List<String> mutelist;
     protected List<String> worlds;
-    protected List<String> ircTags;
+    protected List<String> gameToIRCTags;
+    protected List<String> IRCToGameTags;
 
     public Channel(HeroChat plugin) {
         this.plugin = plugin;
@@ -74,7 +75,8 @@ public class Channel {
         voicelist = new ArrayList<String>();
         mutelist = new ArrayList<String>();
         worlds = new ArrayList<String>();
-        ircTags = new ArrayList<String>();
+        IRCToGameTags = new ArrayList<String>();
+        gameToIRCTags = new ArrayList<String>();
     }
 
     public void sendMessage(String source, String msg, String format, boolean sentByPlayer) {
@@ -162,7 +164,7 @@ public class Channel {
         CraftIRC irc = plugin.getCraftIRC();
         if (irc != null) {
             String ircMsg = Messaging.format(plugin, this, plugin.getIrcMessageFormat(), source, "", msg, true, false);
-            for (String tag : ircTags) {
+            for (String tag : gameToIRCTags) {
                 plugin.getCraftIRC().sendMessageToTag(ircMsg, tag);
             }
         }
@@ -326,14 +328,6 @@ public class Channel {
         this.password = password;
     }
 
-    public List<String> getIrcTags() {
-        return ircTags;
-    }
-
-    public void setIrcTags(List<String> ircTags) {
-        this.ircTags = ircTags;
-    }
-
     public List<String> getMutelist() {
         return mutelist;
     }
@@ -356,6 +350,22 @@ public class Channel {
 
     public void setCrossWorld(boolean crossWorld) {
         this.crossWorld = crossWorld;
+    }
+
+    public List<String> getGameToIRCTags() {
+        return gameToIRCTags;
+    }
+
+    public void setGameToIRCTags(List<String> gameToIRCTags) {
+        this.gameToIRCTags = gameToIRCTags;
+    }
+
+    public List<String> getIRCToGameTags() {
+        return IRCToGameTags;
+    }
+
+    public void setIRCToGameTags(List<String> iRCToGameTags) {
+        IRCToGameTags = iRCToGameTags;
     }
 
 }

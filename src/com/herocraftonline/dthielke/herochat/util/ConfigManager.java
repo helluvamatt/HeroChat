@@ -77,7 +77,7 @@ public class ConfigManager {
         String globals = "globals.";
         ChannelManager cm = plugin.getChannelManager();
         String pluginTag = config.getString(globals + "plugin-tag", "[HeroChat] ").replace("&", "§");
-        String ircTag = config.getString(globals + "craftIRC-tag", "#");
+        String ircTag = config.getString(globals + "craftIRC-prefix", "#");
         String ircMessageFormat = config.getString(globals + "craftIRC-message-format", "[{nick}] {player}: ");
         String defaultChannel = config.getString(globals + "default-channel", cm.getChannels().get(0).getName());
         String defaultMsgFormat = config.getString(globals + "default-message-format", "{player}: ");
@@ -113,7 +113,10 @@ public class ConfigManager {
             c.setColor(ChatColor.valueOf(config.getString(root + "color", "WHITE")));
             c.setMsgFormat(config.getString(root + "message-format", "{default}"));
             c.setWorlds(config.getStringList(root + "worlds", null));
-            c.setIrcTags(config.getStringList(root + "craftIRC-tags", null));
+            
+            String craftIRC = root + "craftIRC.";
+            c.setIRCToGameTags(config.getStringList(craftIRC + "IRC-to-game", null));
+            c.setGameToIRCTags(config.getStringList(craftIRC + "game-to-IRC", null));
 
             String options = root + "options.";
             c.setVerbose(config.getBoolean(options + "join-messages", true));
@@ -191,7 +194,7 @@ public class ConfigManager {
         ChannelManager cm = plugin.getChannelManager();
         String globals = "globals.";
         config.setProperty(globals + "plugin-tag", plugin.getTag());
-        config.setProperty(globals + "craftIRC-tag", plugin.getIrcTag());
+        config.setProperty(globals + "craftIRC-prefix", plugin.getIrcTag());
         config.setProperty(globals + "craftIRC-message-format", plugin.getIrcMessageFormat());
         config.setProperty(globals + "incoming-tell-format", plugin.getIncomingTellFormat());
         config.setProperty(globals + "outgoing-tell-format", plugin.getOutgoingTellFormat());
@@ -209,10 +212,13 @@ public class ConfigManager {
             config.setProperty(root + "color", c.getColor().toString());
             config.setProperty(root + "message-format", c.getMsgFormat());
             config.setProperty(root + "worlds", c.getWorlds());
-            config.setProperty(root + "craftIRC-tags", c.getIrcTags());
             if (c instanceof LocalChannel) {
                 config.setProperty(root + "local-distance", ((LocalChannel) c).getDistance());
             }
+            
+            String craftIRC = root + "craftIRC.";
+            config.setProperty(craftIRC + "IRC-to-game", c.getIRCToGameTags());
+            config.setProperty(craftIRC + "game-to-IRC", c.getGameToIRCTags());
 
             String options = root + "options.";
             config.setProperty(options + "join-messages", c.isVerbose());
