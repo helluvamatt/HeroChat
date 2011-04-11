@@ -10,7 +10,6 @@ package com.herocraftonline.dthielke.herochat.channels;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event.Type;
@@ -23,11 +22,10 @@ import com.herocraftonline.dthielke.herochat.util.Messaging;
 
 public class Channel {
 
-    public static final String logFormat = "[{nick}] {player}: ";
+    //public static final String logFormat = "[{nick}] {player}: ";
     public static final String joinFormat = "{color}[{nick}] ";
 
     protected HeroChat plugin;
-
     protected String name;
     protected String nick;
     protected String password;
@@ -157,7 +155,7 @@ public class Channel {
         if (sentByPlayer) {
             sendIRCMessage(source, msg);
         }
-        plugin.log(Level.INFO, formattedMsg);
+        plugin.logChat(formattedMsg);
     }
 
     protected void sendIRCMessage(String source, String msg) {

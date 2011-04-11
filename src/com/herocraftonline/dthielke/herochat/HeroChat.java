@@ -8,8 +8,14 @@
 
 package com.herocraftonline.dthielke.herochat;
 
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.logging.FileHandler;
+import java.util.logging.Formatter;
 import java.util.logging.Level;
+import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
 import org.bukkit.command.Command;
@@ -79,7 +85,9 @@ public class HeroChat extends JavaPlugin {
         }
     }
 
-    private Logger log = Logger.getLogger("Minecraft");
+    private static Logger log = Logger.getLogger("Minecraft");
+    private static Logger chatLog = Logger.getLogger("HeroChat");
+    private boolean separateChatLog;
     private ChannelManager channelManager;
     private CommandManager commandManager;
     private ConversationManager conversationManager;
@@ -137,7 +145,11 @@ public class HeroChat extends JavaPlugin {
             this.getServer().getPluginManager().disablePlugin(this);
             return;
         }
-
+        
+        if (separateChatLog) {
+            separateChatLog();
+        }
+        
         PluginDescriptionFile desc = getDescription();
         log(Level.INFO, desc.getName() + " version " + desc.getVersion() + " enabled.");
 
@@ -200,7 +212,7 @@ public class HeroChat extends JavaPlugin {
                 PermissionManager ph = new PermissionManager(security);
                 this.permissionManager = ph;
                 log(Level.INFO, "Permissions " + permissions.getDescription().getVersion() + " found.");
-                
+
                 for (Player player : getServer().getOnlinePlayers()) {
                     String name = player.getName();
                     String group = permissionManager.getGroup(player);
@@ -233,7 +245,7 @@ public class HeroChat extends JavaPlugin {
             }
         }
     }
-    
+
     private void checkConflict(String pluginName) {
         Plugin plugin = this.getServer().getPluginManager().getPlugin(pluginName);
         if (plugin != null) {
@@ -242,13 +254,35 @@ public class HeroChat extends JavaPlugin {
             }
         }
     }
-    
+
     public void issueConflictWarning(Plugin conflict) {
         log(Level.WARNING, "Conflicting plugin detected: " + conflict.getDescription().getName() + ". If you experience issues, please try disabling this plugin.");
+    }
+    
+    private void separateChatLog() {
+        try {
+            chatLog.setUseParentHandlers(false);
+            FileHandler fh = new FileHandler(getDataFolder().getAbsolutePath() + "/chat.log", true);
+            fh.setFormatter(new Formatter() {
+                @Override
+                public String format(LogRecord record) {
+                    return new SimpleDateFormat("HH:mm:ss").format(new Date(record.getMillis())) + " " + record.getMessage() + "\n";
+                }
+            });
+            chatLog.addHandler(fh);
+        } catch (SecurityException e1) {
+            chatLog.setUseParentHandlers(true);
+        } catch (IOException e1) {
+            chatLog.setUseParentHandlers(true);
+        }
     }
 
     public void log(Level level, String msg) {
         log.log(level, "[HeroChat] " + msg.replaceAll("§[0-9a-f]", ""));
+    }
+
+    public void logChat(String msg) {
+        chatLog.info(msg.replaceAll("§[0-9a-f]", ""));
     }
 
     public ChannelManager getChannelManager() {
@@ -321,5 +355,13 @@ public class HeroChat extends JavaPlugin {
 
     public String getIncomingTellFormat() {
         return incomingTellFormat;
+    }
+
+    public void setSeparateChatLog(boolean separateChatLog) {
+        this.separateChatLog = separateChatLog;
+    }
+    
+    public boolean hasSeparateChatLog() {
+        return separateChatLog;
     }
 }

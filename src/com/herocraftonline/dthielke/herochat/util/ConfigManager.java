@@ -82,8 +82,9 @@ public class ConfigManager {
         String defaultChannel = config.getString(globals + "default-channel", cm.getChannels().get(0).getName());
         String defaultMsgFormat = config.getString(globals + "default-message-format", "{player}: ");
         String incomingTellFormat = config.getString(globals + "incoming-tell-format", "{prefix}{player} &8->&d ");
-        String outgoingTellFormat = config.getString(globals + "outgoing-tell-format", "{prefix}{player} &8->&d ");
+        String outgoingTellFormat = config.getString(globals + "outgoing-tell-format", "{prefix}{player} &8->&d "); 
         List<String> censors = config.getStringList(globals + "censors", null);
+        boolean separateChatLog = config.getBoolean(globals + "separate-chat-log", false);
 
         plugin.setTag(pluginTag);
         plugin.setIrcTag(ircTag);
@@ -93,6 +94,7 @@ public class ConfigManager {
         plugin.setOutgoingTellFormat(outgoingTellFormat);
         cm.setDefaultChannel(cm.getChannel(defaultChannel));
         cm.setDefaultMsgFormat(defaultMsgFormat);
+        plugin.setSeparateChatLog(separateChatLog);
     }
 
     private void loadChannels(Configuration config) {
@@ -201,6 +203,7 @@ public class ConfigManager {
         config.setProperty(globals + "default-channel", cm.getDefaultChannel().getName());
         config.setProperty(globals + "default-message-format", cm.getDefaultMsgFormat());
         config.setProperty(globals + "censors", plugin.getCensors());
+        config.setProperty(globals + "separate-chat-log", plugin.hasSeparateChatLog());
     }
 
     private void saveChannels(Configuration config) throws Exception {
