@@ -30,6 +30,46 @@ public class PermissionManager {
         }
     }
 
+    public String getGroupPrefix(Player p) {
+        if (security != null) {
+            try {
+                String world = p.getWorld().getName();
+                String name = p.getName();
+                String group = security.getGroup(world, name);
+                String prefix = security.getGroupPrefix(world, group);
+                if (prefix == null) {
+                    prefix = "";
+                }
+                return prefix.replaceAll("&([0-9a-f])", "§$1");
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+                return "";
+            }
+        } else {
+            return "";
+        }
+    }
+    
+    public String getGroupSuffix(Player p) {
+        if (security != null) {
+            try {
+                String world = p.getWorld().getName();
+                String name = p.getName();
+                String group = security.getGroup(world, name);
+                String suffix = security.getGroupSuffix(world, group);
+                if (suffix == null) {
+                    suffix = "";
+                }
+                return suffix.replaceAll("&([0-9a-f])", "§$1");
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+                return "";
+            }
+        } else {
+            return "";
+        }
+    }
+
     public String getPrefix(Player p) {
         if (security != null) {
             try {

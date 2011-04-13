@@ -65,6 +65,9 @@ public class Messaging {
     private static String createLeader(HeroChat plugin, Channel channel, String format, String senderName, String receiverName, String msg, boolean sentByPlayer) {
         String prefix = "";
         String suffix = "";
+        String group = "";
+        String groupPrefix = "";
+        String groupSuffix = "";
         String world = "";
         String healthBar = "";
         if (sentByPlayer) {
@@ -73,6 +76,9 @@ public class Messaging {
                 if (sender != null) {
                     prefix = plugin.getPermissionManager().getPrefix(sender);
                     suffix = plugin.getPermissionManager().getSuffix(sender);
+                    group = plugin.getPermissionManager().getGroup(sender);
+                    groupPrefix = plugin.getPermissionManager().getGroupPrefix(sender);
+                    groupSuffix = plugin.getPermissionManager().getGroupSuffix(sender);
                     world = sender.getWorld().getName();
                     senderName = sender.getDisplayName();
                     healthBar = createHealthBar(sender);
@@ -88,6 +94,9 @@ public class Messaging {
         leader = leader.replaceAll("&([0-9a-f])", "§$1");
         leader = leader.replace("{prefix}", prefix);
         leader = leader.replace("{suffix}", suffix);
+        leader = leader.replace("{group}", group);
+        leader = leader.replace("{groupprefix}", groupPrefix);
+        leader = leader.replace("{groupSuffix}", groupSuffix);
         if (channel != null) {
             leader = leader.replace("{nick}", channel.getNick());
             leader = leader.replace("{name}", channel.getName());

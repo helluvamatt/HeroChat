@@ -49,7 +49,7 @@ public class HeroChatCraftIRCListener extends CustomEventListener implements Lis
                     ircTag = plugin.getIrcTag();
                     channels = plugin.getChannelManager().getChannels().toArray(new Channel[0]);
                     for (Channel c : channels) {
-                        if (c.getIRCToGameTags().contains(channelTag)) {
+                        if (c.getIRCToGameTags().contains(channelTag) && c.isVerbose()) {
                             String joinMsg = "§f" + ircTag + sender + c.getColor().str + " has joined the channel";
                             c.sendMessage(ircTag.replaceAll("&([0-9a-f])", "§$1") + sender, joinMsg, Channel.joinFormat, false, false);
                         }
@@ -66,7 +66,7 @@ public class HeroChatCraftIRCListener extends CustomEventListener implements Lis
                     ircTag = plugin.getIrcTag();
                     channels = plugin.getChannelManager().getChannels().toArray(new Channel[0]);
                     for (Channel c : channels) {
-                        if (c.getIRCToGameTags().contains(channelTag)) {
+                        if (c.getIRCToGameTags().contains(channelTag) && c.isVerbose()) {
                             String leaveMsg = "§f" + ircTag + sender + c.getColor().str + " has left the channel";
                             c.sendMessage(ircTag.replaceAll("&([0-9a-f])", "§$1") + sender, leaveMsg, Channel.joinFormat, false, false);
                         }
