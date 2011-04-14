@@ -22,11 +22,20 @@ public class PermissionManager {
 
     public String getGroup(Player p) {
         if (security != null) {
+            try {
             String world = p.getWorld().getName();
             String name = p.getName();
-            return security.getGroup(world, name);
+            String group = security.getGroup(world, name);
+            if (group == null) {
+                group = "";
+            }
+            return group;
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+                return "";
+            }
         } else {
-            return null;
+            return "";
         }
     }
 
