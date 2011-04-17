@@ -165,7 +165,7 @@ public class ConfigManager {
                         if (c != null) {
                             List<String> whitelist = c.getWhitelist();
                             String group = plugin.getPermissionManager().getGroup(plugin.getServer().getPlayer(name));
-                            if (!c.getBlacklist().contains(name) && (whitelist.isEmpty() || group == null || whitelist.contains(group))) {
+                            if (!c.getBlacklist().contains(name) && (whitelist.isEmpty() || group.isEmpty() || whitelist.contains(group))) {
                                 c.addPlayer(name);
                             }
                         }
