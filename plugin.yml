@@ -2,7 +2,7 @@ name: HeroChat
 version: 4.10.3
 author: DThielke
 main: com.herocraftonline.dthielke.herochat.HeroChat
-description: Provides fully configurable chat channels.
+description: Provides highly customizable chat channels
 commands:
   ch:
     description: Lists all HeroChat commands 
