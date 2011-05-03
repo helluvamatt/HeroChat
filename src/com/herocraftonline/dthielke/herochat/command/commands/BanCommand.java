@@ -14,7 +14,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.herocraftonline.dthielke.herochat.HeroChat;
-import com.herocraftonline.dthielke.herochat.channels.Channel;
+import com.herocraftonline.dthielke.herochat.channels.ChannelOld;
 import com.herocraftonline.dthielke.herochat.channels.ChannelManager;
 import com.herocraftonline.dthielke.herochat.command.BaseCommand;
 
@@ -33,7 +33,7 @@ public class BanCommand extends BaseCommand {
     @Override
     public void execute(CommandSender sender, String[] args) {
         ChannelManager cm = plugin.getChannelManager();
-        Channel channel = cm.getChannel(args[0]);
+        ChannelOld channel = cm.getChannel(args[0]);
         if (channel != null) {
             if (args.length == 1) {
                 displayBanList(sender, channel);
@@ -55,7 +55,7 @@ public class BanCommand extends BaseCommand {
                                     banner.sendMessage(plugin.getTag() + name + "§c has been banned from " + channel.getCName());
                                     banee.sendMessage(plugin.getTag() + "§cYou have been banned from " + channel.getCName());
                                     if (cm.getActiveChannel(name).equals(channel)) {
-                                        List<Channel> joined = cm.getJoinedChannels(name);
+                                        List<ChannelOld> joined = cm.getJoinedChannels(name);
                                         cm.setActiveChannel(name, joined.get(0).getName());
                                         banee.sendMessage(plugin.getTag() + "§cSet active channel to " + cm.getActiveChannel(name).getCName());
                                     }
@@ -78,7 +78,7 @@ public class BanCommand extends BaseCommand {
         }
     }
 
-    private void displayBanList(CommandSender sender, Channel channel) {
+    private void displayBanList(CommandSender sender, ChannelOld channel) {
         String banListMsg;
         List<String> bans = channel.getBlacklist();
         if (bans.isEmpty()) {

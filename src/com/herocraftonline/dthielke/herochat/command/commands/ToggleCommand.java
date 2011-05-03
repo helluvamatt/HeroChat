@@ -4,7 +4,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.herocraftonline.dthielke.herochat.HeroChat;
-import com.herocraftonline.dthielke.herochat.channels.Channel;
+import com.herocraftonline.dthielke.herochat.channels.ChannelOld;
 import com.herocraftonline.dthielke.herochat.channels.ChannelManager;
 import com.herocraftonline.dthielke.herochat.command.BaseCommand;
 
@@ -31,13 +31,13 @@ public class ToggleCommand extends BaseCommand {
                 Player muter = (Player) sender;
                 if (muter == null || plugin.getPermissionManager().isAdmin(muter)) {
                     if (allEnabled) {
-                        for (Channel c : cm.getChannels()) {
+                        for (ChannelOld c : cm.getChannels()) {
                             c.setEnabled(false);
                         }
                         allEnabled = false;
                         sender.sendMessage(plugin.getTag() + "§cDisabled all channels");
                     } else {
-                        for (Channel c : cm.getChannels()) {
+                        for (ChannelOld c : cm.getChannels()) {
                             c.setEnabled(true);
                         }
                         allEnabled = true;
@@ -50,7 +50,7 @@ public class ToggleCommand extends BaseCommand {
                 sender.sendMessage(plugin.getTag() + "§cYou must be a player to use this command");
             }
         } else {
-            Channel channel = cm.getChannel(args[0]);
+            ChannelOld channel = cm.getChannel(args[0]);
             if (channel != null) {
                 if (sender instanceof Player) {
                     Player muter = (Player) sender;

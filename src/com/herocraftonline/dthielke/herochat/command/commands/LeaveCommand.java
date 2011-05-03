@@ -14,7 +14,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.herocraftonline.dthielke.herochat.HeroChat;
-import com.herocraftonline.dthielke.herochat.channels.Channel;
+import com.herocraftonline.dthielke.herochat.channels.ChannelOld;
 import com.herocraftonline.dthielke.herochat.channels.ChannelManager;
 import com.herocraftonline.dthielke.herochat.command.BaseCommand;
 
@@ -37,14 +37,14 @@ public class LeaveCommand extends BaseCommand {
             Player joiner = (Player) sender;
             String name = joiner.getName();
             ChannelManager cm = plugin.getChannelManager();
-            Channel c = cm.getChannel(args[0]);
+            ChannelOld c = cm.getChannel(args[0]);
             if (c != null) {
                 if (c.getPlayers().contains(name)) {
                     if (!c.isForced()) {
                         c.removePlayer(name);
                         sender.sendMessage(plugin.getTag() + "§cLeft channel " + c.getCName());
                         if (cm.getActiveChannel(name).equals(c)) {
-                            List<Channel> joined = cm.getJoinedChannels(name);
+                            List<ChannelOld> joined = cm.getJoinedChannels(name);
                             cm.setActiveChannel(name, joined.get(0).getName());
                             sender.sendMessage(plugin.getTag() + "§cSet active channel to " + cm.getActiveChannel(name).getCName());
                         }

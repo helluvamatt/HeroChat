@@ -15,7 +15,7 @@ import org.bukkit.entity.Player;
 
 import com.herocraftonline.dthielke.herochat.HeroChat;
 import com.herocraftonline.dthielke.herochat.HeroChat.ChatColor;
-import com.herocraftonline.dthielke.herochat.channels.Channel;
+import com.herocraftonline.dthielke.herochat.channels.ChannelOld;
 import com.herocraftonline.dthielke.herochat.channels.ChannelManager;
 import com.herocraftonline.dthielke.herochat.command.BaseCommand;
 
@@ -63,7 +63,7 @@ public class CreateCommand extends BaseCommand {
                     sender.sendMessage(plugin.getTag() + "§cThat nick is taken");
                     return;
                 }
-                Channel c = createChannel(args, plugin.getPermissionManager().isAdmin(creator));
+                ChannelOld c = createChannel(args, plugin.getPermissionManager().isAdmin(creator));
                 if (c != null) {
                     String name = creator.getName();
                     c.getModerators().add(name);
@@ -89,8 +89,8 @@ public class CreateCommand extends BaseCommand {
         }
     }
 
-    private Channel createChannel(String[] args, boolean full) {
-        Channel c = new Channel(plugin);
+    private ChannelOld createChannel(String[] args, boolean full) {
+        ChannelOld c = new ChannelOld(plugin);
         c.setName(args[0]);
         c.setNick(args[1]);
         c.setMsgFormat("{default}");
@@ -114,7 +114,7 @@ public class CreateCommand extends BaseCommand {
         return c;
     }
 
-    private void applyOptions(Channel c, char[] args, boolean full) {
+    private void applyOptions(ChannelOld c, char[] args, boolean full) {
         for (char option : args) {
             switch (option) {
             case 'h':

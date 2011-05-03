@@ -10,9 +10,30 @@ package com.herocraftonline.dthielke.herochat.util;
 
 import org.bukkit.entity.Player;
 
+import com.herocraftonline.dthielke.herochat.channels.ChannelOld;
 import com.nijiko.permissions.PermissionHandler;
 
 public class PermissionManager {
+
+    public enum ChannelPermission {
+        ALLOW("allow"),
+        DENY("deny"),
+        AUTOJOIN("autojoin"),
+        AUTOFOCUS("autofocus"),
+        FORCED("forced"),
+        SPEAK("speak");
+
+        private final String string;
+
+        private ChannelPermission(String string) {
+            this.string = string;
+        }
+
+        @Override
+        public String toString() {
+            return string;
+        }
+    }
 
     private PermissionHandler security;
 
@@ -20,16 +41,24 @@ public class PermissionManager {
         this.security = security;
     }
 
+    public boolean hasChannelPermission(Player player, ChannelOld channel, ChannelPermission permission) {
+        if (security != null) {
+            return security.has(player, "herochat." + channel.getName() + "." + permission);
+        } else {
+            return false;
+        }
+    }
+
     public String getGroup(Player p) {
         if (security != null) {
             try {
-            String world = p.getWorld().getName();
-            String name = p.getName();
-            String group = security.getGroup(world, name);
-            if (group == null) {
-                group = "";
-            }
-            return group;
+                String world = p.getWorld().getName();
+                String name = p.getName();
+                String group = security.getGroup(world, name);
+                if (group == null) {
+                    group = "";
+                }
+                return group;
             } catch (Exception e) {
                 System.out.println(e.getMessage());
                 return "";
@@ -58,7 +87,7 @@ public class PermissionManager {
             return "";
         }
     }
-    
+
     public String getGroupSuffix(Player p) {
         if (security != null) {
             try {

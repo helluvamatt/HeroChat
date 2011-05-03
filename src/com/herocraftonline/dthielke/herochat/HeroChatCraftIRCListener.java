@@ -13,7 +13,7 @@ import org.bukkit.event.Event;
 import org.bukkit.event.Listener;
 
 import com.ensifera.animosity.craftirc.IRCEvent;
-import com.herocraftonline.dthielke.herochat.channels.Channel;
+import com.herocraftonline.dthielke.herochat.channels.ChannelOld;
 
 public class HeroChatCraftIRCListener extends CustomEventListener implements Listener {
 
@@ -34,8 +34,8 @@ public class HeroChatCraftIRCListener extends CustomEventListener implements Lis
                     String sender = ircEvent.msgData.sender;
                     String channelTag = ircEvent.msgData.srcChannelTag;
                     String ircTag = plugin.getIrcTag();
-                    Channel[] channels = plugin.getChannelManager().getChannels().toArray(new Channel[0]);
-                    for (Channel c : channels) {
+                    ChannelOld[] channels = plugin.getChannelManager().getChannels().toArray(new ChannelOld[0]);
+                    for (ChannelOld c : channels) {
                         if (c.getIRCToGameTags().contains(channelTag)) {
                             c.sendMessage(ircTag.replaceAll("&([0-9a-f])", "§$1") + sender, msg, c.getMsgFormat(), false);
                         }
@@ -47,11 +47,11 @@ public class HeroChatCraftIRCListener extends CustomEventListener implements Lis
                     sender = ircEvent.msgData.sender;
                     channelTag = ircEvent.msgData.srcChannelTag;
                     ircTag = plugin.getIrcTag();
-                    channels = plugin.getChannelManager().getChannels().toArray(new Channel[0]);
-                    for (Channel c : channels) {
+                    channels = plugin.getChannelManager().getChannels().toArray(new ChannelOld[0]);
+                    for (ChannelOld c : channels) {
                         if (c.getIRCToGameTags().contains(channelTag) && c.isVerbose()) {
                             String joinMsg = "§f" + ircTag + sender + c.getColor().str + " has joined the channel";
-                            c.sendMessage(ircTag.replaceAll("&([0-9a-f])", "§$1") + sender, joinMsg, Channel.joinFormat, false, false);
+                            c.sendMessage(ircTag.replaceAll("&([0-9a-f])", "§$1") + sender, joinMsg, ChannelOld.joinFormat, false, false);
                         }
                     }
                     ircEvent.setHandled(true);
@@ -64,11 +64,11 @@ public class HeroChatCraftIRCListener extends CustomEventListener implements Lis
                     sender = ircEvent.msgData.sender;
                     channelTag = ircEvent.msgData.srcChannelTag;
                     ircTag = plugin.getIrcTag();
-                    channels = plugin.getChannelManager().getChannels().toArray(new Channel[0]);
-                    for (Channel c : channels) {
+                    channels = plugin.getChannelManager().getChannels().toArray(new ChannelOld[0]);
+                    for (ChannelOld c : channels) {
                         if (c.getIRCToGameTags().contains(channelTag) && c.isVerbose()) {
                             String leaveMsg = "§f" + ircTag + sender + c.getColor().str + " has left the channel";
-                            c.sendMessage(ircTag.replaceAll("&([0-9a-f])", "§$1") + sender, leaveMsg, Channel.joinFormat, false, false);
+                            c.sendMessage(ircTag.replaceAll("&([0-9a-f])", "§$1") + sender, leaveMsg, ChannelOld.joinFormat, false, false);
                         }
                     }
                     ircEvent.setHandled(true);

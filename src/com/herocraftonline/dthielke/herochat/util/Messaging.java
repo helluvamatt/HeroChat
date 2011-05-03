@@ -18,12 +18,12 @@ import org.bukkit.entity.Player;
 
 import com.herocraftonline.dthielke.herochat.HeroChat;
 import com.herocraftonline.dthielke.herochat.HeroChat.ChatColor;
-import com.herocraftonline.dthielke.herochat.channels.Channel;
+import com.herocraftonline.dthielke.herochat.channels.ChannelOld;
 
 public class Messaging {
     private static final String[] HEALTH_COLORS = { "§0", "§4", "§6", "§e", "§2" };
 
-    public static String format(HeroChat plugin, Channel channel, String format, String sender, String receiver, String msg, boolean sentByPlayer, boolean allowColor) {
+    public static String format(HeroChat plugin, ChannelOld channel, String format, String sender, String receiver, String msg, boolean sentByPlayer, boolean allowColor) {
         if (allowColor) {
             msg = msg.replaceAll("&([0-9a-f])", "§$1");
         } else {
@@ -62,7 +62,7 @@ public class Messaging {
         return censoredMsg.toString();
     }
 
-    private static String createLeader(HeroChat plugin, Channel channel, String format, String senderName, String receiverName, String msg, boolean sentByPlayer) {
+    private static String createLeader(HeroChat plugin, ChannelOld channel, String format, String senderName, String receiverName, String msg, boolean sentByPlayer) {
         String prefix = "";
         String suffix = "";
         String group = "";

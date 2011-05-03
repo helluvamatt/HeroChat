@@ -17,7 +17,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerListener;
 import org.bukkit.event.player.PlayerQuitEvent;
 
-import com.herocraftonline.dthielke.herochat.channels.Channel;
+import com.herocraftonline.dthielke.herochat.channels.ChannelOld;
 import com.herocraftonline.dthielke.herochat.channels.ChannelManager;
 import com.herocraftonline.dthielke.herochat.channels.ConversationManager;
 import com.herocraftonline.dthielke.herochat.util.Messaging;
@@ -34,7 +34,7 @@ public class HeroChatPlayerListener extends PlayerListener {
     public void onPlayerCommandPreprocess(PlayerCommandPreprocessEvent event) {
         String input = event.getMessage().substring(1);
         String[] args = input.split(" ");
-        Channel c = plugin.getChannelManager().getChannel(args[0]);
+        ChannelOld c = plugin.getChannelManager().getChannel(args[0]);
         if (c != null && c.isQuickMessagable()) {
             event.setCancelled(true);
             plugin.getCommandManager().dispatch(event.getPlayer(), null, "qm", args);
@@ -65,7 +65,7 @@ public class HeroChatPlayerListener extends PlayerListener {
             }
         } else {
             ChannelManager cm = plugin.getChannelManager();
-            Channel c = cm.getActiveChannel(senderName);
+            ChannelOld c = cm.getActiveChannel(senderName);
             if (c != null) {
                 if (!c.getPlayers().contains(senderName)) {
                     c.addPlayer(senderName);

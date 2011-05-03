@@ -1,6 +1,6 @@
 package com.herocraftonline.dthielke.herochat.event;
 
-import com.herocraftonline.dthielke.herochat.channels.Channel;
+import com.herocraftonline.dthielke.herochat.channels.ChannelOld;
 
 @SuppressWarnings("serial")
 public class ChannelChatEvent extends ChannelEvent {
@@ -10,7 +10,7 @@ public class ChannelChatEvent extends ChannelEvent {
     protected String format;
     protected boolean sentByPlayer;
 
-    public ChannelChatEvent(Type type, Channel channel, String source, String message, String format, boolean sentByPlayer) {
+    public ChannelChatEvent(Type type, ChannelOld channel, String source, String message, String format, boolean sentByPlayer) {
         super(ChannelChatEvent.class.getSimpleName(), channel);
         this.source = source;
         this.message = message;

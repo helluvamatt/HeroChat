@@ -18,7 +18,7 @@ import org.bukkit.event.Event.Type;
 import com.herocraftonline.dthielke.herochat.HeroChat;
 import com.herocraftonline.dthielke.herochat.event.ChannelChatEvent;
 
-public class LocalChannel extends Channel {
+public class LocalChannel extends ChannelOld {
 
     protected int distance;
 

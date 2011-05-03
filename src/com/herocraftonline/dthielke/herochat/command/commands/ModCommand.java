@@ -12,7 +12,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.herocraftonline.dthielke.herochat.HeroChat;
-import com.herocraftonline.dthielke.herochat.channels.Channel;
+import com.herocraftonline.dthielke.herochat.channels.ChannelOld;
 import com.herocraftonline.dthielke.herochat.command.BaseCommand;
 
 public class ModCommand extends BaseCommand {
@@ -32,7 +32,7 @@ public class ModCommand extends BaseCommand {
         if (sender instanceof Player) {
             Player player = (Player) sender;
             String name = player.getName();
-            Channel c = plugin.getChannelManager().getChannel(args[0]);
+            ChannelOld c = plugin.getChannelManager().getChannel(args[0]);
             if (c != null) {
                 if (c.getModerators().contains(name) || plugin.getPermissionManager().isAdmin(player)) {
                     Player mod = plugin.getServer().getPlayer(args[1]);

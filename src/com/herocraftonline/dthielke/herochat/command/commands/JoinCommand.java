@@ -12,7 +12,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.herocraftonline.dthielke.herochat.HeroChat;
-import com.herocraftonline.dthielke.herochat.channels.Channel;
+import com.herocraftonline.dthielke.herochat.channels.ChannelOld;
 import com.herocraftonline.dthielke.herochat.channels.ChannelManager;
 import com.herocraftonline.dthielke.herochat.command.BaseCommand;
 
@@ -35,7 +35,7 @@ public class JoinCommand extends BaseCommand {
             Player player = (Player) sender;
             String name = player.getName();
             ChannelManager cm = plugin.getChannelManager();
-            Channel c = cm.getChannel(args[0]);
+            ChannelOld c = cm.getChannel(args[0]);
             if (c != null) {
                 if (!c.getBlacklist().contains(name)) {
                     if (!c.getWhitelist().isEmpty()) {

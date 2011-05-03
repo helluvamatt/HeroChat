@@ -14,7 +14,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.herocraftonline.dthielke.herochat.HeroChat;
-import com.herocraftonline.dthielke.herochat.channels.Channel;
+import com.herocraftonline.dthielke.herochat.channels.ChannelOld;
 import com.herocraftonline.dthielke.herochat.channels.ChannelManager;
 import com.herocraftonline.dthielke.herochat.command.BaseCommand;
 
@@ -33,7 +33,7 @@ public class KickCommand extends BaseCommand {
     @Override
     public void execute(CommandSender sender, String[] args) {
         ChannelManager cm = plugin.getChannelManager();
-        Channel channel = cm.getChannel(args[0]);
+        ChannelOld channel = cm.getChannel(args[0]);
         if (channel != null) {
             if (sender instanceof Player) {
                 Player kicker = (Player) sender;
@@ -47,7 +47,7 @@ public class KickCommand extends BaseCommand {
                                 kicker.sendMessage(plugin.getTag() + "§c" + name + " has been kicked from " + channel.getCName());
                                 kickee.sendMessage(plugin.getTag() + "§cYou have been kicked from " + channel.getCName());
                                 if (cm.getActiveChannel(name).equals(channel)) {
-                                    List<Channel> joined = cm.getJoinedChannels(name);
+                                    List<ChannelOld> joined = cm.getJoinedChannels(name);
                                     cm.setActiveChannel(name, joined.get(0).getName());
                                     kickee.sendMessage(plugin.getTag() + "§cSet active channel to " + cm.getActiveChannel(name).getCName());
                                 }

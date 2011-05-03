@@ -6,7 +6,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.herocraftonline.dthielke.herochat.HeroChat;
-import com.herocraftonline.dthielke.herochat.channels.Channel;
+import com.herocraftonline.dthielke.herochat.channels.ChannelOld;
 import com.herocraftonline.dthielke.herochat.channels.ChannelManager;
 import com.herocraftonline.dthielke.herochat.command.BaseCommand;
 
@@ -26,7 +26,7 @@ public class MuteCommand extends BaseCommand {
     @Override
     public void execute(CommandSender sender, String[] args) {
         ChannelManager cm = plugin.getChannelManager();
-        Channel channel = cm.getChannel(args[0]);
+        ChannelOld channel = cm.getChannel(args[0]);
         if (channel != null) {
             if (args.length == 1) {
                 displayMuteList(sender, channel);
@@ -65,7 +65,7 @@ public class MuteCommand extends BaseCommand {
         }
     }
     
-    private void displayMuteList(CommandSender sender, Channel channel) {
+    private void displayMuteList(CommandSender sender, ChannelOld channel) {
         String muteListMsg;
         List<String> mutes = channel.getMutelist();
         if (mutes.isEmpty()) {

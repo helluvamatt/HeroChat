@@ -21,7 +21,7 @@ import org.bukkit.util.config.Configuration;
 
 import com.herocraftonline.dthielke.herochat.HeroChat;
 import com.herocraftonline.dthielke.herochat.HeroChat.ChatColor;
-import com.herocraftonline.dthielke.herochat.channels.Channel;
+import com.herocraftonline.dthielke.herochat.channels.ChannelOld;
 import com.herocraftonline.dthielke.herochat.channels.ChannelManager;
 import com.herocraftonline.dthielke.herochat.channels.LocalChannel;
 
@@ -98,15 +98,15 @@ public class ConfigManager {
     }
 
     private void loadChannels(Configuration config) {
-        List<Channel> list = new ArrayList<Channel>();
+        List<ChannelOld> list = new ArrayList<ChannelOld>();
         for (String s : config.getKeys("channels")) {
             String root = "channels." + s + ".";
-            Channel c;
+            ChannelOld c;
             if (config.getBoolean(root + "options.local", false)) {
                 c = new LocalChannel(plugin);
                 ((LocalChannel) c).setDistance(config.getInt(root + "local-distance", 100));
             } else {
-                c = new Channel(plugin);
+                c = new ChannelOld(plugin);
             }
 
             c.setName(s);
@@ -149,7 +149,7 @@ public class ConfigManager {
             ChannelManager channelManager = plugin.getChannelManager();
             try {
                 String activeChannelName = config.getString("active-channel", channelManager.getDefaultChannel().getName());
-                Channel activeChannel = channelManager.getChannel(activeChannelName);
+                ChannelOld activeChannel = channelManager.getChannel(activeChannelName);
                 if (activeChannel != null) {
                     channelManager.setActiveChannel(name, activeChannelName);
                 } else {
@@ -161,7 +161,7 @@ public class ConfigManager {
                     channelManager.joinAutoChannels(name);
                 } else {
                     for (String s : joinedChannels) {
-                        Channel c = channelManager.getChannel(s);
+                        ChannelOld c = channelManager.getChannel(s);
                         if (c != null) {
                             List<String> whitelist = c.getWhitelist();
                             String group = plugin.getPermissionManager().getGroup(plugin.getServer().getPlayer(name));
@@ -207,8 +207,8 @@ public class ConfigManager {
     }
 
     private void saveChannels(Configuration config) throws Exception {
-        Channel[] channels = plugin.getChannelManager().getChannels().toArray(new Channel[0]);
-        for (Channel c : channels) {
+        ChannelOld[] channels = plugin.getChannelManager().getChannels().toArray(new ChannelOld[0]);
+        for (ChannelOld c : channels) {
             String root = "channels." + c.getName() + ".";
             config.setProperty(root + "nickname", c.getNick());
             config.setProperty(root + "password", c.getPassword());
@@ -247,10 +247,10 @@ public class ConfigManager {
         try {
             Configuration config = new Configuration(userConfigFile);
             ChannelManager configManager = plugin.getChannelManager();
-            Channel active = configManager.getActiveChannel(name);
-            List<Channel> joinedChannels = configManager.getJoinedChannels(name);
+            ChannelOld active = configManager.getActiveChannel(name);
+            List<ChannelOld> joinedChannels = configManager.getJoinedChannels(name);
             List<String> joinedChannelNames = new ArrayList<String>();
-            for (Channel channel : joinedChannels) {
+            for (ChannelOld channel : joinedChannels) {
                 joinedChannelNames.add(channel.getName());
             }
             config.setProperty("active-channel", active.getName());

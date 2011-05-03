@@ -19,8 +19,8 @@ import com.herocraftonline.dthielke.herochat.HeroChat;
 public class ChannelManager {
 
     private HeroChat plugin;
-    private List<Channel> channels;
-    private Channel defaultChannel;
+    private List<ChannelOld> channels;
+    private ChannelOld defaultChannel;
     private String defaultMsgFormat;
     private HashMap<String, String> activeChannels;
     private HashMap<String, List<String>> ignoreLists;
@@ -38,7 +38,7 @@ public class ChannelManager {
     }
 
     public void removeFromAll(String name) {
-        for (Channel c : channels) {
+        for (ChannelOld c : channels) {
             c.removePlayer(name);
         }
     }
@@ -47,7 +47,7 @@ public class ChannelManager {
         Player player = plugin.getServer().getPlayer(name);
         if (player != null) {
             String group = plugin.getPermissionManager().getGroup(player);
-            for (Channel c : channels) {
+            for (ChannelOld c : channels) {
                 if (c.isAutoJoined()) {
                     if (c.getWhitelist().isEmpty() || c.getWhitelist().contains(group)) {
                         c.addPlayer(name);
@@ -57,9 +57,9 @@ public class ChannelManager {
         }
     }
 
-    public List<Channel> getJoinedChannels(String name) {
-        List<Channel> list = new ArrayList<Channel>();
-        for (Channel c : channels) {
+    public List<ChannelOld> getJoinedChannels(String name) {
+        List<ChannelOld> list = new ArrayList<ChannelOld>();
+        for (ChannelOld c : channels) {
             if (c.getPlayers().contains(name)) {
                 list.add(c);
             }
@@ -71,7 +71,7 @@ public class ChannelManager {
         return list;
     }
 
-    public Channel getActiveChannel(String name) {
+    public ChannelOld getActiveChannel(String name) {
         String active = activeChannels.get(name);
         if (active == null) {
             activeChannels.put(name, defaultChannel.getName());
@@ -124,8 +124,8 @@ public class ChannelManager {
         ignoreLists.put(name, ignoreList);
     }
 
-    public Channel getChannel(String name) {
-        for (Channel c : channels) {
+    public ChannelOld getChannel(String name) {
+        for (ChannelOld c : channels) {
             if (c.getName().equalsIgnoreCase(name) || c.getNick().equalsIgnoreCase(name)) {
                 return c;
             }
@@ -133,27 +133,27 @@ public class ChannelManager {
         return null;
     }
 
-    public void addChannel(Channel c) {
+    public void addChannel(ChannelOld c) {
         channels.add(c);
     }
 
-    public void removeChannel(Channel c) {
+    public void removeChannel(ChannelOld c) {
         channels.remove(c);
     }
 
-    public List<Channel> getChannels() {
+    public List<ChannelOld> getChannels() {
         return channels;
     }
 
-    public void setChannels(List<Channel> channels) {
+    public void setChannels(List<ChannelOld> channels) {
         this.channels = channels;
     }
 
-    public void setDefaultChannel(Channel defaultChannel) {
+    public void setDefaultChannel(ChannelOld defaultChannel) {
         this.defaultChannel = defaultChannel;
     }
 
-    public Channel getDefaultChannel() {
+    public ChannelOld getDefaultChannel() {
         return defaultChannel;
     }
 

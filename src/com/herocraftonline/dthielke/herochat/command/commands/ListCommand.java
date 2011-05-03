@@ -15,7 +15,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.herocraftonline.dthielke.herochat.HeroChat;
-import com.herocraftonline.dthielke.herochat.channels.Channel;
+import com.herocraftonline.dthielke.herochat.channels.ChannelOld;
 import com.herocraftonline.dthielke.herochat.command.BaseCommand;
 
 public class ListCommand extends BaseCommand {
@@ -40,7 +40,7 @@ public class ListCommand extends BaseCommand {
         } else {
             name = "";
         }
-        List<Channel> visible = getVisibleChannels(plugin.getChannelManager().getChannels(), name);
+        List<ChannelOld> visible = getVisibleChannels(plugin.getChannelManager().getChannels(), name);
         int pages = (int) Math.ceil((double) visible.size() / CHANNELS_PER_PAGE);
         int p;
         if (args.length == 0) {
@@ -63,7 +63,7 @@ public class ListCommand extends BaseCommand {
             if (index >= visible.size()) {
                 break;
             }
-            Channel c = visible.get(index);
+            ChannelOld c = visible.get(index);
             String msg = "  " + c.getColor().str + "[" + c.getNick() + "] " + c.getName();
             if (c.getPlayers().contains(name)) {
                 msg = msg.concat(" *");
@@ -72,9 +72,9 @@ public class ListCommand extends BaseCommand {
         }
     }
 
-    private List<Channel> getVisibleChannels(List<Channel> channels, String name) {
-        List<Channel> visible = new ArrayList<Channel>();
-        for (Channel c : channels) {
+    private List<ChannelOld> getVisibleChannels(List<ChannelOld> channels, String name) {
+        List<ChannelOld> visible = new ArrayList<ChannelOld>();
+        for (ChannelOld c : channels) {
             if (!c.isHidden() || c.getPlayers().contains(name)) {
                 visible.add(c);
             }

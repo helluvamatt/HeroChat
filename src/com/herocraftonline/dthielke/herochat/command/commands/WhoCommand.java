@@ -14,7 +14,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.herocraftonline.dthielke.herochat.HeroChat;
-import com.herocraftonline.dthielke.herochat.channels.Channel;
+import com.herocraftonline.dthielke.herochat.channels.ChannelOld;
 import com.herocraftonline.dthielke.herochat.command.BaseCommand;
 
 public class WhoCommand extends BaseCommand {
@@ -34,7 +34,7 @@ public class WhoCommand extends BaseCommand {
         if (sender instanceof Player) {
             Player player = (Player) sender;
             String name = player.getName();
-            Channel c = plugin.getChannelManager().getActiveChannel(name);
+            ChannelOld c = plugin.getChannelManager().getActiveChannel(name);
             if (c != null) {
                 List<String> players = c.getPlayers();
                 String playerList = "§cCurrently in " + c.getCName() + "§f: ";

@@ -31,7 +31,7 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.ensifera.animosity.craftirc.CraftIRC;
-import com.herocraftonline.dthielke.herochat.channels.Channel;
+import com.herocraftonline.dthielke.herochat.channels.ChannelOld;
 import com.herocraftonline.dthielke.herochat.channels.ChannelManager;
 import com.herocraftonline.dthielke.herochat.channels.ConversationManager;
 import com.herocraftonline.dthielke.herochat.command.CommandManager;
@@ -85,6 +85,7 @@ public class HeroChat extends JavaPlugin {
         }
     }
 
+    public PermissionHandler permissions;
     private static Logger log = Logger.getLogger("Minecraft");
     private static Logger chatLog = Logger.getLogger("HeroChat");
     private boolean separateChatLog;
@@ -216,8 +217,8 @@ public class HeroChat extends JavaPlugin {
                 for (Player player : getServer().getOnlinePlayers()) {
                     String name = player.getName();
                     String group = permissionManager.getGroup(player);
-                    List<Channel> joinedChannels = channelManager.getJoinedChannels(name);
-                    for (Channel channel : joinedChannels) {
+                    List<ChannelOld> joinedChannels = channelManager.getJoinedChannels(name);
+                    for (ChannelOld channel : joinedChannels) {
                         if (!group.isEmpty() && !channel.getWhitelist().contains(group) && !channel.getWhitelist().isEmpty()) {
                             channel.removePlayer(name);
                         }

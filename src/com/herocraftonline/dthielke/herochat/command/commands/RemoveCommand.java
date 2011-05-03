@@ -15,7 +15,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.herocraftonline.dthielke.herochat.HeroChat;
-import com.herocraftonline.dthielke.herochat.channels.Channel;
+import com.herocraftonline.dthielke.herochat.channels.ChannelOld;
 import com.herocraftonline.dthielke.herochat.channels.ChannelManager;
 import com.herocraftonline.dthielke.herochat.command.BaseCommand;
 
@@ -36,7 +36,7 @@ public class RemoveCommand extends BaseCommand {
         if (sender instanceof Player) {
             Player player = (Player) sender;
             ChannelManager cm = plugin.getChannelManager();
-            Channel c = cm.getChannel(args[0]);
+            ChannelOld c = cm.getChannel(args[0]);
             if (c != null) {
                 if (plugin.getPermissionManager().isAdmin(player) || c.getModerators().contains(player.getName())) {
                     if (cm.getChannels().size() > 1) {
@@ -44,7 +44,7 @@ public class RemoveCommand extends BaseCommand {
                             String[] players = cm.getPlayerList();
                             for (String s : players) {
                                 if (cm.getActiveChannel(s).equals(c)) {
-                                    List<Channel> joined = cm.getJoinedChannels(s);
+                                    List<ChannelOld> joined = cm.getJoinedChannels(s);
                                     cm.setActiveChannel(s, joined.get(0).getName());
                                     Player p = plugin.getServer().getPlayer(s);
                                     if (p != null) {
