@@ -12,8 +12,10 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.herocraftonline.dthielke.herochat.HeroChat;
-import com.herocraftonline.dthielke.herochat.channels.ChannelOld;
+import com.herocraftonline.dthielke.herochat.channels.Channel;
+import com.herocraftonline.dthielke.herochat.chatters.Chatter;
 import com.herocraftonline.dthielke.herochat.command.BaseCommand;
+import com.herocraftonline.dthielke.herochat.util.Messaging;
 
 public class QuickMsgCommand extends BaseCommand {
 
@@ -31,23 +33,26 @@ public class QuickMsgCommand extends BaseCommand {
     public void execute(CommandSender sender, String[] args) {
         if (sender instanceof Player) {
             Player player = (Player) sender;
-            String name = player.getName();
-            ChannelOld c = plugin.getChannelManager().getChannel(args[0]);
-            if (c != null) {
-                if (c.getPlayers().contains(name)) {
-                    String msg = "";
-                    for (int i = 1; i < args.length; i++) {
-                        msg += args[i] + " ";
-                    }
-                    c.sendMessage(name, msg.trim());
-                } else {
-                    sender.sendMessage(plugin.getTag() + "§cYou are not in " + c.getCName());
-                }
-            } else {
-                sender.sendMessage(plugin.getTag() + "§cChannel not found");
+            Chatter chatter = plugin.getChatterManager().getChatter(player);
+            Channel channel = plugin.getChannelManager().getChannel(args[0]);
+
+            if (channel == null) {
+                Messaging.send(player, "Channel not found.");
+                return;
             }
-        } else {
-            sender.sendMessage(plugin.getTag() + "§cYou must be a player to use this command");
+
+            if (!channel.hasChatter(chatter)) {
+                Messaging.send(player, "You are not in $1.", channel.getName());
+                return;
+            }
+
+            String msg = "";
+            for (int i = 1; i < args.length; i++) {
+                msg += args[i] + " ";
+            }
+            msg = msg.trim();
+
+            channel.sendPlayerMessage(chatter, msg);
         }
     }
 

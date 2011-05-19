@@ -12,9 +12,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.herocraftonline.dthielke.herochat.HeroChat;
-import com.herocraftonline.dthielke.herochat.channels.ChannelOld;
 import com.herocraftonline.dthielke.herochat.channels.ChannelManager;
-import com.herocraftonline.dthielke.herochat.channels.ConversationManager;
 import com.herocraftonline.dthielke.herochat.command.BaseCommand;
 
 public class FocusCommand extends BaseCommand {
@@ -45,7 +43,7 @@ public class FocusCommand extends BaseCommand {
                             return;
                         }
                     }
-                    if (!c.getPlayers().contains(name)) {
+                    if (!c.getChatters().contains(name)) {
                         String password = c.getPassword();
                         if (password.isEmpty() || args.length == 2 && args[1].equals(password) || plugin.getPermissionManager().isAdmin(player)) {
                             c.addPlayer(name);

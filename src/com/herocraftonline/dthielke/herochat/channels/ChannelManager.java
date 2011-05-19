@@ -8,168 +8,78 @@
 
 package com.herocraftonline.dthielke.herochat.channels;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.bukkit.entity.Player;
 
 import com.herocraftonline.dthielke.herochat.HeroChat;
+import com.herocraftonline.dthielke.herochat.chatters.Chatter;
+import com.herocraftonline.dthielke.herochat.util.PermissionManager;
+import com.herocraftonline.dthielke.herochat.util.PermissionManager.ChannelPermission;
 
 public class ChannelManager {
 
-    private HeroChat plugin;
-    private List<ChannelOld> channels;
-    private ChannelOld defaultChannel;
-    private String defaultMsgFormat;
-    private HashMap<String, String> activeChannels;
-    private HashMap<String, List<String>> ignoreLists;
-    private List<String> mutelist;
+    private final HeroChat plugin;
+    private Set<Channel> channels = new HashSet<Channel>();
+    private Channel defaultChannel;
 
     public ChannelManager(HeroChat plugin) {
         this.plugin = plugin;
-        activeChannels = new HashMap<String, String>();
-        ignoreLists = new HashMap<String, List<String>>();
-        mutelist = new ArrayList<String>();
     }
 
-    public String[] getPlayerList() {
-        return activeChannels.keySet().toArray(new String[0]);
+    public boolean addChannel(Channel channel) {
+        return channels.add(channel);
     }
 
-    public void removeFromAll(String name) {
-        for (ChannelOld c : channels) {
-            c.removePlayer(name);
+    public boolean removeChannel(Channel channel) {
+        if (channel.equals(defaultChannel)) {
+            return false;
         }
-    }
-
-    public void joinAutoChannels(String name) {
-        Player player = plugin.getServer().getPlayer(name);
-        if (player != null) {
-            String group = plugin.getPermissionManager().getGroup(player);
-            for (ChannelOld c : channels) {
-                if (c.isAutoJoined()) {
-                    if (c.getWhitelist().isEmpty() || c.getWhitelist().contains(group)) {
-                        c.addPlayer(name);
-                    }
+        for (Chatter chatter : channel.getChatters()) {
+            channel.removeChatter(chatter, true);
+            if (chatter.getFocus().equals(channel)) {
+                if (defaultChannel.hasChatter(chatter)) {
+                    chatter.setFocus(defaultChannel, true);
+                } else {
+                    chatter.setFocus(chatter.getChannels()[0], true);
                 }
             }
         }
+        return channels.remove(channel);
     }
 
-    public List<ChannelOld> getJoinedChannels(String name) {
-        List<ChannelOld> list = new ArrayList<ChannelOld>();
-        for (ChannelOld c : channels) {
-            if (c.getPlayers().contains(name)) {
-                list.add(c);
-            }
-        }
-        if (list.isEmpty()) {
-            defaultChannel.addPlayer(name);
-            list.add(defaultChannel);
-        }
-        return list;
-    }
-
-    public ChannelOld getActiveChannel(String name) {
-        String active = activeChannels.get(name);
-        if (active == null) {
-            activeChannels.put(name, defaultChannel.getName());
-            return defaultChannel;
-        }
-        return getChannel(active);
-    }
-
-    public void setActiveChannel(String player, String channel) {
-        if (channel != null) {
-            activeChannels.put(player, channel);
-        } else {
-            activeChannels.remove(player);
-        }
-    }
-
-    public boolean isIgnoring(String ignorer, String ignoree) {
-        List<String> ignoreList = ignoreLists.get(ignorer);
-        if (ignoreList != null) {
-            return ignoreList.contains(ignoree);
-        }
-        return false;
-    }
-
-    public void addIgnore(String ignorer, String ignoree) {
-        List<String> ignoreList = ignoreLists.get(ignorer);
-        if (ignoreList == null) {
-            ignoreList = new ArrayList<String>();
-        }
-        ignoreList.add(ignoree);
-        ignoreLists.put(ignorer, ignoreList);
-    }
-
-    public void removeIgnore(String ignorer, String ignoree) {
-        List<String> ignoreList = ignoreLists.get(ignorer);
-        if (ignoreList != null) {
-            ignoreList.remove(ignoree);
-        }
-    }
-
-    public List<String> getIgnoreList(String name) {
-        List<String> ignoreList = ignoreLists.get(name);
-        if (ignoreList == null) {
-            ignoreList = new ArrayList<String>();
-        }
-        return ignoreList;
-    }
-
-    public void setIgnoreList(String name, List<String> ignoreList) {
-        ignoreLists.put(name, ignoreList);
-    }
-
-    public ChannelOld getChannel(String name) {
-        for (ChannelOld c : channels) {
-            if (c.getName().equalsIgnoreCase(name) || c.getNick().equalsIgnoreCase(name)) {
-                return c;
+    public Channel getChannel(String name) {
+        for (Channel channel : channels) {
+            if (channel.getName().equalsIgnoreCase(name)) {
+                return channel;
             }
         }
         return null;
     }
 
-    public void addChannel(ChannelOld c) {
-        channels.add(c);
+    public void autoPopulateChannels(Chatter chatter, boolean firstJoin) {
+        Player player = chatter.getPlayer();
+        PermissionManager perm = plugin.getPermissionManager();
+        for (Channel channel : channels) {
+            if (perm.hasChannelPermission(player, channel, ChannelPermission.AUTOJOIN_ALWAYS)) {
+                channel.addChatter(chatter, false);
+            } else if (firstJoin && perm.hasChannelPermission(player, channel, ChannelPermission.AUTOFOCUS_ONCE)) {
+                channel.addChatter(chatter, false);
+            }
+        }
     }
 
-    public void removeChannel(ChannelOld c) {
-        channels.remove(c);
-    }
-
-    public List<ChannelOld> getChannels() {
-        return channels;
-    }
-
-    public void setChannels(List<ChannelOld> channels) {
-        this.channels = channels;
-    }
-
-    public void setDefaultChannel(ChannelOld defaultChannel) {
+    public void setDefaultChannel(Channel defaultChannel) {
         this.defaultChannel = defaultChannel;
     }
 
-    public ChannelOld getDefaultChannel() {
+    public Channel getDefaultChannel() {
         return defaultChannel;
     }
-
-    public void setDefaultMsgFormat(String defaultMsgFormat) {
-        this.defaultMsgFormat = defaultMsgFormat;
-    }
-
-    public String getDefaultMsgFormat() {
-        return defaultMsgFormat;
-    }
-    public void setMutelist(List<String> mutelist) {
-        this.mutelist = mutelist;
-    }
-
-    public List<String> getMutelist() {
-        return mutelist;
+    
+    public final Channel[] getChannels() {
+        return channels.toArray(new Channel[0]);
     }
 
 }

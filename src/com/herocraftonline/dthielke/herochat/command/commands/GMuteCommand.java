@@ -27,35 +27,33 @@ public class GMuteCommand extends BaseCommand {
         ChannelManager cm = plugin.getChannelManager();
         if (args.length == 0) {
             displayMuteList(sender);
-        } else {
-            if (sender instanceof Player) {
-                Player muter = (Player) sender;
-                if (plugin.getPermissionManager().isAdmin(muter)) {
-                    Player mutee = plugin.getServer().getPlayer(args[0]);
-                    if (mutee != null) {
-                        String name = mutee.getName();
-                        if (!(plugin.getPermissionManager().isAdmin(mutee))) {
-                            if (cm.getMutelist().contains(name)) {
-                                cm.getMutelist().remove(name);
-                                muter.sendMessage(plugin.getTag() + "§c" + name + " has been globally unmuted");
-                                mutee.sendMessage(plugin.getTag() + "§cYou have been globally unmuted");
-                            } else {
-                                cm.getMutelist().add(name);
-                                muter.sendMessage(plugin.getTag() + "§c" + name + " has been globally muted");
-                                mutee.sendMessage(plugin.getTag() + "§cYou have been globally muted");
-                            }
+        } else if (sender instanceof Player) {
+            Player muter = (Player) sender;
+            if (plugin.getPermissionManager().isAdmin(muter)) {
+                Player mutee = plugin.getServer().getPlayer(args[0]);
+                if (mutee != null) {
+                    String name = mutee.getName();
+                    if (!plugin.getPermissionManager().isAdmin(mutee)) {
+                        if (cm.getMutelist().contains(name)) {
+                            cm.getMutelist().removeChannel(name);
+                            muter.sendMessage(plugin.getTag() + "§c" + name + " has been globally unmuted");
+                            mutee.sendMessage(plugin.getTag() + "§cYou have been globally unmuted");
                         } else {
-                            muter.sendMessage(plugin.getTag() + "§cYou cannot globally mute " + name);
+                            cm.getMutelist().addChannel(name);
+                            muter.sendMessage(plugin.getTag() + "§c" + name + " has been globally muted");
+                            mutee.sendMessage(plugin.getTag() + "§cYou have been globally muted");
                         }
                     } else {
-                        muter.sendMessage(plugin.getTag() + "§cPlayer not found");
+                        muter.sendMessage(plugin.getTag() + "§cYou cannot globally mute " + name);
                     }
                 } else {
-                    muter.sendMessage(plugin.getTag() + "§cYou do not have sufficient permission");
+                    muter.sendMessage(plugin.getTag() + "§cPlayer not found");
                 }
             } else {
-                sender.sendMessage(plugin.getTag() + "§cYou must be a player to use this command");
+                muter.sendMessage(plugin.getTag() + "§cYou do not have sufficient permission");
             }
+        } else {
+            sender.sendMessage(plugin.getTag() + "§cYou must be a player to use this command");
         }
     }
 

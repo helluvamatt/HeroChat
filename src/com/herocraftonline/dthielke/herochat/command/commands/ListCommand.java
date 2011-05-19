@@ -15,7 +15,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.herocraftonline.dthielke.herochat.HeroChat;
-import com.herocraftonline.dthielke.herochat.channels.ChannelOld;
 import com.herocraftonline.dthielke.herochat.command.BaseCommand;
 
 public class ListCommand extends BaseCommand {
@@ -63,9 +62,9 @@ public class ListCommand extends BaseCommand {
             if (index >= visible.size()) {
                 break;
             }
-            ChannelOld c = visible.get(index);
+            ChannelOld c = visible.getChannel(index);
             String msg = "  " + c.getColor().str + "[" + c.getNick() + "] " + c.getName();
-            if (c.getPlayers().contains(name)) {
+            if (c.getChatters().contains(name)) {
                 msg = msg.concat(" *");
             }
             sender.sendMessage(msg);
@@ -75,8 +74,8 @@ public class ListCommand extends BaseCommand {
     private List<ChannelOld> getVisibleChannels(List<ChannelOld> channels, String name) {
         List<ChannelOld> visible = new ArrayList<ChannelOld>();
         for (ChannelOld c : channels) {
-            if (!c.isHidden() || c.getPlayers().contains(name)) {
-                visible.add(c);
+            if (!c.isHidden() || c.getChatters().contains(name)) {
+                visible.addChannel(c);
             }
         }
         return visible;

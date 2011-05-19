@@ -3,21 +3,21 @@ package com.herocraftonline.dthielke.herochat.event;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 
-import com.herocraftonline.dthielke.herochat.util.Message;
+import com.herocraftonline.dthielke.herochat.messages.Message;
 
 @SuppressWarnings("serial")
-public class HeroChatMessagePreprocessEvent extends Event implements Cancellable {
-    
-    private final Message message;
+public class ChannelMessageEvent extends Event implements Cancellable {
+
+    private final Message data;
     private boolean cancelled = false;
-    
-    public HeroChatMessagePreprocessEvent(Message message) {
-        super("HeroChatMessagePreprocessEvent");
-        this.message = message;
+
+    public ChannelMessageEvent(Message data) {
+        super("ChannelMessageEvent");
+        this.data = data;
     }
-    
-    public final Message getMessage() {
-        return message;
+
+    public final Message getData() {
+        return data;
     }
 
     @Override
@@ -29,5 +29,5 @@ public class HeroChatMessagePreprocessEvent extends Event implements Cancellable
     public void setCancelled(boolean cancelled) {
         this.cancelled = cancelled;
     }
-    
+
 }

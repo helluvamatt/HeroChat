@@ -8,23 +8,24 @@
 
 package com.herocraftonline.dthielke.herochat.command.commands;
 
-import java.util.List;
-import java.util.logging.Level;
-
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.herocraftonline.dthielke.herochat.HeroChat;
-import com.herocraftonline.dthielke.herochat.channels.ChannelOld;
+import com.herocraftonline.dthielke.herochat.channels.Channel;
 import com.herocraftonline.dthielke.herochat.channels.ChannelManager;
+import com.herocraftonline.dthielke.herochat.chatters.Chatter;
 import com.herocraftonline.dthielke.herochat.command.BaseCommand;
+import com.herocraftonline.dthielke.herochat.util.Messaging;
+import com.herocraftonline.dthielke.herochat.util.PermissionManager;
+import com.herocraftonline.dthielke.herochat.util.PermissionManager.Permission;
 
 public class RemoveCommand extends BaseCommand {
 
     public RemoveCommand(HeroChat plugin) {
         super(plugin);
         name = "Remove";
-        description = "Removes a command";
+        description = "Removes a channel";
         usage = "§e/ch remove §9<channel>";
         minArgs = 1;
         maxArgs = 1;
@@ -33,49 +34,38 @@ public class RemoveCommand extends BaseCommand {
 
     @Override
     public void execute(CommandSender sender, String[] args) {
+        ChannelManager channelManager = plugin.getChannelManager();
+        Channel channel = channelManager.getChannel(args[0]);
+
+        if (channel == null) {
+            Messaging.send(sender, "Channel not found.");
+            return;
+        }
+        
+        if (channel.equals(channelManager.getDefaultChannel())) {
+            Messaging.send(sender, "You cannot delete the default channel.");
+            return;
+        }
+        
         if (sender instanceof Player) {
             Player player = (Player) sender;
-            ChannelManager cm = plugin.getChannelManager();
-            ChannelOld c = cm.getChannel(args[0]);
-            if (c != null) {
-                if (plugin.getPermissionManager().isAdmin(player) || c.getModerators().contains(player.getName())) {
-                    if (cm.getChannels().size() > 1) {
-                        if (!c.equals(cm.getDefaultChannel())) {
-                            String[] players = cm.getPlayerList();
-                            for (String s : players) {
-                                if (cm.getActiveChannel(s).equals(c)) {
-                                    List<ChannelOld> joined = cm.getJoinedChannels(s);
-                                    cm.setActiveChannel(s, joined.get(0).getName());
-                                    Player p = plugin.getServer().getPlayer(s);
-                                    if (p != null) {
-                                        p.sendMessage(plugin.getTag() + "§cSet active channel to " + cm.getActiveChannel(s).getCName());
-                                    }
-                                }
-                            }
-                            cm.removeChannel(c);
-                            sender.sendMessage(plugin.getTag() + "§cChannel " + c.getCName() + " §cremoved");
-                            try {
-                                plugin.getConfigManager().save();
-                            } catch (Exception e) {
-                                plugin.log(Level.WARNING, "Error encountered while saving data. Disabling HeroChat.");
-                                plugin.getServer().getPluginManager().disablePlugin(plugin);
-                                return;
-                            }
-                        } else {
-                            sender.sendMessage(plugin.getTag() + "§cYou cannot delete the default channel");
-                        }
-                    } else {
-                        sender.sendMessage(plugin.getTag() + "§cYou cannot delete the last channel");
-                    }
-                } else {
-                    sender.sendMessage(plugin.getTag() + "§cYou do not have sufficient permission");
-                }
-            } else {
-                sender.sendMessage(plugin.getTag() + "§cChannel not found");
+            PermissionManager permissions = plugin.getPermissionManager();
+            Chatter chatter = plugin.getChatterManager().getChatter(player);
+
+            boolean removePerm = permissions.hasPermission(player, Permission.REMOVE);
+            boolean adminRemovePerm = permissions.hasPermission(player, Permission.ADMIN_REMOVE);
+            boolean mod = channel.isModerator(chatter);
+
+            if ((!removePerm && !adminRemovePerm) || (removePerm && !adminRemovePerm && !mod)) {
+                Messaging.send(player, "Insufficient permission.");
+                return;
             }
-        } else {
-            sender.sendMessage(plugin.getTag() + "§cYou must be a player to use this command");
         }
+        
+        channelManager.removeChannel(channel);
+        plugin.getConfigManager().save();
+        
+        Messaging.send(sender, "Removed $1.", channel.getName());
     }
 
 }

@@ -12,7 +12,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.herocraftonline.dthielke.herochat.HeroChat;
-import com.herocraftonline.dthielke.herochat.channels.ChannelOld;
 import com.herocraftonline.dthielke.herochat.channels.ChannelManager;
 import com.herocraftonline.dthielke.herochat.command.BaseCommand;
 
@@ -47,7 +46,7 @@ public class JoinCommand extends BaseCommand {
                     }
                     String password = c.getPassword();
                     if (password.isEmpty() || args.length == 2 && args[1].equals(password) || plugin.getPermissionManager().isAdmin(player)) {
-                        if (!c.getPlayers().contains(name)) {
+                        if (!c.getChatters().contains(name)) {
                             c.addPlayer(name);
                             sender.sendMessage(plugin.getTag() + "§cJoined channel " + c.getCName());
                         } else {

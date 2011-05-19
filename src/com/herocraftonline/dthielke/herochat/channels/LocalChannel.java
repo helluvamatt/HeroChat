@@ -8,92 +8,86 @@
 
 package com.herocraftonline.dthielke.herochat.channels;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Event.Type;
-
 import com.herocraftonline.dthielke.herochat.HeroChat;
-import com.herocraftonline.dthielke.herochat.event.ChannelChatEvent;
+import com.herocraftonline.dthielke.herochat.chatters.Chatter;
+import com.herocraftonline.dthielke.herochat.event.ChannelMessageEvent;
+import com.herocraftonline.dthielke.herochat.messages.Message;
+import com.herocraftonline.dthielke.herochat.messages.PlayerMessage;
+import com.herocraftonline.dthielke.herochat.util.Messaging;
 
-public class LocalChannel extends ChannelOld {
+public class LocalChannel extends Channel {
 
-    protected int distance;
+    public static final int DEFAULT_DISTANCE = 100;
+    protected int distance = DEFAULT_DISTANCE;
 
-    public LocalChannel(HeroChat plugin) {
-        super(plugin);
-        distance = 100;
+    public LocalChannel(HeroChat plugin, String name, String nick) {
+        super(plugin, name, nick);
+    }
+
+    public LocalChannel(HeroChat plugin, String name, String nick, String password, String format, ChatColor color, Mode mode, int distance) {
+        super(plugin, name, nick, password, format, color, mode);
+        this.distance = distance;
     }
 
     @Override
-    public void sendMessage(String name, String msg) {
-        ChannelChatEvent event = new ChannelChatEvent(Type.CUSTOM_EVENT, this, name, msg, msgFormat, true);
-        plugin.getServer().getPluginManager().callEvent(event);
-        name = event.getSource();
-        msg = event.getMessage();
-        String format = event.getFormat();
-        boolean sentByPlayer = event.isSentByPlayer();
-        if (!event.isCancelled()) {
-            Player sender = plugin.getServer().getPlayer(name);
-            if (sender != null) {
-                if (enabled || plugin.getPermissionManager().isAdmin(sender) || moderators.contains(name)) {
-                    String group = plugin.getPermissionManager().getGroup(sender);
-                    if (group == null || voicelist.contains(group) || voicelist.isEmpty()) {
-                        if (!plugin.getChannelManager().getMutelist().contains(sender.getName())) {
-                            if (!mutelist.contains(sender.getName())) {
-                                if (worlds.isEmpty() || worlds.contains(sender.getWorld().getName())) {
-                                    List<String> recipients = getListeners(sender);
-                                    boolean color = plugin.getPermissionManager().isAllowedColor(sender);
-                                    sendUncheckedMessage(name, msg, format, sentByPlayer, recipients, true, color);
-
-                                    if (recipients.size() == 1) {
-                                        sender.sendMessage("§8No one hears you.");
-                                    }
-                                } else {
-                                    sender.sendMessage(plugin.getTag() + "You are not in the correct world for " + getCName());
-                                }
-                            } else {
-                                sender.sendMessage(plugin.getTag() + "You are muted in " + getCName());
-                            }
-                        } else {
-                            sender.sendMessage(plugin.getTag() + "You are globally muted");
-                        }
-                    } else {
-                        sender.sendMessage(plugin.getTag() + "You cannot speak in " + getCName());
-                    }
-                } else {
-                    sender.sendMessage(plugin.getTag() + "This channel is disabled");
-                }
-            }
+    public boolean sendMessage(Message message) {
+        if (message instanceof PlayerMessage) {
+            PlayerMessage pMessage = (PlayerMessage) message;
+            Chatter speaker = pMessage.getSender();
+            pMessage.setRecipients(getNearbyChatters(speaker));
         }
+        
+        // fire a message event
+        ChannelMessageEvent event = new ChannelMessageEvent(message);
+        plugin.getServer().getPluginManager().callEvent(event);
+
+        // check if the event was cancelled
+        if (event.isCancelled()) {
+            return false;
+        }
+
+        // format the message
+        String formatted = Messaging.format(event.getData());
+
+        // send the result to the recipients
+        for (Chatter chatter : message.getRecipients()) {
+            chatter.getPlayer().sendMessage(formatted);
+        }
+
+        return true;
     }
 
-    private List<String> getListeners(Player origin) {
-        List<String> list = new ArrayList<String>();
-        Location sLoc = origin.getLocation();
+    private Set<Chatter> getNearbyChatters(Chatter speaker) {
+        Set<Chatter> nearbyChatters = new HashSet<Chatter>();
+        Location sLoc = speaker.getPlayer().getLocation();
         String sWorld = sLoc.getWorld().getName();
-        for (String name : players) {
-            Player player = plugin.getServer().getPlayer(name);
-            if (player != null) {
-                if (!plugin.getChannelManager().isIgnoring(name, origin.getName())) {
-                    Location pLoc = player.getLocation();
-                    if (sWorld.equals(pLoc.getWorld().getName())) {
-                        int dx = sLoc.getBlockX() - pLoc.getBlockX();
-                        int dz = sLoc.getBlockZ() - pLoc.getBlockZ();
-                        dx = dx * dx;
-                        dz = dz * dz;
-                        int d = (int) Math.sqrt(dx + dz);
+        for (Chatter chatter : chatters) {
+            if (chatter.equals(speaker)) {
+                continue;
+            }
+            Player player = chatter.getPlayer();
+            if (!chatter.isIgnoring(speaker)) {
+                Location pLoc = player.getLocation();
+                if (sWorld.equals(pLoc.getWorld().getName())) {
+                    int dx = sLoc.getBlockX() - pLoc.getBlockX();
+                    int dz = sLoc.getBlockZ() - pLoc.getBlockZ();
+                    dx = dx * dx;
+                    dz = dz * dz;
+                    int d = (int) Math.sqrt(dx + dz);
 
-                        if (d <= distance) {
-                            list.add(player.getName());
-                        }
+                    if (d <= distance) {
+                        nearbyChatters.add(chatter);
                     }
                 }
             }
         }
-        return list;
+        return nearbyChatters;
     }
 
     public int getDistance() {

@@ -28,3 +28,4 @@ commands:
   ignore:
     description: Ignores a player
     usage: /<command> player
+depend: [Permissions]

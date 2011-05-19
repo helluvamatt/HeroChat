@@ -10,19 +10,17 @@ package com.herocraftonline.dthielke.herochat.command.commands;
 
 import java.util.logging.Level;
 
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.herocraftonline.dthielke.herochat.HeroChat;
-import com.herocraftonline.dthielke.herochat.HeroChat.ChatColor;
-import com.herocraftonline.dthielke.herochat.channels.ChannelOld;
 import com.herocraftonline.dthielke.herochat.channels.ChannelManager;
 import com.herocraftonline.dthielke.herochat.command.BaseCommand;
 
 public class CreateCommand extends BaseCommand {
 
-    private static final String[] RESERVED_NAMES = { "ch", "join", "leave", "ignore", "help", "ban", "create", "kick", "list", "mod", "qm", "reload", "remove",
-                                                    "who" };
+    private static final String[] RESERVED_NAMES = { "ch", "join", "leave", "ignore", "help", "ban", "create", "kick", "list", "mod", "qm", "reload", "remove", "who" };
 
     public CreateCommand(HeroChat plugin) {
         super(plugin);
@@ -66,7 +64,7 @@ public class CreateCommand extends BaseCommand {
                 ChannelOld c = createChannel(args, plugin.getPermissionManager().isAdmin(creator));
                 if (c != null) {
                     String name = creator.getName();
-                    c.getModerators().add(name);
+                    c.getModerators().addChannel(name);
                     c.addPlayer(name);
                     cm.addChannel(c);
                     cm.setActiveChannel(name, c.getName());
@@ -117,27 +115,27 @@ public class CreateCommand extends BaseCommand {
     private void applyOptions(ChannelOld c, char[] args, boolean full) {
         for (char option : args) {
             switch (option) {
-            case 'h':
-                c.setHidden(true);
-                break;
-            case 'j':
-                c.setVerbose(true);
-                break;
-            case 'a':
-                if (full) {
-                    c.setAutoJoined(true);
-                }
-                break;
-            case 'q':
-                if (full) {
-                    c.setQuickMessagable(true);
-                }
-                break;
-            case 'f':
-                if (full) {
-                    c.setForced(true);
-                }
-                break;
+                case 'h':
+                    c.setHidden(true);
+                    break;
+                case 'j':
+                    c.setVerbose(true);
+                    break;
+                case 'a':
+                    if (full) {
+                        c.setAutoJoined(true);
+                    }
+                    break;
+                case 'q':
+                    if (full) {
+                        c.setQuickMessagable(true);
+                    }
+                    break;
+                case 'f':
+                    if (full) {
+                        c.setForced(true);
+                    }
+                    break;
             }
         }
     }

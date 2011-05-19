@@ -8,15 +8,17 @@
 
 package com.herocraftonline.dthielke.herochat.command.commands;
 
-import java.util.List;
-
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.herocraftonline.dthielke.herochat.HeroChat;
-import com.herocraftonline.dthielke.herochat.channels.ChannelOld;
+import com.herocraftonline.dthielke.herochat.channels.Channel;
 import com.herocraftonline.dthielke.herochat.channels.ChannelManager;
+import com.herocraftonline.dthielke.herochat.chatters.Chatter;
 import com.herocraftonline.dthielke.herochat.command.BaseCommand;
+import com.herocraftonline.dthielke.herochat.util.Messaging;
+import com.herocraftonline.dthielke.herochat.util.PermissionManager;
+import com.herocraftonline.dthielke.herochat.util.PermissionManager.Permission;
 
 public class BanCommand extends BaseCommand {
 
@@ -32,65 +34,64 @@ public class BanCommand extends BaseCommand {
 
     @Override
     public void execute(CommandSender sender, String[] args) {
-        ChannelManager cm = plugin.getChannelManager();
-        ChannelOld channel = cm.getChannel(args[0]);
-        if (channel != null) {
-            if (args.length == 1) {
-                displayBanList(sender, channel);
-            } else {
-                if (sender instanceof Player) {
-                    Player banner = (Player) sender;
-                    if (plugin.getPermissionManager().isAdmin(banner) || channel.getModerators().contains(banner.getName())) {
-                        Player banee = plugin.getServer().getPlayer(args[1]);
-                        if (banee != null) {
-                            String name = banee.getName();
-                            if (!(plugin.getPermissionManager().isAdmin(banee) || channel.getModerators().contains(name))) {
-                                if (channel.getBlacklist().contains(name)) {
-                                    channel.getBlacklist().remove(name);
-                                    banner.sendMessage(plugin.getTag() + name + "§c has been unbanned from " + channel.getCName());
-                                    banee.sendMessage(plugin.getTag() + "§cYou have been unbanned from " + channel.getCName());
-                                } else {
-                                    channel.getBlacklist().add(name);
-                                    channel.removePlayer(name);
-                                    banner.sendMessage(plugin.getTag() + name + "§c has been banned from " + channel.getCName());
-                                    banee.sendMessage(plugin.getTag() + "§cYou have been banned from " + channel.getCName());
-                                    if (cm.getActiveChannel(name).equals(channel)) {
-                                        List<ChannelOld> joined = cm.getJoinedChannels(name);
-                                        cm.setActiveChannel(name, joined.get(0).getName());
-                                        banee.sendMessage(plugin.getTag() + "§cSet active channel to " + cm.getActiveChannel(name).getCName());
-                                    }
-                                }
-                            } else {
-                                banner.sendMessage(plugin.getTag() + "§cYou cannot ban " + name + " from " + channel.getCName());
-                            }
-                        } else {
-                            banner.sendMessage(plugin.getTag() + "§cPlayer not found");
-                        }
-                    } else {
-                        banner.sendMessage(plugin.getTag() + "§cYou do not have sufficient permission");
-                    }
-                } else {
-                    sender.sendMessage(plugin.getTag() + "§cYou must be a player to use this command");
-                }
-            }
-        } else {
-            sender.sendMessage(plugin.getTag() + "§cChannel not found");
+        PermissionManager permissions = plugin.getPermissionManager();
+        ChannelManager channelManager = plugin.getChannelManager();
+        Channel channel = channelManager.getChannel(args[0]);
+
+        if (channel == null) {
+            Messaging.send(sender, "Channel not found.");
+            return;
         }
+
+        if (args.length == 1) {
+            displayBanList(sender, channel);
+            return;
+        }
+
+        Player target = plugin.getServer().getPlayer(args[1]);
+        if (target == null) {
+            Messaging.send(sender, "Player not found.");
+            return;
+        }
+
+        Chatter targetChatter = plugin.getChatterManager().getChatter(target);
+        if (permissions.hasPermission(target, Permission.ADMIN_IMMUNITY) || channel.isModerator(targetChatter)) {
+            Messaging.send(sender, "You can't ban this player.");
+            return;
+        }
+
+        if (sender instanceof Player) {
+            Player player = (Player) sender;
+            Chatter playerChatter = plugin.getChatterManager().getChatter(player);
+
+            boolean banPerm = permissions.hasPermission(player, Permission.BAN);
+            boolean adminBanPerm = permissions.hasPermission(player, Permission.ADMIN_BAN);
+            boolean mod = channel.isModerator(playerChatter);
+
+            if ((!banPerm && !adminBanPerm) || (banPerm && !adminBanPerm && !mod)) {
+                Messaging.send(player, "Insufficient permission.");
+                return;
+            }
+        }
+
+        channel.banChatter(targetChatter, true);
+
+        Messaging.send(sender, "Banned $1 from $2.", target.getName(), channel.getName());
     }
 
-    private void displayBanList(CommandSender sender, ChannelOld channel) {
-        String banListMsg;
-        List<String> bans = channel.getBlacklist();
-        if (bans.isEmpty()) {
-            banListMsg = plugin.getTag() + "§cNo one is currently banned from " + channel.getCName();
+    private void displayBanList(CommandSender sender, Channel channel) {
+        String[] bans = channel.getBans();
+        if (bans.length == 0) {
+            Messaging.send(sender, "No one is banned from $1.", channel.getName());
         } else {
-            banListMsg = "Currently banned from " + channel.getCName() + "§f: ";
+            String banListMsg;
+            banListMsg = "Bans ($1): ";
             for (String s : bans) {
-                banListMsg += s + ",";
+                banListMsg += s + ", ";
             }
-            banListMsg = banListMsg.substring(0, banListMsg.length() - 1);
+            banListMsg = banListMsg.substring(0, banListMsg.length() - 2);
+            Messaging.send(sender, banListMsg, channel.getName());
         }
-        sender.sendMessage(banListMsg);
     }
 
 }

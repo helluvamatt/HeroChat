@@ -10,18 +10,41 @@ package com.herocraftonline.dthielke.herochat.util;
 
 import org.bukkit.entity.Player;
 
-import com.herocraftonline.dthielke.herochat.channels.ChannelOld;
+import com.herocraftonline.dthielke.herochat.channels.Channel;
 import com.nijiko.permissions.PermissionHandler;
 
 public class PermissionManager {
 
+    public enum Permission {
+        RELOAD("reload"),
+        REMOVE("remove"),
+        BAN("ban"),
+        ADMIN_REMOVE("admin.remove"),
+        ADMIN_BAN("admin.ban"),
+        ADMIN_IMMUNITY("admin.immunity");
+        
+        private final String string;
+        
+        private Permission(String string) {
+            this.string = string;
+        }
+        
+        @Override
+        public String toString() {
+            return string;
+        }
+    }
+    
     public enum ChannelPermission {
-        ALLOW("allow"),
-        DENY("deny"),
-        AUTOJOIN("autojoin"),
-        AUTOFOCUS("autofocus"),
-        FORCED("forced"),
-        SPEAK("speak");
+        ALLOW("allow."),
+        DENY("deny."),
+        AUTOJOIN_ONCE("autojoin.once."),
+        AUTOJOIN_ALWAYS("autojoin.always."),
+        AUTOFOCUS_ONCE("autofocus.once."),
+        AUTOFOCUS_ALWAYS("autofocus.always."),
+        FORCED("forced."),
+        SPEAK("speak."),
+        MUTE("mute.");
 
         private final String string;
 
@@ -41,142 +64,19 @@ public class PermissionManager {
         this.security = security;
     }
 
-    public boolean hasChannelPermission(Player player, ChannelOld channel, ChannelPermission permission) {
+    public boolean hasChannelPermission(Player player, Channel channel, ChannelPermission permission) {
         if (security != null) {
-            return security.has(player, "herochat." + channel.getName() + "." + permission);
+            return security.has(player, "herochat." + permission + channel.getName());
         } else {
             return false;
         }
     }
-
-    public String getGroup(Player p) {
+    
+    public boolean hasPermission(Player player, Permission permission) {
         if (security != null) {
-            try {
-                String world = p.getWorld().getName();
-                String name = p.getName();
-                String group = security.getGroup(world, name);
-                if (group == null) {
-                    group = "";
-                }
-                return group;
-            } catch (Exception e) {
-                System.out.println(e.getMessage());
-                return "";
-            }
+            return security.has(player, "herochat." + permission);
         } else {
-            return "";
-        }
-    }
-
-    public String getGroupPrefix(Player p) {
-        if (security != null) {
-            try {
-                String world = p.getWorld().getName();
-                String name = p.getName();
-                String group = security.getGroup(world, name);
-                String prefix = security.getGroupPrefix(world, group);
-                if (prefix == null) {
-                    prefix = "";
-                }
-                return prefix.replaceAll("&([0-9a-f])", "§$1");
-            } catch (Exception e) {
-                System.out.println(e.getMessage());
-                return "";
-            }
-        } else {
-            return "";
-        }
-    }
-
-    public String getGroupSuffix(Player p) {
-        if (security != null) {
-            try {
-                String world = p.getWorld().getName();
-                String name = p.getName();
-                String group = security.getGroup(world, name);
-                String suffix = security.getGroupSuffix(world, group);
-                if (suffix == null) {
-                    suffix = "";
-                }
-                return suffix.replaceAll("&([0-9a-f])", "§$1");
-            } catch (Exception e) {
-                System.out.println(e.getMessage());
-                return "";
-            }
-        } else {
-            return "";
-        }
-    }
-
-    public String getPrefix(Player p) {
-        if (security != null) {
-            try {
-                String world = p.getWorld().getName();
-                String name = p.getName();
-                String prefix = security.getUserPermissionString(world, name, "prefix");
-                if (prefix == null || prefix.isEmpty()) {
-                    String group = security.getGroup(world, name);
-                    prefix = security.getGroupPrefix(world, group);
-                    if (prefix == null) {
-                        prefix = "";
-                    }
-                }
-                return prefix.replaceAll("&([0-9a-f])", "§$1");
-            } catch (Exception e) {
-                System.out.println(e.getMessage());
-                return "";
-            }
-        } else {
-            return "";
-        }
-    }
-
-    public String getSuffix(Player p) {
-        if (security != null) {
-            try {
-                String world = p.getWorld().getName();
-                String name = p.getName();
-                String suffix = security.getUserPermissionString(world, name, "suffix");
-                if (suffix == null || suffix.isEmpty()) {
-                    String group = security.getGroup(world, name);
-                    suffix = security.getGroupSuffix(world, group);
-                    if (suffix == null) {
-                        suffix = "";
-                    }
-                }
-                return suffix.replaceAll("&([0-9a-f])", "§$1");
-            } catch (Exception e) {
-                System.out.println(e.getMessage());
-                return "";
-            }
-        } else {
-            return "";
-        }
-    }
-
-    public boolean isAdmin(Player p) {
-        if (security != null) {
-            return security.has(p, "herochat.admin");
-        } else {
-            return true;
-        }
-    }
-
-    public boolean isAllowedColor(Player p) {
-        if (security != null) {
-            return security.has(p, "herochat.color");
-        } else {
-            return true;
-        }
-    }
-
-    public boolean canCreate(Player p) {
-        if (security != null) {
-            boolean admin = security.has(p, "herochat.admin");
-            boolean create = security.has(p, "herochat.create");
-            return admin || create;
-        } else {
-            return true;
+            return player.isOp();
         }
     }
 

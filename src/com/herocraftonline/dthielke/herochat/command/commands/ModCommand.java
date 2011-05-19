@@ -12,7 +12,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.herocraftonline.dthielke.herochat.HeroChat;
-import com.herocraftonline.dthielke.herochat.channels.ChannelOld;
 import com.herocraftonline.dthielke.herochat.command.BaseCommand;
 
 public class ModCommand extends BaseCommand {
@@ -38,7 +37,7 @@ public class ModCommand extends BaseCommand {
                     Player mod = plugin.getServer().getPlayer(args[1]);
                     if (mod != null) {
                         if (!c.getModerators().contains(mod.getName())) {
-                            c.getModerators().add(mod.getName());
+                            c.getModerators().addChannel(mod.getName());
                             sender.sendMessage(plugin.getTag() + "§c" + mod.getName() + " is now moderating " + c.getCName());
                             mod.sendMessage(plugin.getTag() + "§cYou are now moderating " + c.getCName());
                         } else {

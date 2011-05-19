@@ -13,6 +13,8 @@ import org.bukkit.entity.Player;
 
 import com.herocraftonline.dthielke.herochat.HeroChat;
 import com.herocraftonline.dthielke.herochat.command.BaseCommand;
+import com.herocraftonline.dthielke.herochat.util.Messaging;
+import com.herocraftonline.dthielke.herochat.util.PermissionManager.Permission;
 
 public class ReloadCommand extends BaseCommand {
 
@@ -28,20 +30,17 @@ public class ReloadCommand extends BaseCommand {
 
     @Override
     public void execute(CommandSender sender, String[] args) {
-        boolean hasPermission = true;
         if (sender instanceof Player) {
             Player player = (Player) sender;
-            if (plugin.getPermissionManager().isAdmin(player)) {
-                sender.sendMessage(plugin.getTag() + "§cPlugin reloaded");
+            if (plugin.getPermissionManager().hasPermission(player, Permission.RELOAD)) {
+                plugin.getConfigManager().savePlayers();
+                plugin.onEnable();
+                Messaging.send(player, "Plugin reloaded.");
             } else {
-                sender.sendMessage(plugin.getTag() + "§cYou do not have sufficient permission");
-                hasPermission = false;
+                Messaging.send(player, "Insufficient permission.");
             }
-        }
-        if (hasPermission) {
-            for (Player player : plugin.getServer().getOnlinePlayers()) {
-                plugin.getConfigManager().savePlayer(player.getName());
-            }
+        } else {
+            plugin.getConfigManager().savePlayers();
             plugin.onEnable();
         }
     }
