@@ -1,13 +1,16 @@
 package com.herocraftonline.dthielke.herochat.command.commands;
 
-import java.util.List;
-
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.herocraftonline.dthielke.herochat.HeroChat;
+import com.herocraftonline.dthielke.herochat.channels.Channel;
 import com.herocraftonline.dthielke.herochat.channels.ChannelManager;
+import com.herocraftonline.dthielke.herochat.chatters.Chatter;
 import com.herocraftonline.dthielke.herochat.command.BaseCommand;
+import com.herocraftonline.dthielke.herochat.util.Messaging;
+import com.herocraftonline.dthielke.herochat.util.PermissionManager;
+import com.herocraftonline.dthielke.herochat.util.PermissionManager.Permission;
 
 public class GMuteCommand extends BaseCommand {
 
@@ -15,8 +18,8 @@ public class GMuteCommand extends BaseCommand {
         super(plugin);
         name = "Global Mute";
         description = "Prevents a player from speaking in any channel";
-        usage = "§e/ch gmute §8[player] §eOR /gmute §8[player]";
-        minArgs = 0;
+        usage = "§e/ch gmute §8[player]";
+        minArgs = 1;
         maxArgs = 1;
         identifiers.add("ch gmute");
         identifiers.add("gmute");
@@ -24,51 +27,42 @@ public class GMuteCommand extends BaseCommand {
 
     @Override
     public void execute(CommandSender sender, String[] args) {
-        ChannelManager cm = plugin.getChannelManager();
-        if (args.length == 0) {
-            displayMuteList(sender);
-        } else if (sender instanceof Player) {
-            Player muter = (Player) sender;
-            if (plugin.getPermissionManager().isAdmin(muter)) {
-                Player mutee = plugin.getServer().getPlayer(args[0]);
-                if (mutee != null) {
-                    String name = mutee.getName();
-                    if (!plugin.getPermissionManager().isAdmin(mutee)) {
-                        if (cm.getMutelist().contains(name)) {
-                            cm.getMutelist().removeChannel(name);
-                            muter.sendMessage(plugin.getTag() + "§c" + name + " has been globally unmuted");
-                            mutee.sendMessage(plugin.getTag() + "§cYou have been globally unmuted");
-                        } else {
-                            cm.getMutelist().addChannel(name);
-                            muter.sendMessage(plugin.getTag() + "§c" + name + " has been globally muted");
-                            mutee.sendMessage(plugin.getTag() + "§cYou have been globally muted");
-                        }
-                    } else {
-                        muter.sendMessage(plugin.getTag() + "§cYou cannot globally mute " + name);
-                    }
-                } else {
-                    muter.sendMessage(plugin.getTag() + "§cPlayer not found");
-                }
-            } else {
-                muter.sendMessage(plugin.getTag() + "§cYou do not have sufficient permission");
+        PermissionManager permissions = plugin.getPermissionManager();
+        ChannelManager channelManager = plugin.getChannelManager();
+        Channel channel = channelManager.getChannel(args[0]);
+
+        if (channel == null) {
+            Messaging.send(sender, "Channel not found.");
+            return;
+        }
+
+        Player target = plugin.getServer().getPlayer(args[1]);
+        if (target == null) {
+            Messaging.send(sender, "Player not found.");
+            return;
+        }
+
+        Chatter targetChatter = plugin.getChatterManager().getChatter(target);
+        if (permissions.hasPermission(target, Permission.ADMIN_IMMUNITY)) {
+            Messaging.send(sender, "You can't mute this player.");
+            return;
+        }
+
+        if (sender instanceof Player) {
+            Player player = (Player) sender;
+            if (!permissions.hasPermission(player, Permission.ADMIN_GMUTE)) {
+                Messaging.send(player, "Insufficient permission.");
+                return;
             }
+        }
+
+        if (targetChatter.isMuted()) {
+            targetChatter.setMuted(false);
+            Messaging.send(sender, "Unmuted $1.", target.getName(), channel.getName());
         } else {
-            sender.sendMessage(plugin.getTag() + "§cYou must be a player to use this command");
+            targetChatter.setMuted(true);
+            Messaging.send(sender, "Muted $1.", target.getName(), channel.getName());
         }
     }
 
-    private void displayMuteList(CommandSender sender) {
-        String muteListMsg;
-        List<String> mutes = plugin.getChannelManager().getMutelist();
-        if (mutes.isEmpty()) {
-            muteListMsg = plugin.getTag() + "§cNo one is currently muted";
-        } else {
-            muteListMsg = "Currently muted: ";
-            for (String s : mutes) {
-                muteListMsg += s + ",";
-            }
-            muteListMsg = muteListMsg.substring(0, muteListMsg.length() - 1);
-        }
-        sender.sendMessage(muteListMsg);
-    }
 }

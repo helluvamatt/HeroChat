@@ -12,8 +12,11 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.herocraftonline.dthielke.herochat.HeroChat;
+import com.herocraftonline.dthielke.herochat.channels.Channel;
 import com.herocraftonline.dthielke.herochat.channels.ChannelManager;
+import com.herocraftonline.dthielke.herochat.chatters.Chatter;
 import com.herocraftonline.dthielke.herochat.command.BaseCommand;
+import com.herocraftonline.dthielke.herochat.util.Messaging;
 
 public class FocusCommand extends BaseCommand {
 
@@ -30,45 +33,36 @@ public class FocusCommand extends BaseCommand {
     @Override
     public void execute(CommandSender sender, String[] args) {
         if (sender instanceof Player) {
+            ChannelManager channelManager = plugin.getChannelManager();
+            Channel channel = channelManager.getChannel(args[0]);
             Player player = (Player) sender;
-            String name = player.getName();
-            ChannelManager cm = plugin.getChannelManager();
-            ChannelOld c = cm.getChannel(args[0]);
-            if (c != null) {
-                if (!c.getBlacklist().contains(name)) {
-                    if (!c.getWhitelist().isEmpty()) {
-                        String group = plugin.getPermissionManager().getGroup(player);
-                        if (!c.getWhitelist().contains(group) && !group.isEmpty()) {
-                            sender.sendMessage(plugin.getTag() + "§cYou cannot join this channel");
-                            return;
-                        }
-                    }
-                    if (!c.getChatters().contains(name)) {
-                        String password = c.getPassword();
-                        if (password.isEmpty() || args.length == 2 && args[1].equals(password) || plugin.getPermissionManager().isAdmin(player)) {
-                            c.addPlayer(name);
-                            sender.sendMessage(plugin.getTag() + "§cJoined channel " + c.getCName());
-                        } else {
-                            sender.sendMessage(plugin.getTag() + "§cWrong password for " + c.getCName());
-                            return;
-                        }
-                    }
-                    ConversationManager convos = plugin.getConversationManager();
-                    if (convos.hasActive(player)) {
-                        convos.end(player);
-                        sender.sendMessage(plugin.getTag() + "§cEnded your conversation");
-                    }
-                    cm.setActiveChannel(name, c.getName());
-                    sender.sendMessage(plugin.getTag() + "§cSet focus on " + c.getCName());
-                } else {
-                    sender.sendMessage(plugin.getTag() + "§cYou are banned from " + c.getCName());
-                }
-            } else {
-                sender.sendMessage(plugin.getTag() + "§cChannel not found");
+            Chatter chatter = plugin.getChatterManager().getChatter(player);
+
+            if (channel == null) {
+                Messaging.send(sender, "Channel not found.");
+                return;
             }
-        } else {
-            sender.sendMessage(plugin.getTag() + "§cYou must be a player to use this command");
+            
+            if (!channel.hasChatter(chatter)) {
+                if (!channel.canJoin(chatter)) {
+                    Messaging.send(sender, "You can't ban this player.");
+                    return;
+                }
+                
+                String password = channel.getPassword();
+                if (!password.isEmpty()) {
+                    if (args.length < 2 || !args[1].equals(password)) {
+                        Messaging.send(sender, "Wrong password.");
+                        return;
+                    }
+                }
+                
+                if (!channel.addChatter(chatter, true)) {
+                    return;
+                }
+            }
+            
+            chatter.setFocus(channel, true);
         }
     }
-
 }

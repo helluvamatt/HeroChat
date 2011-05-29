@@ -21,6 +21,7 @@ public class PermissionManager {
         BAN("ban"),
         ADMIN_REMOVE("admin.remove"),
         ADMIN_BAN("admin.ban"),
+        ADMIN_GMUTE("admin.gmute"),
         ADMIN_IMMUNITY("admin.immunity");
         
         private final String string;

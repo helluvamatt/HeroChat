@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.config.ConfigurationNode;
 
+import com.ensifera.animosity.craftirc.CraftIRC;
 import com.herocraftonline.dthielke.herochat.HeroChat;
 import com.herocraftonline.dthielke.herochat.chatters.Chatter;
 import com.herocraftonline.dthielke.herochat.event.ChannelMessageEvent;
@@ -115,7 +116,7 @@ public class Channel {
         Player player = sender.getPlayer();
 
         // check if the player is muted
-        if (mutes.contains(player.getName())) {
+        if (mutes.contains(player.getName()) || sender.isMuted()) {
             Messaging.send(player, "You are muted.");
             return false;
         }
