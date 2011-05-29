@@ -10,6 +10,7 @@ package com.herocraftonline.dthielke.herochat.util;
 
 import org.bukkit.entity.Player;
 
+import com.nijiko.permissions.Group;
 import com.nijiko.permissions.PermissionHandler;
 
 public class PermissionManager {
@@ -25,7 +26,7 @@ public class PermissionManager {
             try {
             String world = p.getWorld().getName();
             String name = p.getName();
-            String group = security.getGroup(world, name);
+            String group = security.getPrimaryGroup(world, name);
             if (group == null) {
                 group = "";
             }
@@ -44,10 +45,17 @@ public class PermissionManager {
             try {
                 String world = p.getWorld().getName();
                 String name = p.getName();
-                String group = security.getGroup(world, name);
-                String prefix = security.getGroupPrefix(world, group);
+                String groupName = security.getPrimaryGroup(world, name);
+                if (groupName == null) {
+                    return "";
+                }
+                Group group = security.getGroupObject(world, groupName);
+                if (group == null) {
+                    return "";
+                }
+                String prefix = group.getPrefix();
                 if (prefix == null) {
-                    prefix = "";
+                    return "";
                 }
                 return prefix.replaceAll("&([0-9a-f])", "§$1");
             } catch (Exception e) {
@@ -64,10 +72,17 @@ public class PermissionManager {
             try {
                 String world = p.getWorld().getName();
                 String name = p.getName();
-                String group = security.getGroup(world, name);
-                String suffix = security.getGroupSuffix(world, group);
+                String groupName = security.getPrimaryGroup(world, name);
+                if (groupName == null) {
+                    return "";
+                }
+                Group group = security.getGroupObject(world, groupName);
+                if (group == null) {
+                    return "";
+                }
+                String suffix = group.getSuffix();
                 if (suffix == null) {
-                    suffix = "";
+                    return "";
                 }
                 return suffix.replaceAll("&([0-9a-f])", "§$1");
             } catch (Exception e) {
@@ -84,14 +99,7 @@ public class PermissionManager {
             try {
                 String world = p.getWorld().getName();
                 String name = p.getName();
-                String prefix = security.getUserPermissionString(world, name, "prefix");
-                if (prefix == null || prefix.isEmpty()) {
-                    String group = security.getGroup(world, name);
-                    prefix = security.getGroupPrefix(world, group);
-                    if (prefix == null) {
-                        prefix = "";
-                    }
-                }
+                String prefix = security.getUserPrefix(world, name);
                 return prefix.replaceAll("&([0-9a-f])", "§$1");
             } catch (Exception e) {
                 System.out.println(e.getMessage());
@@ -107,14 +115,7 @@ public class PermissionManager {
             try {
                 String world = p.getWorld().getName();
                 String name = p.getName();
-                String suffix = security.getUserPermissionString(world, name, "suffix");
-                if (suffix == null || suffix.isEmpty()) {
-                    String group = security.getGroup(world, name);
-                    suffix = security.getGroupSuffix(world, group);
-                    if (suffix == null) {
-                        suffix = "";
-                    }
-                }
+                String suffix = security.getUserSuffix(world, name);
                 return suffix.replaceAll("&([0-9a-f])", "§$1");
             } catch (Exception e) {
                 System.out.println(e.getMessage());

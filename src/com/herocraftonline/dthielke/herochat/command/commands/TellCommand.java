@@ -21,6 +21,7 @@ public class TellCommand extends BaseCommand {
         maxArgs = 100000;
         identifiers.add("tell");
         identifiers.add("ch tell");
+        identifiers.add("msg");
     }
 
     @Override
