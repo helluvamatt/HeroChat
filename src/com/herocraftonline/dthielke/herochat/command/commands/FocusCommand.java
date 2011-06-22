@@ -45,7 +45,7 @@ public class FocusCommand extends BaseCommand {
             
             if (!channel.hasChatter(chatter)) {
                 if (!channel.canJoin(chatter)) {
-                    Messaging.send(sender, "You can't ban this player.");
+                    Messaging.send(sender, "You can't focus this channel.");
                     return;
                 }
                 

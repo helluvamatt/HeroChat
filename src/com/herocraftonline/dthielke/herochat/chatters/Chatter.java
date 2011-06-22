@@ -33,18 +33,18 @@ public class Chatter {
         PermissionManager perm = plugin.getPermissionManager();
         Channel[] channels = plugin.getChannelManager().getChannels();
         for (Channel channel : channels) {
-            if (perm.hasChannelPermission(player, channel, ChannelPermission.AUTOJOIN_ALWAYS)) {
+            if (perm.hasPermission(player, channel, ChannelPermission.AUTOJOIN_ALWAYS)) {
                 addToChannel(channel);
-            } else if (firstRun && perm.hasChannelPermission(player, channel, ChannelPermission.AUTOJOIN_ONCE)) {
+            } else if (firstRun && perm.hasPermission(player, channel, ChannelPermission.AUTOJOIN_ONCE)) {
                 addToChannel(channel);
             }
         }
         filterChannels();
         for (Channel channel : this.channels) {
-            if (perm.hasChannelPermission(player, channel, ChannelPermission.AUTOFOCUS_ALWAYS)) {
+            if (perm.hasPermission(player, channel, ChannelPermission.AUTOFOCUS_ALWAYS)) {
                 focus = channel;
                 break;
-            } else if (firstRun && perm.hasChannelPermission(player, channel, ChannelPermission.AUTOFOCUS_ONCE)) {
+            } else if (firstRun && perm.hasPermission(player, channel, ChannelPermission.AUTOFOCUS_ONCE)) {
                 focus = channel;
                 break;
             }

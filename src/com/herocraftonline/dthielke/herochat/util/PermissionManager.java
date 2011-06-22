@@ -19,8 +19,11 @@ public class PermissionManager {
         RELOAD("reload"),
         REMOVE("remove"),
         BAN("ban"),
+        KICK("kick"),
+        ADMIN_MOD("admin.mod"),
         ADMIN_REMOVE("admin.remove"),
         ADMIN_BAN("admin.ban"),
+        ADMIN_KICK("admin.kick"),
         ADMIN_GMUTE("admin.gmute"),
         ADMIN_IMMUNITY("admin.immunity");
         
@@ -65,7 +68,7 @@ public class PermissionManager {
         this.security = security;
     }
 
-    public boolean hasChannelPermission(Player player, Channel channel, ChannelPermission permission) {
+    public boolean hasPermission(Player player, Channel channel, ChannelPermission permission) {
         if (security != null) {
             return security.has(player, "herochat." + permission + channel.getName());
         } else {

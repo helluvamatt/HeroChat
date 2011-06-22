@@ -8,7 +8,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.config.ConfigurationNode;
 
-import com.ensifera.animosity.craftirc.CraftIRC;
 import com.herocraftonline.dthielke.herochat.HeroChat;
 import com.herocraftonline.dthielke.herochat.chatters.Chatter;
 import com.herocraftonline.dthielke.herochat.event.ChannelMessageEvent;
@@ -70,9 +69,9 @@ public class Channel {
     public boolean canJoin(Chatter chatter) {
         Player player = chatter.getPlayer();
         if (mode == Mode.INCLUSIVE) {
-            return !plugin.getPermissionManager().hasChannelPermission(player, this, ChannelPermission.DENY);
+            return !plugin.getPermissionManager().hasPermission(player, this, ChannelPermission.DENY);
         } else if (mode == Mode.EXCLUSIVE) {
-            return plugin.getPermissionManager().hasChannelPermission(player, this, ChannelPermission.ALLOW);
+            return plugin.getPermissionManager().hasPermission(player, this, ChannelPermission.ALLOW);
         }
         return false;
     }
@@ -80,14 +79,18 @@ public class Channel {
     public boolean canSpeak(Chatter chatter) {
         Player player = chatter.getPlayer();
         if (mode == Mode.INCLUSIVE) {
-            return !plugin.getPermissionManager().hasChannelPermission(player, this, ChannelPermission.MUTE);
+            return !plugin.getPermissionManager().hasPermission(player, this, ChannelPermission.MUTE);
         } else if (mode == Mode.EXCLUSIVE) {
-            return plugin.getPermissionManager().hasChannelPermission(player, this, ChannelPermission.SPEAK);
+            return plugin.getPermissionManager().hasPermission(player, this, ChannelPermission.SPEAK);
         }
         return false;
     }
 
     public boolean sendMessage(Message message) {
+        if (!enabled) {
+            return false;
+        }
+        
         // fire a message event
         ChannelMessageEvent event = new ChannelMessageEvent(message);
         plugin.getServer().getPluginManager().callEvent(event);

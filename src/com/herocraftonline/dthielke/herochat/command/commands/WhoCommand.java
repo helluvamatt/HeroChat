@@ -8,13 +8,14 @@
 
 package com.herocraftonline.dthielke.herochat.command.commands;
 
-import java.util.List;
-
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.herocraftonline.dthielke.herochat.HeroChat;
+import com.herocraftonline.dthielke.herochat.channels.Channel;
+import com.herocraftonline.dthielke.herochat.chatters.Chatter;
 import com.herocraftonline.dthielke.herochat.command.BaseCommand;
+import com.herocraftonline.dthielke.herochat.util.Messaging;
 
 public class WhoCommand extends BaseCommand {
 
@@ -32,28 +33,21 @@ public class WhoCommand extends BaseCommand {
     public void execute(CommandSender sender, String[] args) {
         if (sender instanceof Player) {
             Player player = (Player) sender;
-            String name = player.getName();
-            ChannelOld c = plugin.getChannelManager().getActiveChannel(name);
-            if (c != null) {
-                List<String> players = c.getChatters();
-                String playerList = "§cCurrently in " + c.getCName() + "§f: ";
-                for (String pName : players) {
-                    Player p = plugin.getServer().getPlayer(pName);
-                    if (p != null) {
-                        if (plugin.getPermissionManager().isAdmin(p)) {
-                            pName = "@" + pName;
-                        } else if (c.getModerators().contains(pName)) {
-                            pName += "*";
-                        }
-                        pName += ", ";
-                        playerList += pName;
-                    }
+            Chatter chatter = plugin.getChatterManager().getChatter(player);
+            
+            Channel focus = chatter.getFocus();
+            Chatter[] chatters = focus.getChatters();
+            String playerList = focus.getName() + ": ";
+            
+            for (Chatter member : chatters) {
+                String name = member.getPlayer().getName();
+                if (focus.isModerator(member)) {
+                    name += "*";
                 }
-                playerList = playerList.substring(0, playerList.length() - 2);
-                sender.sendMessage(playerList);
+                playerList += name + ", ";
             }
-        } else {
-            sender.sendMessage(plugin.getTag() + "§cYou must be a player to use this command");
+            playerList = playerList.substring(0, playerList.length() - 2);
+            Messaging.send(player, playerList);
         }
     }
 

@@ -62,9 +62,9 @@ public class ChannelManager {
         Player player = chatter.getPlayer();
         PermissionManager perm = plugin.getPermissionManager();
         for (Channel channel : channels) {
-            if (perm.hasChannelPermission(player, channel, ChannelPermission.AUTOJOIN_ALWAYS)) {
+            if (perm.hasPermission(player, channel, ChannelPermission.AUTOJOIN_ALWAYS)) {
                 channel.addChatter(chatter, false);
-            } else if (firstJoin && perm.hasChannelPermission(player, channel, ChannelPermission.AUTOFOCUS_ONCE)) {
+            } else if (firstJoin && perm.hasPermission(player, channel, ChannelPermission.AUTOFOCUS_ONCE)) {
                 channel.addChatter(chatter, false);
             }
         }

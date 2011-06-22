@@ -37,6 +37,10 @@ public class LocalChannel extends Channel {
 
     @Override
     public boolean sendMessage(Message message) {
+        if (!enabled) {
+            return false;
+        }
+        
         if (message instanceof PlayerMessage) {
             PlayerMessage pMessage = (PlayerMessage) message;
             Chatter speaker = pMessage.getSender();
