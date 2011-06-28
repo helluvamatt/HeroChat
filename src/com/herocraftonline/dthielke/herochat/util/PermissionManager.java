@@ -20,10 +20,12 @@ public class PermissionManager {
         REMOVE("remove"),
         BAN("ban"),
         KICK("kick"),
+        MUTE("mute"),
         ADMIN_MOD("admin.mod"),
         ADMIN_REMOVE("admin.remove"),
         ADMIN_BAN("admin.ban"),
         ADMIN_KICK("admin.kick"),
+        ADMIN_MUTE("admin.mute"),
         ADMIN_GMUTE("admin.gmute"),
         ADMIN_IMMUNITY("admin.immunity");
         

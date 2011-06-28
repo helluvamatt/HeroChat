@@ -25,9 +25,9 @@ public class Channel {
     }
 
     public static final String MSG_FORMAT = "{color}[{nick}] {prefix}{sender}{color}{suffix}: {message}";
-    private static final String JOIN_FORMAT = "{color}[{nick}]: {message}";
-    private static final String LEAVE_FORMAT = "{color}[{nick}]: {message}";
-    private static final String BAN_FORMAT = "{color}[{nick}]: {message}";
+    public static final String JOIN_FORMAT = "{color}[{nick}]: {message}";
+    public static final String LEAVE_FORMAT = "{color}[{nick}]: {message}";
+    public static final String BAN_FORMAT = "{color}[{nick}]: {message}";
 
     protected final HeroChat plugin;
 
@@ -258,7 +258,11 @@ public class Channel {
     }
 
     public boolean isBanned(Chatter chatter) {
-        return bans.contains(chatter.getPlayer().getName());
+        return isBanned(chatter.getPlayer().getName());
+    }
+    
+    public boolean isBanned(String player) {
+        return bans.contains(player);
     }
 
     public boolean unbanChatter(Chatter chatter, boolean notify) {
@@ -315,6 +319,14 @@ public class Channel {
 
     public boolean unmutePlayer(String player) {
         return mutes.remove(player);
+    }
+    
+    public boolean isMuted(Chatter chatter) {
+        return isMuted(chatter.getPlayer().getName());
+    }
+    
+    public boolean isMuted(String player) {
+        return mutes.contains(player);
     }
 
     public final String[] getMutes() {

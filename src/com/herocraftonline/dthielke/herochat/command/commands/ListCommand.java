@@ -8,13 +8,12 @@
 
 package com.herocraftonline.dthielke.herochat.command.commands;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.herocraftonline.dthielke.herochat.HeroChat;
+import com.herocraftonline.dthielke.herochat.channels.Channel;
+import com.herocraftonline.dthielke.herochat.chatters.Chatter;
 import com.herocraftonline.dthielke.herochat.command.BaseCommand;
 
 public class ListCommand extends BaseCommand {
@@ -33,23 +32,20 @@ public class ListCommand extends BaseCommand {
 
     @Override
     public void execute(CommandSender sender, String[] args) {
-        String name;
+        Chatter chatter = null;
         if (sender instanceof Player) {
-            name = ((Player) sender).getName();
-        } else {
-            name = "";
+            chatter = plugin.getChatterManager().getChatter((Player) sender);
         }
-        List<ChannelOld> visible = getVisibleChannels(plugin.getChannelManager().getChannels(), name);
-        int pages = (int) Math.ceil((double) visible.size() / CHANNELS_PER_PAGE);
-        int p;
-        if (args.length == 0) {
-            p = 1;
-        } else {
+
+        Channel[] channels = plugin.getChannelManager().getChannels();
+
+        int pages = (int) Math.ceil((double) channels.length / CHANNELS_PER_PAGE);
+        int p = 1;
+        if (args.length > 0) {
             try {
                 p = Integer.parseInt(args[0]);
             } catch (NumberFormatException e) {
-                sender.sendMessage("§c" + usage);
-                return;
+                p = 1;
             }
         }
         if (p > pages) {
@@ -59,26 +55,16 @@ public class ListCommand extends BaseCommand {
         sender.sendMessage("§c-----[ " + "§f" + "Channel List <" + p + "/" + pages + ">§c ]-----");
         for (int i = 0; i < CHANNELS_PER_PAGE; i++) {
             int index = (p - 1) * CHANNELS_PER_PAGE + i;
-            if (index >= visible.size()) {
+            if (index >= pages) {
                 break;
             }
-            ChannelOld c = visible.getChannel(index);
-            String msg = "  " + c.getColor().str + "[" + c.getNick() + "] " + c.getName();
-            if (c.getChatters().contains(name)) {
+            Channel channel = channels[index];
+            String msg = "  " + channel.getColor() + "[" + channel.getNick() + "] " + channel.getName();
+            if (chatter != null && channel.hasChatter(chatter)) {
                 msg = msg.concat(" *");
             }
             sender.sendMessage(msg);
         }
-    }
-
-    private List<ChannelOld> getVisibleChannels(List<ChannelOld> channels, String name) {
-        List<ChannelOld> visible = new ArrayList<ChannelOld>();
-        for (ChannelOld c : channels) {
-            if (!c.isHidden() || c.getChatters().contains(name)) {
-                visible.addChannel(c);
-            }
-        }
-        return visible;
     }
 
 }
