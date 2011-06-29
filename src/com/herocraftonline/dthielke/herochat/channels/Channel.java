@@ -1,5 +1,6 @@
 package com.herocraftonline.dthielke.herochat.channels;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -24,7 +25,7 @@ public class Channel {
         EXCLUSIVE;
     }
 
-    public static final String MSG_FORMAT = "{color}[{nick}] {prefix}{sender}{color}{suffix}: {message}";
+    public static final String MSG_FORMAT = "{color}[{nick}] {prefix}&f{sender}{color}{suffix}: {message}";
     public static final String JOIN_FORMAT = "{color}[{nick}]: {message}";
     public static final String LEAVE_FORMAT = "{color}[{nick}]: {message}";
     public static final String BAN_FORMAT = "{color}[{nick}]: {message}";
@@ -105,7 +106,7 @@ public class Channel {
 
         // send the result to the recipients
         for (Chatter chatter : message.getRecipients()) {
-            chatter.getPlayer().sendMessage(formatted);
+            chatter.sendMessage(message, formatted);
         }
 
         return true;
@@ -127,11 +128,11 @@ public class Channel {
         // fetch necessary data
         String name = player.getName();
         String world = player.getWorld().getName();
-        String prefix = plugin.permissions.getUserPermissionString(world, name, "prefix");
-        String suffix = plugin.permissions.getUserPermissionString(world, name, "suffix");
-        String group = plugin.permissions.getGroup(world, name);
-        String groupPrefix = plugin.permissions.getGroupPrefix(world, group);
-        String groupSuffix = plugin.permissions.getGroupSuffix(world, group);
+        String prefix = plugin.permissions.getUserPrefix(world, name);
+        String suffix = plugin.permissions.getUserSuffix(world, name);
+        String group = plugin.permissions.getPrimaryGroup(world, name);
+        String groupPrefix = plugin.permissions.getGroupRawPrefix(world, group);
+        String groupSuffix = plugin.permissions.getGroupRawSuffix(world, group);
 
         // create the message object
         PlayerMessage msgContainer = new PlayerMessage(message, format, this, chatters, sender, prefix, suffix, group, groupPrefix, groupSuffix);
@@ -169,9 +170,12 @@ public class Channel {
         }
         // notify if added
         if (notify && joined) {
+            Messaging.send(player, "Joined $1.", name);
+            chatters.remove(chatter);
             if (verbose) {
                 sendPluginMessage(plugin, "&f" + player.getDisplayName() + color + " joined the channel.", JOIN_FORMAT);
             }
+            chatters.add(chatter);
         }
         return joined;
     }
@@ -179,7 +183,7 @@ public class Channel {
     public boolean removeChatter(Chatter chatter, boolean notify) {
         Player player = chatter.getPlayer();
         // remove the player
-        boolean removed = chatters.remove(player);
+        boolean removed = chatters.remove(chatter);
         if (removed) {
             chatter.removeFromChannel(this);
         }
@@ -187,8 +191,8 @@ public class Channel {
         if (notify && removed) {
             if (verbose) {
                 sendPluginMessage(plugin, "&f" + player.getDisplayName() + color + " left the channel.", LEAVE_FORMAT);
-                Messaging.send(player, "Left $1.", name);
             }
+            Messaging.send(player, "Left $1.", name);
         }
         return removed;
     }
@@ -210,7 +214,7 @@ public class Channel {
     }
 
     private boolean addModerator(String player) {
-        return moderators.add(player);
+        return moderators.add(player.toLowerCase());
     }
 
     public boolean removeModerator(Chatter chatter, boolean notify) {
@@ -226,7 +230,7 @@ public class Channel {
     }
 
     private boolean removeModerator(String player) {
-        return moderators.remove(player);
+        return moderators.remove(player.toLowerCase());
     }
 
     public boolean isModerator(Chatter chatter) {
@@ -254,7 +258,7 @@ public class Channel {
     }
 
     private boolean banPlayer(String player) {
-        return bans.add(player);
+        return bans.add(player.toLowerCase());
     }
 
     public boolean isBanned(Chatter chatter) {
@@ -262,7 +266,7 @@ public class Channel {
     }
     
     public boolean isBanned(String player) {
-        return bans.contains(player);
+        return bans.contains(player.toLowerCase());
     }
 
     public boolean unbanChatter(Chatter chatter, boolean notify) {
@@ -278,7 +282,7 @@ public class Channel {
     }
 
     private boolean unbanPlayer(String player) {
-        return bans.remove(player);
+        return bans.remove(player.toLowerCase());
     }
 
     public final String[] getBans() {
@@ -302,7 +306,7 @@ public class Channel {
     }
 
     private boolean mutePlayer(String player) {
-        return mutes.add(player);
+        return mutes.add(player.toLowerCase());
     }
 
     public boolean unmuteChatter(Chatter chatter, boolean notify) {
@@ -318,7 +322,7 @@ public class Channel {
     }
 
     public boolean unmutePlayer(String player) {
-        return mutes.remove(player);
+        return mutes.remove(player.toLowerCase());
     }
     
     public boolean isMuted(Chatter chatter) {
@@ -326,7 +330,7 @@ public class Channel {
     }
     
     public boolean isMuted(String player) {
-        return mutes.contains(player);
+        return mutes.contains(player.toLowerCase());
     }
 
     public final String[] getMutes() {
@@ -439,24 +443,27 @@ public class Channel {
         return true;
     }
 
-    public void save(ConfigurationNode config) {
-        config.setProperty("nickname", nick);
-        config.setProperty("password", password);
-        config.setProperty("format", format);
-        config.setProperty("color", color.toString());
-        config.setProperty("distance", 0);
-        config.setProperty("flags.join-messages", verbose);
-        config.setProperty("flags.shortcut-allowed", quick);
-        config.setProperty("lists.bans", bans);
-        config.setProperty("lists.moderators", moderators);
+    public void save(ConfigurationNode config, String path) {
+        path += "." + name;
+        config.setProperty(path + ".nickname", nick);
+        config.setProperty(path + ".password", password);
+        config.setProperty(path + ".format", format);
+        config.setProperty(path + ".color", color.name());
+        config.setProperty(path + ".mode", mode.toString());
+        config.setProperty(path + ".distance", 0);
+        config.setProperty(path + ".flags.join-messages", verbose);
+        config.setProperty(path + ".flags.shortcut-allowed", quick);
+        config.setProperty(path + ".lists.bans", new ArrayList<String>(bans));
+        config.setProperty(path + ".lists.moderators", new ArrayList<String>(moderators));
     }
 
     public static Channel load(HeroChat plugin, ConfigurationNode config, String name) {
         // Collect necessary data from the config
         String nick = config.getString("nickname", "nick");
         String password = config.getString("password", "");
-        String format = config.getString("message-format", "");
-        ChatColor color = ChatColor.valueOf(config.getString("color", "WHITE"));
+        String format = config.getString("format", "{default}");
+        ChatColor color = ChatColor.valueOf(config.getString("color", "WHITE").toUpperCase());
+        Mode mode = Mode.valueOf(config.getString("mode", "INCLUSIVE").toUpperCase());
 
         boolean verbose = config.getBoolean("flags.join-messages", true);
         boolean quick = config.getBoolean("flags.shortcut-allowed", false);
@@ -477,8 +484,9 @@ public class Channel {
 
         // Apply the settings we collected earlier
         channel.setPassword(password);
-        channel.setFormat(format.isEmpty() ? MSG_FORMAT : format);
+        channel.setFormat(format.isEmpty() || format.equals("{default}") ? MSG_FORMAT : format);
         channel.setColor(color);
+        channel.setMode(mode);
         channel.setVerbose(verbose);
         channel.setQuick(quick);
         channel.bans = bans;

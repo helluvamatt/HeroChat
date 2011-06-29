@@ -44,15 +44,18 @@ public class LeaveCommand extends BaseCommand {
                 Messaging.send(sender, "Channel not found.");
                 return;
             }
-            
-            if (channel.hasChatter(chatter)) {
-                if (plugin.getPermissionManager().hasPermission(player, channel, ChannelPermission.FORCED)) {
-                    Messaging.send(sender, "You can't leave that channel.");
-                    return;
-                }
-                
-                channel.removeChatter(chatter, true);
+
+            if (!channel.hasChatter(chatter)) {
+                Messaging.send(sender, "You are not in this channel.");
+                return;
             }
+
+            if (plugin.getPermissionManager().hasPermission(player, channel, ChannelPermission.FORCED)) {
+                Messaging.send(sender, "You can't leave this channel.");
+                return;
+            }
+
+            channel.removeChatter(chatter, true);
         }
     }
 

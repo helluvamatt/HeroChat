@@ -10,6 +10,8 @@ import org.bukkit.util.config.ConfigurationNode;
 
 import com.herocraftonline.dthielke.herochat.HeroChat;
 import com.herocraftonline.dthielke.herochat.channels.Channel;
+import com.herocraftonline.dthielke.herochat.messages.Message;
+import com.herocraftonline.dthielke.herochat.messages.PlayerMessage;
 import com.herocraftonline.dthielke.herochat.util.Messaging;
 import com.herocraftonline.dthielke.herochat.util.PermissionManager;
 import com.herocraftonline.dthielke.herochat.util.PermissionManager.ChannelPermission;
@@ -31,6 +33,9 @@ public class Chatter {
     public void initialize(boolean firstRun) {
         Player player = getPlayer();
         PermissionManager perm = plugin.getPermissionManager();
+        if (perm == null) {
+            return;
+        }
         Channel[] channels = plugin.getChannelManager().getChannels();
         for (Channel channel : channels) {
             if (perm.hasPermission(player, channel, ChannelPermission.AUTOJOIN_ALWAYS)) {
@@ -49,6 +54,13 @@ public class Chatter {
                 break;
             }
         }
+        Channel defaultChannel = plugin.getChannelManager().getDefaultChannel();
+        if (this.channels.isEmpty()) {
+            addToChannel(defaultChannel);
+        }
+        if (focus == null || !focus.hasChatter(this)) {
+            addToChannel(defaultChannel);
+        }
     }
 
     public void filterChannels() {
@@ -59,20 +71,43 @@ public class Chatter {
         }
     }
 
+    public boolean sendMessage(Message msg, String formattedMsg) {
+        if (msg instanceof PlayerMessage) {
+            Chatter sender = ((PlayerMessage) msg).getSender();
+            if (ignores.contains(sender.getPlayer().getName())) {
+                return false;
+            }
+        }
+        getPlayer().sendMessage(formattedMsg);
+        return true;
+    }
+
     public Player getPlayer() {
         return plugin.getServer().getPlayer(playerName);
     }
 
     public boolean isIgnoring(Chatter other) {
-        return ignores.contains(other.playerName);
+        return ignores.contains(other.playerName.toLowerCase());
+    }
+
+    public boolean isIgnoring(String player) {
+        return ignores.contains(player.toLowerCase());
     }
 
     public void setIgnore(Chatter other, boolean ignore) {
+        setIgnore(other.getPlayer().getName(), ignore);
+    }
+
+    public void setIgnore(String player, boolean ignore) {
         if (ignore) {
-            ignores.add(other.playerName);
+            ignores.add(player.toLowerCase());
         } else {
-            ignores.remove(other.playerName);
+            ignores.remove(player.toLowerCase());
         }
+    }
+
+    public final String[] getIgnores() {
+        return ignores.toArray(new String[0]);
     }
 
     public void addToChannel(Channel channel) {
@@ -86,6 +121,16 @@ public class Chatter {
         boolean removed = channels.remove(channel);
         if (removed) {
             channel.removeChatter(this, false);
+            if (focus.equals(channel)) {
+                Channel defaultChannel = plugin.getChannelManager().getDefaultChannel();
+                if (defaultChannel.hasChatter(this)) {
+                    focus = defaultChannel;
+                } else if (!channels.isEmpty()) {
+                    focus = channels.iterator().next();    
+                } else {
+                    focus = null;
+                }
+            }
         }
     }
 

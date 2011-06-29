@@ -125,8 +125,9 @@ public class HeroChat extends JavaPlugin {
         if (plugin != null) {
             if (plugin.isEnabled()) {
                 Permissions permissions = (Permissions) plugin;
+                this.permissions = permissions.getHandler();
                 permissionManager = new PermissionManager(permissions.getHandler());
-
+                this.configManager.loadPlayers();
                 log(Level.INFO, "Permissions " + permissions.getDescription().getVersion() + " detected.");
             }
         }

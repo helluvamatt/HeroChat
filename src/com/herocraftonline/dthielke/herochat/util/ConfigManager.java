@@ -15,7 +15,6 @@ import java.io.OutputStream;
 
 import org.bukkit.entity.Player;
 import org.bukkit.util.config.Configuration;
-import org.bukkit.util.config.ConfigurationNode;
 
 import com.herocraftonline.dthielke.herochat.HeroChat;
 import com.herocraftonline.dthielke.herochat.channels.Channel;
@@ -85,9 +84,11 @@ public class ConfigManager {
     private void loadChannels(Configuration config) {
         ChannelManager channelManager = plugin.getChannelManager();
         for (String name : config.getKeys("channels")) {
-            Channel channel = Channel.load(plugin, config, "channels." + name);
+            Channel channel = Channel.load(plugin, config.getNode("channels." + name), name);
             channelManager.addChannel(channel);
+            System.out.println("loaded channel: " + channel.getName());
         }
+        System.out.println("loaded " + channelManager.getChannels().length + " channels");
     }
 
     public void loadPlayer(Player player) {
@@ -100,7 +101,7 @@ public class ConfigManager {
         chatter.initialize(userConfigFile.exists());
         plugin.getChatterManager().addChatter(chatter);
     }
-    
+
     public void loadPlayers() {
         for (Player player : plugin.getServer().getOnlinePlayers()) {
             loadPlayer(player);
@@ -114,7 +115,7 @@ public class ConfigManager {
         chatter.save(config);
         config.save();
     }
-    
+
     public void savePlayers() {
         for (Player player : plugin.getServer().getOnlinePlayers()) {
             savePlayer(player);
@@ -125,8 +126,9 @@ public class ConfigManager {
         Configuration config = new Configuration(primaryConfigFile);
         saveGlobals(config);
         saveChannels(config);
-        savePlayers();
         config.save();
+
+        savePlayers();
     }
 
     private void saveGlobals(Configuration config) {
@@ -134,14 +136,10 @@ public class ConfigManager {
     }
 
     private void saveChannels(Configuration config) {
-        ConfigurationNode channelsNode = Configuration.getEmptyNode();
         Channel[] channels = plugin.getChannelManager().getChannels();
         for (Channel channel : channels) {
-            ConfigurationNode channelNode = Configuration.getEmptyNode();
-            channel.save(channelNode);
-            channelsNode.setProperty("channels." + channel.getName(), channelNode);
+            channel.save(config, "channels");
         }
-        config.setProperty("channels", channelsNode);
     }
 
 }

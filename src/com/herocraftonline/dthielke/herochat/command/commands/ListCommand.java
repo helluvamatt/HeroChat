@@ -55,7 +55,7 @@ public class ListCommand extends BaseCommand {
         sender.sendMessage("§c-----[ " + "§f" + "Channel List <" + p + "/" + pages + ">§c ]-----");
         for (int i = 0; i < CHANNELS_PER_PAGE; i++) {
             int index = (p - 1) * CHANNELS_PER_PAGE + i;
-            if (index >= pages) {
+            if (index >= channels.length) {
                 break;
             }
             Channel channel = channels[index];

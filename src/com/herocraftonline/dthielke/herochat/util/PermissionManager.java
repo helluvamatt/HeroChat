@@ -27,7 +27,8 @@ public class PermissionManager {
         ADMIN_KICK("admin.kick"),
         ADMIN_MUTE("admin.mute"),
         ADMIN_GMUTE("admin.gmute"),
-        ADMIN_IMMUNITY("admin.immunity");
+        ADMIN_IMMUNITY("admin.immunity"),
+        ADMIN_TOGGLE("admin.toggle");
         
         private final String string;
         

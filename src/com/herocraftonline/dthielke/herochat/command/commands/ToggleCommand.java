@@ -4,12 +4,14 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.herocraftonline.dthielke.herochat.HeroChat;
+import com.herocraftonline.dthielke.herochat.channels.Channel;
 import com.herocraftonline.dthielke.herochat.channels.ChannelManager;
 import com.herocraftonline.dthielke.herochat.command.BaseCommand;
+import com.herocraftonline.dthielke.herochat.util.Messaging;
+import com.herocraftonline.dthielke.herochat.util.PermissionManager;
+import com.herocraftonline.dthielke.herochat.util.PermissionManager.Permission;
 
 public class ToggleCommand extends BaseCommand {
-
-    private boolean allEnabled = true;
 
     public ToggleCommand(HeroChat plugin) {
         super(plugin);
@@ -24,51 +26,42 @@ public class ToggleCommand extends BaseCommand {
 
     @Override
     public void execute(CommandSender sender, String[] args) {
-        ChannelManager cm = plugin.getChannelManager();
+        ChannelManager channelManager = plugin.getChannelManager();
+
+        if (sender instanceof Player) {
+            Player player = (Player) sender;
+            PermissionManager permissions = plugin.getPermissionManager();
+
+            boolean togglePerm = permissions.hasPermission(player, Permission.ADMIN_TOGGLE);
+
+            if (!togglePerm) {
+                Messaging.send(player, "Insufficient permission.");
+                return;
+            }
+        }
+
         if (args.length == 0) {
-            if (sender instanceof Player) {
-                Player muter = (Player) sender;
-                if (muter == null || plugin.getPermissionManager().isAdmin(muter)) {
-                    if (allEnabled) {
-                        for (ChannelOld c : cm.getChannels()) {
-                            c.setEnabled(false);
-                        }
-                        allEnabled = false;
-                        sender.sendMessage(plugin.getTag() + "§cDisabled all channels");
-                    } else {
-                        for (ChannelOld c : cm.getChannels()) {
-                            c.setEnabled(true);
-                        }
-                        allEnabled = true;
-                        sender.sendMessage(plugin.getTag() + "§cEnabled all channels");
-                    }
-                } else {
-                    muter.sendMessage(plugin.getTag() + "§cYou do not have sufficient permission");
-                }
+            if (channelManager.getDefaultChannel().isEnabled()) {
+                channelManager.disableChannels();
+                Messaging.send(sender, "Disabled all channels.");
             } else {
-                sender.sendMessage(plugin.getTag() + "§cYou must be a player to use this command");
+                channelManager.enableChannels();
+                Messaging.send(sender, "Enabled all channels.");
             }
         } else {
-            ChannelOld channel = cm.getChannel(args[0]);
-            if (channel != null) {
-                if (sender instanceof Player) {
-                    Player muter = (Player) sender;
-                    if (muter == null || plugin.getPermissionManager().isAdmin(muter) || channel.getModerators().contains(muter.getName())) {
-                        if (channel.isEnabled()) {
-                            channel.setEnabled(false);
-                            sender.sendMessage(plugin.getTag() + "§cDisabled " + channel.getCName());
-                        } else {
-                            channel.setEnabled(true);
-                            sender.sendMessage(plugin.getTag() + "§cEnabled " + channel.getCName());
-                        }
-                    } else {
-                        muter.sendMessage(plugin.getTag() + "§cYou do not have sufficient permission");
-                    }
-                } else {
-                    sender.sendMessage(plugin.getTag() + "§cYou must be a player to use this command");
-                }
+            Channel channel = channelManager.getChannel(args[0]);
+
+            if (channel == null) {
+                Messaging.send(sender, "Channel not found.");
+                return;
+            }
+
+            if (channel.isEnabled()) {
+                channel.setEnabled(false);
+                Messaging.send(sender, "Disabled $1.", channel.getName());
             } else {
-                sender.sendMessage(plugin.getTag() + "§cChannel not found");
+                channel.setEnabled(true);
+                Messaging.send(sender, "Enabled $1.", channel.getName());
             }
         }
     }

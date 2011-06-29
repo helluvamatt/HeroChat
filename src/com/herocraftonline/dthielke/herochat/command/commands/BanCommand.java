@@ -74,9 +74,13 @@ public class BanCommand extends BaseCommand {
             }
         }
 
-        channel.banChatter(targetChatter, true);
-
-        Messaging.send(sender, "Banned $1 from $2.", target.getName(), channel.getName());
+        if (channel.isBanned(targetChatter)) {
+            channel.unbanChatter(targetChatter, true);
+            Messaging.send(sender, "Unbanned $1 from $2.", target.getName(), channel.getName());
+        } else {
+            channel.banChatter(targetChatter, true);
+            Messaging.send(sender, "Banned $1 from $2.", target.getName(), channel.getName());
+        }
     }
 
     private void displayBanList(CommandSender sender, Channel channel) {

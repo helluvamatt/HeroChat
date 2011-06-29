@@ -41,6 +41,7 @@ public class CreateCommand extends BaseCommand {
 
     @Override
     public void execute(CommandSender sender, String[] args) {
+        /*
         ChannelManager cm = plugin.getChannelManager();
         if (sender instanceof Player) {
             Player creator = (Player) sender;
@@ -85,8 +86,9 @@ public class CreateCommand extends BaseCommand {
         } else {
             sender.sendMessage(plugin.getTag() + "§cYou must be a player to create channels");
         }
+        */
     }
-
+/*
     private ChannelOld createChannel(String[] args, boolean full) {
         ChannelOld c = new ChannelOld(plugin);
         c.setName(args[0]);
@@ -139,5 +141,5 @@ public class CreateCommand extends BaseCommand {
             }
         }
     }
-
+*/
 }

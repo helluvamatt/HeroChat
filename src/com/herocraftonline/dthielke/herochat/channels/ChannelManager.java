@@ -51,7 +51,7 @@ public class ChannelManager {
 
     public Channel getChannel(String name) {
         for (Channel channel : channels) {
-            if (channel.getName().equalsIgnoreCase(name)) {
+            if (channel.getName().equalsIgnoreCase(name) || channel.getNick().equalsIgnoreCase(name)) {
                 return channel;
             }
         }
@@ -67,6 +67,18 @@ public class ChannelManager {
             } else if (firstJoin && perm.hasPermission(player, channel, ChannelPermission.AUTOFOCUS_ONCE)) {
                 channel.addChatter(chatter, false);
             }
+        }
+    }
+    
+    public void disableChannels() {
+        for (Channel channel : channels) {
+            channel.setEnabled(false);
+        }
+    }
+    
+    public void enableChannels() {
+        for (Channel channel : channels) {
+            channel.setEnabled(true);
         }
     }
 

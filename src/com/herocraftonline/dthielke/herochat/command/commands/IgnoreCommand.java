@@ -8,14 +8,13 @@
 
 package com.herocraftonline.dthielke.herochat.command.commands;
 
-import java.util.List;
-
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.herocraftonline.dthielke.herochat.HeroChat;
-import com.herocraftonline.dthielke.herochat.channels.ChannelManager;
+import com.herocraftonline.dthielke.herochat.chatters.Chatter;
 import com.herocraftonline.dthielke.herochat.command.BaseCommand;
+import com.herocraftonline.dthielke.herochat.util.Messaging;
 
 public class IgnoreCommand extends BaseCommand {
 
@@ -33,54 +32,35 @@ public class IgnoreCommand extends BaseCommand {
     @Override
     public void execute(CommandSender sender, String[] args) {
         if (sender instanceof Player) {
-            Player ignorer = (Player) sender;
+            Player player = (Player) sender;
+            Chatter chatter = plugin.getChatterManager().getChatter(player);
+
             if (args.length == 0) {
-                displayIgnoreList(ignorer, plugin.getChannelManager().getIgnoreList(ignorer.getName()));
-            } else {
-                Player ignoree = plugin.getServer().getPlayer(args[0]);
-                if (ignoree != null) {
-                    toggleIgnore(ignorer, ignoree);
-                } else {
-                    sender.sendMessage(plugin.getTag() + "§cPlayer not found");
-                }
+                displayIgnoreList(chatter);
+                return;
             }
-        } else {
-            sender.sendMessage(plugin.getTag() + "§cYou must be a player to use this command");
+
+            if (chatter.isIgnoring(args[1])) {
+                chatter.setIgnore(args[1], false);
+                Messaging.send(sender, "No longer ignoring $1.", args[1].toLowerCase());
+            } else {
+                chatter.setIgnore(args[1], true);
+                Messaging.send(sender, "Now ignoring $1.", args[1].toLowerCase());
+            }
         }
     }
 
-    private void displayIgnoreList(Player player, List<String> ignoreList) {
-        String ignoreListMsg;
-        if (ignoreList.isEmpty()) {
-            ignoreListMsg = plugin.getTag() + "§cCurrently ignoring no one.";
+    private void displayIgnoreList(Chatter chatter) {
+        String[] ignoreList = chatter.getIgnores();
+        if (ignoreList.length == 0) {
+            Messaging.send(chatter.getPlayer(), "Not ignoring anyone.");
         } else {
-            ignoreListMsg = "Currently ignoring: ";
+            String ignoreListMsg = "Ignoring: ";
             for (String s : ignoreList) {
                 ignoreListMsg += s + ",";
             }
             ignoreListMsg = ignoreListMsg.substring(0, ignoreListMsg.length() - 1);
-        }
-        player.sendMessage(ignoreListMsg);
-    }
-
-    private void toggleIgnore(Player ignorer, Player ignoree) {
-        if (plugin.getPermissionManager().isAdmin(ignoree)) {
-            ignorer.sendMessage(plugin.getTag() + "§cYou can't ignore admins");
-            return;
-        }
-
-        if (ignorer.getName().equals(ignoree.getName())) {
-            ignorer.sendMessage(plugin.getTag() + "§cYou cannot ignore yourself");
-            return;
-        }
-
-        ChannelManager cm = plugin.getChannelManager();
-        if (cm.isIgnoring(ignorer.getName(), ignoree.getName())) {
-            cm.removeIgnore(ignorer.getName(), ignoree.getName());
-            ignorer.sendMessage(plugin.getTag() + "§cNo longer ignoring " + ignoree.getName());
-        } else {
-            cm.addIgnore(ignorer.getName(), ignoree.getName());
-            ignorer.sendMessage(plugin.getTag() + "§cNow ignoring " + ignoree.getName());
+            Messaging.send(chatter.getPlayer(), ignoreListMsg);
         }
     }
 

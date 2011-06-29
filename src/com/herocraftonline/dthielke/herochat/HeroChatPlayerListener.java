@@ -50,6 +50,9 @@ public class HeroChatPlayerListener extends PlayerListener {
         Player player = event.getPlayer();
         Chatter chatter = plugin.getChatterManager().getChatter(player);
         Channel channel = chatter.getFocus();
+        if (channel == null) {
+            return;
+        }
         channel.sendPlayerMessage(chatter, event.getMessage(), channel.getFormat());
     }
 

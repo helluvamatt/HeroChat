@@ -19,9 +19,9 @@ public final class Messaging {
         String formatted = msg.getFormat();
 
         // replace tags with data
-        formatted = formatted.replace("{channel-name}", msg.getChannel().getName());
-        formatted = formatted.replace("{channel-nick}", msg.getChannel().getNick());
-        formatted = formatted.replace("{channel-color}", msg.getChannel().getColor().toString());
+        formatted = formatted.replace("{name}", msg.getChannel().getName());
+        formatted = formatted.replace("{nick}", msg.getChannel().getNick());
+        formatted = formatted.replace("{color}", msg.getChannel().getColor().toString());
         formatted = formatted.replace("{message}", msg.getMessage());
 
         // replace tags with player specific data
@@ -73,19 +73,19 @@ public final class Messaging {
         return healthBar;
     }
 
-    public static void send(CommandSender player, String msg, String... params) {
+    public static void send(CommandSender player, String msg, Object... params) {
         player.sendMessage(parameterizeMessage(msg, params));
     }
 
-    public static void broadcast(Server server, String msg, String... params) {
+    public static void broadcast(Server server, String msg, Object... params) {
         server.broadcastMessage(parameterizeMessage(msg, params));
     }
 
-    private static String parameterizeMessage(String msg, String... params) {
-        msg = "§9Heroes:§c " + msg;
+    private static String parameterizeMessage(String msg, Object... params) {
+        msg = "§9HeroChat:§c " + msg;
         if (params != null) {
             for (int i = 0; i < params.length; i++) {
-                msg = msg.replace("$" + (i + 1), "§f" + params[i] + "§c");
+                msg = msg.replace("$" + (i + 1), "§f" + params[i].toString() + "§c");
             }
         }
         return msg;
