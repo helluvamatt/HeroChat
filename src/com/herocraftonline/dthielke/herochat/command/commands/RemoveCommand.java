@@ -41,12 +41,12 @@ public class RemoveCommand extends BaseCommand {
             Messaging.send(sender, "Channel not found.");
             return;
         }
-        
+
         if (channel.equals(channelManager.getDefaultChannel())) {
             Messaging.send(sender, "You cannot delete the default channel.");
             return;
         }
-        
+
         if (sender instanceof Player) {
             Player player = (Player) sender;
             PermissionManager permissions = plugin.getPermissionManager();
@@ -61,10 +61,10 @@ public class RemoveCommand extends BaseCommand {
                 return;
             }
         }
-        
+
         channelManager.removeChannel(channel);
         plugin.getConfigManager().save();
-        
+
         Messaging.send(sender, "Removed $1.", channel.getName());
     }
 

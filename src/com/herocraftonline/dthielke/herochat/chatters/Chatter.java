@@ -59,11 +59,12 @@ public class Chatter {
             addToChannel(defaultChannel);
         }
         if (focus == null || !focus.hasChatter(this)) {
-            addToChannel(defaultChannel);
+            focus = defaultChannel;
         }
     }
 
     public void filterChannels() {
+        Channel[] channels = getChannels();
         for (Channel channel : channels) {
             if (!channel.canJoin(this)) {
                 removeFromChannel(channel);

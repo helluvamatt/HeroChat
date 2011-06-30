@@ -63,6 +63,9 @@ public class ListCommand extends BaseCommand {
             if (chatter != null && channel.hasChatter(chatter)) {
                 msg = msg.concat(" *");
             }
+            if (chatter != null && chatter.getFocus().equals(channel)) {
+                msg = msg.concat(" @");
+            }
             sender.sendMessage(msg);
         }
     }

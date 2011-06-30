@@ -73,7 +73,7 @@ public class PermissionManager {
 
     public boolean hasPermission(Player player, Channel channel, ChannelPermission permission) {
         if (security != null) {
-            return security.has(player, "herochat." + permission + channel.getName());
+            return security.has(player, "herochat." + permission + channel.getName().toLowerCase());
         } else {
             return false;
         }
