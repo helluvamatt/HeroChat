@@ -42,18 +42,18 @@ public class CreateCommand extends BaseCommand {
                 return;
             }
         }
-        
+
         String name = args[0];
         String nick = args[1];
         String password = args.length == 2 ? args[2] : "";
-        
+
         for (String reserved : RESERVED_NAMES) {
             if (reserved.equalsIgnoreCase(name) || reserved.equalsIgnoreCase(nick)) {
                 Messaging.send(sender, "$1 is a reserved name.", reserved.toUpperCase());
                 return;
             }
         }
-        
+
         ChannelManager channelManager = plugin.getChannelManager();
         if (channelManager.getChannel(name) != null) {
             Messaging.send(sender, "That name is taken.");
@@ -63,75 +63,21 @@ public class CreateCommand extends BaseCommand {
             Messaging.send(sender, "That name is taken.");
             return;
         }
-        
+
         Channel channel = new Channel(plugin, name, nick, password);
         channelManager.addChannel(channel);
-        
+
         if (sender instanceof Player) {
             Player player = (Player) sender;
             Chatter chatter = plugin.getChatterManager().getChatter(player);
-            
+
             channel.addChatter(chatter, true);
             channel.addModerator(chatter, true);
             chatter.setFocus(channel, true);
         }
-        
+
         plugin.getConfigManager().save();
-        
+
         Messaging.send(sender, "Channel created.");
     }
-/*
-    private ChannelOld createChannel(String[] args, boolean full) {
-        ChannelOld c = new ChannelOld(plugin);
-        c.setName(args[0]);
-        c.setNick(args[1]);
-        c.setMsgFormat("{default}");
-        for (int i = 2; i < args.length; i++) {
-            String tmp = args[i].toLowerCase();
-
-            if (tmp.startsWith("p:")) {
-                c.setPassword(tmp.substring(2));
-            } else if (tmp.startsWith("color:")) {
-                try {
-                    int color = Integer.parseInt(tmp.substring(6), 16);
-                    c.setColor(ChatColor.values()[color]);
-                } catch (NumberFormatException e) {
-                    return null;
-                }
-            } else if (tmp.startsWith("-")) {
-                tmp = tmp.substring(1);
-                applyOptions(c, tmp.toCharArray(), full);
-            }
-        }
-        return c;
-    }
-
-    private void applyOptions(ChannelOld c, char[] args, boolean full) {
-        for (char option : args) {
-            switch (option) {
-                case 'h':
-                    c.setHidden(true);
-                    break;
-                case 'j':
-                    c.setVerbose(true);
-                    break;
-                case 'a':
-                    if (full) {
-                        c.setAutoJoined(true);
-                    }
-                    break;
-                case 'q':
-                    if (full) {
-                        c.setQuickMessagable(true);
-                    }
-                    break;
-                case 'f':
-                    if (full) {
-                        c.setForced(true);
-                    }
-                    break;
-            }
-        }
-    }
-*/
 }
