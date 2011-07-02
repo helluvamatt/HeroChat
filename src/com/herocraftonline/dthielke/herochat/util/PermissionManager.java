@@ -21,6 +21,7 @@ public class PermissionManager {
         BAN("ban"),
         KICK("kick"),
         MUTE("mute"),
+        CREATE("create"),
         ADMIN_MOD("admin.mod"),
         ADMIN_REMOVE("admin.remove"),
         ADMIN_BAN("admin.ban"),

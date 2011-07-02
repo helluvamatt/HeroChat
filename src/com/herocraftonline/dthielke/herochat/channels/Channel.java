@@ -58,10 +58,14 @@ public class Channel {
         this.color = ChatColor.WHITE;
         this.mode = Mode.INCLUSIVE;
     }
-
-    public Channel(HeroChat plugin, String name, String nick, String password, String format, ChatColor color, Mode mode) {
+    
+    public Channel(HeroChat plugin, String name, String nick, String password) {
         this(plugin, name, nick);
         this.password = password;
+    }
+
+    public Channel(HeroChat plugin, String name, String nick, String password, String format, ChatColor color, Mode mode) {
+        this(plugin, name, nick, password);
         this.format = format;
         this.color = color;
         this.mode = mode;

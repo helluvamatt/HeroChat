@@ -8,85 +8,77 @@
 
 package com.herocraftonline.dthielke.herochat.command.commands;
 
-import java.util.logging.Level;
-
-import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.herocraftonline.dthielke.herochat.HeroChat;
+import com.herocraftonline.dthielke.herochat.channels.Channel;
 import com.herocraftonline.dthielke.herochat.channels.ChannelManager;
+import com.herocraftonline.dthielke.herochat.chatters.Chatter;
 import com.herocraftonline.dthielke.herochat.command.BaseCommand;
+import com.herocraftonline.dthielke.herochat.util.Messaging;
+import com.herocraftonline.dthielke.herochat.util.PermissionManager.Permission;
 
 public class CreateCommand extends BaseCommand {
 
-    private static final String[] RESERVED_NAMES = { "ch", "join", "leave", "ignore", "help", "ban", "create", "kick", "list", "mod", "qm", "reload", "remove", "who" };
+    private static final String[] RESERVED_NAMES = { "ch", "join", "leave", "ignore", "help", "ban", "create", "kick", "list", "mod", "qm", "reload", "remove", "who", "focus", "gmute", "mute", "toggle" };
 
     public CreateCommand(HeroChat plugin) {
         super(plugin);
         name = "Create";
         description = "Creates a channel";
-        usage = "§e/ch create §9<name> <nick> §8[p:pass] [color:#] [-options]";
+        usage = "§e/ch create §9<name> <nick> §8[password]";
         minArgs = 2;
-        maxArgs = 5;
+        maxArgs = 3;
         identifiers.add("ch create");
-        notes.add("§cOptions (combinable, ie. -hsqf):");
-        notes.add("-h   Hidden from /ch channels list");
-        notes.add("-j   Show join and leave messages");
-        notes.add("§cAdmin-only options:");
-        notes.add("-a   Automatically joined by new users");
-        notes.add("-q   Allow quick message shortcut");
-        notes.add("-f   Force users to stay in this channel");
     }
 
     @Override
     public void execute(CommandSender sender, String[] args) {
-        /*
-        ChannelManager cm = plugin.getChannelManager();
         if (sender instanceof Player) {
-            Player creator = (Player) sender;
-            if (plugin.getPermissionManager().canCreate(creator)) {
-                for (String reserved : RESERVED_NAMES) {
-                    if (args[0].equalsIgnoreCase(reserved)) {
-                        sender.sendMessage(plugin.getTag() + "§cThat name is reserved");
-                        return;
-                    } else if (args[1].equalsIgnoreCase(reserved)) {
-                        sender.sendMessage(plugin.getTag() + "§cThat nick is reserved");
-                        return;
-                    }
-                }
-                if (cm.getChannel(args[0]) != null) {
-                    sender.sendMessage(plugin.getTag() + "§cThat name is taken");
-                    return;
-                } else if (cm.getChannel(args[1]) != null) {
-                    sender.sendMessage(plugin.getTag() + "§cThat nick is taken");
-                    return;
-                }
-                ChannelOld c = createChannel(args, plugin.getPermissionManager().isAdmin(creator));
-                if (c != null) {
-                    String name = creator.getName();
-                    c.getModerators().addChannel(name);
-                    c.addPlayer(name);
-                    cm.addChannel(c);
-                    cm.setActiveChannel(name, c.getName());
-                    sender.sendMessage(plugin.getTag() + "§cCreated channel " + c.getCName());
-                    try {
-                        plugin.getConfigManager().save();
-                    } catch (Exception e) {
-                        plugin.log(Level.WARNING, "Error encountered while saving data. Disabling HeroChat.");
-                        plugin.getServer().getPluginManager().disablePlugin(plugin);
-                        return;
-                    }
-                } else {
-                    sender.sendMessage(plugin.getTag() + "§cInvalid syntax. Type /ch create ? for info");
-                }
-            } else {
-                sender.sendMessage(plugin.getTag() + "§cYou cannot create channels");
+            Player player = (Player) sender;
+            if (!plugin.getPermissionManager().hasPermission(player, Permission.CREATE)) {
+                Messaging.send(player, "Insufficient permission.");
+                return;
             }
-        } else {
-            sender.sendMessage(plugin.getTag() + "§cYou must be a player to create channels");
         }
-        */
+        
+        String name = args[0];
+        String nick = args[1];
+        String password = args.length == 2 ? args[2] : "";
+        
+        for (String reserved : RESERVED_NAMES) {
+            if (reserved.equalsIgnoreCase(name) || reserved.equalsIgnoreCase(nick)) {
+                Messaging.send(sender, "$1 is a reserved name.", reserved.toUpperCase());
+                return;
+            }
+        }
+        
+        ChannelManager channelManager = plugin.getChannelManager();
+        if (channelManager.getChannel(name) != null) {
+            Messaging.send(sender, "That name is taken.");
+            return;
+        }
+        if (channelManager.getChannel(nick) != null) {
+            Messaging.send(sender, "That name is taken.");
+            return;
+        }
+        
+        Channel channel = new Channel(plugin, name, nick, password);
+        channelManager.addChannel(channel);
+        
+        if (sender instanceof Player) {
+            Player player = (Player) sender;
+            Chatter chatter = plugin.getChatterManager().getChatter(player);
+            
+            channel.addChatter(chatter, true);
+            channel.addModerator(chatter, true);
+            chatter.setFocus(channel, true);
+        }
+        
+        plugin.getConfigManager().save();
+        
+        Messaging.send(sender, "Channel created.");
     }
 /*
     private ChannelOld createChannel(String[] args, boolean full) {
