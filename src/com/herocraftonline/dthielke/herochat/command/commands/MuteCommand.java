@@ -16,13 +16,13 @@ public class MuteCommand extends BaseCommand {
 
     public MuteCommand(HeroChat plugin) {
         super(plugin);
-        name = "Mute";
-        description = "Prevents a player from speaking in a channel";
-        usage = "§e/ch mute §9<channel> §8[player] §eOR /mute §9<channel> §8[player]";
-        minArgs = 1;
-        maxArgs = 2;
-        identifiers.add("ch mute");
-        identifiers.add("mute");
+        setName("Mute");
+        setDescription("Prevents a player from speaking in a channel");
+        setUsage("§e/ch mute §9<channel> §8[player]");
+        setMinArgs(1);
+        setMaxArgs(2);
+        getIdentifiers().add("ch mute");
+        getIdentifiers().add("mute");
     }
 
     @Override

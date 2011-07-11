@@ -22,13 +22,13 @@ public class JoinCommand extends BaseCommand {
 
     public JoinCommand(HeroChat plugin) {
         super(plugin);
-        name = "Join";
-        description = "Joins a channel";
-        usage = "§e/ch join §9<channel> §8[pass] §eOR /join §9<channel> §8[pass]";
-        minArgs = 1;
-        maxArgs = 2;
-        identifiers.add("ch join");
-        identifiers.add("join");
+        setName("Join");
+        setDescription("Joins a channel");
+        setUsage("§e/ch join §9<channel> §8[pass]");
+        setMinArgs(1);
+        setMaxArgs(2);
+        getIdentifiers().add("ch join");
+        getIdentifiers().add("join");
     }
 
     @Override

@@ -25,12 +25,12 @@ public class CreateCommand extends BaseCommand {
 
     public CreateCommand(HeroChat plugin) {
         super(plugin);
-        name = "Create";
-        description = "Creates a channel";
-        usage = "§e/ch create §9<name> <nick> §8[password]";
-        minArgs = 2;
-        maxArgs = 3;
-        identifiers.add("ch create");
+        setName("Create");
+        setDescription("Creates a channel");
+        setUsage("§e/ch create §9<getName()> <nick> §8[password]");
+        setMinArgs(2);
+        setMaxArgs(3);
+        getIdentifiers().add("ch create");
     }
 
     @Override
@@ -60,7 +60,7 @@ public class CreateCommand extends BaseCommand {
             return;
         }
         if (channelManager.getChannel(nick) != null) {
-            Messaging.send(sender, "That name is taken.");
+            Messaging.send(sender, "That nick is taken.");
             return;
         }
 

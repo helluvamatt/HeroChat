@@ -75,7 +75,7 @@ public class Chatter {
     public boolean sendMessage(Message msg, String formattedMsg) {
         if (msg instanceof PlayerMessage) {
             Chatter sender = ((PlayerMessage) msg).getSender();
-            if (ignores.contains(sender.getPlayer().getName())) {
+            if (isIgnoring(sender)) {
                 return false;
             }
         }
@@ -127,7 +127,7 @@ public class Chatter {
                 if (defaultChannel.hasChatter(this)) {
                     focus = defaultChannel;
                 } else if (!channels.isEmpty()) {
-                    focus = channels.iterator().next();    
+                    focus = channels.iterator().next();
                 } else {
                     focus = null;
                 }

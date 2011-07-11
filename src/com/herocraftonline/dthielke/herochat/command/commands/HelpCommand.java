@@ -20,12 +20,12 @@ public class HelpCommand extends BaseCommand {
 
     public HelpCommand(HeroChat plugin) {
         super(plugin);
-        name = "Help";
-        description = "Displays the help menu";
-        usage = "§e/ch help §8[page#]";
-        minArgs = 0;
-        maxArgs = 1;
-        identifiers.add("ch help");
+        setName("Help");
+        setDescription("Displays the help menu");
+        setUsage("§e/ch help §8[page#]");
+        setMinArgs(0);
+        setMaxArgs(1);
+        getIdentifiers().add("ch help");
     }
 
     @Override

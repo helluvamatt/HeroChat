@@ -22,12 +22,12 @@ public class FocusCommand extends BaseCommand {
 
     public FocusCommand(HeroChat plugin) {
         super(plugin);
-        name = "Focus";
-        description = "Directs all future messages to a channel";
-        usage = "§e/ch §9<channel> §8[pass]";
-        minArgs = 1;
-        maxArgs = 2;
-        identifiers.add("ch");
+        setName("Focus");
+        setDescription("Directs all future messages to a channel");
+        setUsage("§e/ch §9<channel> §8[pass]");
+        setMinArgs(1);
+        setMaxArgs(2);
+        getIdentifiers().add("ch");
     }
 
     @Override

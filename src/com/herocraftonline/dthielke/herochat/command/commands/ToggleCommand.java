@@ -15,13 +15,13 @@ public class ToggleCommand extends BaseCommand {
 
     public ToggleCommand(HeroChat plugin) {
         super(plugin);
-        name = "Toggle";
-        description = "Temporarily enables or disables a channel";
-        usage = "§e/ch toggle §8[channel]";
-        minArgs = 0;
-        maxArgs = 1;
-        identifiers.add("ch toggle");
-        notes.add("§cNote: §eIf no channel is provided, all channels are toggled");
+        setName("Toggle");
+        setDescription("Temporarily enables or disables a channel");
+        setUsage("§e/ch toggle §8[channel]");
+        setMinArgs(0);
+        setMaxArgs(1);
+        getIdentifiers().add("ch toggle");
+        getNotes().add("§cNote: §eIf no channel is provided, all channels are toggled");
     }
 
     @Override

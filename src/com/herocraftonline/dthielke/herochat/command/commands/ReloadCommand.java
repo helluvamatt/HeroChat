@@ -20,12 +20,12 @@ public class ReloadCommand extends BaseCommand {
 
     public ReloadCommand(HeroChat plugin) {
         super(plugin);
-        name = "Reload";
-        description = "Reloads the plugin";
-        usage = "§e/ch reload";
-        minArgs = 0;
-        maxArgs = 0;
-        identifiers.add("ch reload");
+        setName("Reload");
+        setDescription("Reloads the plugin");
+        setUsage("§e/ch reload");
+        setMinArgs(0);
+        setMaxArgs(0);
+        getIdentifiers().add("ch reload");
     }
 
     @Override

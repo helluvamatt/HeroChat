@@ -18,13 +18,13 @@ import com.herocraftonline.dthielke.herochat.HeroChat;
 public abstract class BaseCommand {
 
     protected HeroChat plugin;
-    protected String name;
-    protected String description;
-    protected String usage;
-    protected int minArgs;
-    protected int maxArgs;
-    protected List<String> identifiers;
-    protected List<String> notes;
+    private String name = "Default Name";
+    private String description = "Default Description";
+    private String usage = "Default Usage";
+    private int minArgs = 0;
+    private int maxArgs = 0;
+    private List<String> identifiers;
+    private List<String> notes;
 
     public BaseCommand(HeroChat plugin) {
         this.plugin = plugin;
@@ -60,9 +60,7 @@ public abstract class BaseCommand {
         for (int i = 0; i < n; i++) {
             String identifier = identifiers.get(i).toLowerCase();
             if (lower.matches(identifier + "(\\s+.*|\\s*)")) {
-                if (index == -1 || identifier.length() > identifiers.get(index).length()) {
-                    index = i;
-                }
+                index = i;
             }
         }
 
@@ -73,24 +71,75 @@ public abstract class BaseCommand {
         }
     }
 
-    public List<String> getIdentifiers() {
-        return identifiers;
+    @Override
+    public int hashCode() {
+        return name == null ? 0 : name.hashCode();
     }
 
-    public void setIdentifiers(List<String> identifiers) {
-        this.identifiers = identifiers;
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (obj.getClass() == this.getClass()) {
+            return false;
+        }
+        BaseCommand other = (BaseCommand) obj;
+        if (name == null) {
+            if (other.name != null) {
+                return false;
+            }
+        } else if (!name.equals(other.name)) {
+            return false;
+        }
+        return true;
     }
 
     public String getName() {
         return name;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public String getDescription() {
         return description;
     }
 
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     public String getUsage() {
         return usage;
+    }
+
+    public void setUsage(String usage) {
+        this.usage = usage;
+    }
+
+    public int getMinArgs() {
+        return minArgs;
+    }
+
+    public void setMinArgs(int minArgs) {
+        this.minArgs = minArgs;
+    }
+
+    public int getMaxArgs() {
+        return maxArgs;
+    }
+
+    public void setMaxArgs(int maxArgs) {
+        this.maxArgs = maxArgs;
+    }
+
+    public List<String> getIdentifiers() {
+        return identifiers;
     }
 
     public List<String> getNotes() {

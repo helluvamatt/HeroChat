@@ -24,12 +24,12 @@ public class ModCommand extends BaseCommand {
 
     public ModCommand(HeroChat plugin) {
         super(plugin);
-        name = "Mod";
-        description = "Grants moderator privileges to a player";
-        usage = "§e/ch mod §9<channel> <player>";
-        minArgs = 2;
-        maxArgs = 2;
-        identifiers.add("ch mod");
+        setName("Mod");
+        setDescription("Grants moderator privileges to a player");
+        setUsage("§e/ch mod §9<channel> <player>");
+        setMinArgs(2);
+        setMaxArgs(2);
+        getIdentifiers().add("ch mod");
     }
 
     @Override

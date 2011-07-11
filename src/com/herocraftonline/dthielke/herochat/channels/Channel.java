@@ -106,7 +106,8 @@ public class Channel {
         }
 
         // format the message
-        String formatted = Messaging.format(event.getData());
+        message = event.getData();
+        String formatted = Messaging.format(message);
 
         // send the result to the recipients
         for (Chatter chatter : message.getRecipients()) {

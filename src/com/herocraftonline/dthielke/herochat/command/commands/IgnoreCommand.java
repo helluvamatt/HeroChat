@@ -20,13 +20,13 @@ public class IgnoreCommand extends BaseCommand {
 
     public IgnoreCommand(HeroChat plugin) {
         super(plugin);
-        name = "Ignore";
-        description = "Ignores all messages from a player";
-        usage = "§e/ch ignore §8[player] §eOR /ignore §8[player]";
-        minArgs = 0;
-        maxArgs = 1;
-        identifiers.add("ch ignore");
-        identifiers.add("ignore");
+        setName("Ignore");
+        setDescription("Ignores all messages from a player");
+        setUsage("§e/ch ignore §8[player]");
+        setMinArgs(0);
+        setMaxArgs(1);
+        getIdentifiers().add("ch ignore");
+        getIdentifiers().add("ignore");
     }
 
     @Override

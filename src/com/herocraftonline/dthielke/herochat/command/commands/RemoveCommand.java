@@ -24,12 +24,12 @@ public class RemoveCommand extends BaseCommand {
 
     public RemoveCommand(HeroChat plugin) {
         super(plugin);
-        name = "Remove";
-        description = "Removes a channel";
-        usage = "§e/ch remove §9<channel>";
-        minArgs = 1;
-        maxArgs = 1;
-        identifiers.add("ch remove");
+        setName("Remove");
+        setDescription("Removes a channel");
+        setUsage("§e/ch remove §9<channel>");
+        setMinArgs(1);
+        setMaxArgs(1);
+        getIdentifiers().add("ch remove");
     }
 
     @Override

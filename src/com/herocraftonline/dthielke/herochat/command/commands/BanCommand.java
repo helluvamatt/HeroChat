@@ -24,12 +24,12 @@ public class BanCommand extends BaseCommand {
 
     public BanCommand(HeroChat plugin) {
         super(plugin);
-        name = "Ban";
-        description = "Bans a player from a channel";
-        usage = "§e/ch ban §9<channel> <player>";
-        minArgs = 1;
-        maxArgs = 2;
-        identifiers.add("ch ban");
+        setName("Ban");
+        setDescription("Bans a player from a channel");
+        setUsage("§e/ch ban §9<channel> <player>");
+        setMinArgs(1);
+        setMaxArgs(2);
+        getIdentifiers().add("ch ban");
     }
 
     @Override

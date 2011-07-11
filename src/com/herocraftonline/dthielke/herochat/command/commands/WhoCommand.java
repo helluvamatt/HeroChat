@@ -21,12 +21,12 @@ public class WhoCommand extends BaseCommand {
 
     public WhoCommand(HeroChat plugin) {
         super(plugin);
-        name = "Who";
-        description = "Lists all users in your active channel";
-        usage = "§e/ch who";
-        minArgs = 0;
-        maxArgs = 0;
-        identifiers.add("ch who");
+        setName("Who");
+        setDescription("Lists all users in your active channel");
+        setUsage("§e/ch who");
+        setMinArgs(0);
+        setMaxArgs(0);
+        getIdentifiers().add("ch who");
     }
 
     @Override
@@ -34,11 +34,11 @@ public class WhoCommand extends BaseCommand {
         if (sender instanceof Player) {
             Player player = (Player) sender;
             Chatter chatter = plugin.getChatterManager().getChatter(player);
-            
+
             Channel focus = chatter.getFocus();
             Chatter[] chatters = focus.getChatters();
             String playerList = focus.getName() + ": ";
-            
+
             for (Chatter member : chatters) {
                 String name = member.getPlayer().getName();
                 if (focus.isModerator(member)) {

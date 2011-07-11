@@ -16,13 +16,13 @@ public class GMuteCommand extends BaseCommand {
 
     public GMuteCommand(HeroChat plugin) {
         super(plugin);
-        name = "Global Mute";
-        description = "Prevents a player from speaking in any channel";
-        usage = "§e/ch gmute §8[player]";
-        minArgs = 1;
-        maxArgs = 1;
-        identifiers.add("ch gmute");
-        identifiers.add("gmute");
+        setName("Global Mute");
+        setDescription("Prevents a player from speaking in any channel");
+        setUsage("§e/ch gmute §9<player>");
+        setMinArgs(1);
+        setMaxArgs(1);
+        getIdentifiers().add("ch gmute");
+        getIdentifiers().add("gmute");
     }
 
     @Override

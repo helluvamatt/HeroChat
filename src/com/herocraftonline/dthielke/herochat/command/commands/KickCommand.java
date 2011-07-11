@@ -24,12 +24,12 @@ public class KickCommand extends BaseCommand {
 
     public KickCommand(HeroChat plugin) {
         super(plugin);
-        name = "Kick";
-        description = "Removes a player from a channel";
-        usage = "§e/ch kick §9<channel> <player>";
-        minArgs = 2;
-        maxArgs = 2;
-        identifiers.add("ch kick");
+        setName("Kick");
+        setDescription("Removes a player from a channel");
+        setUsage("§e/ch kick §9<channel> <player>");
+        setMinArgs(2);
+        setMaxArgs(2);
+        getIdentifiers().add("ch kick");
     }
 
     @Override

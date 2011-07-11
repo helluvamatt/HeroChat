@@ -23,13 +23,13 @@ public class LeaveCommand extends BaseCommand {
 
     public LeaveCommand(HeroChat plugin) {
         super(plugin);
-        name = "Leave";
-        description = "Leaves a channel";
-        usage = "§e/ch leave §9<channel> §eOR /leave §9<channel>";
-        minArgs = 1;
-        maxArgs = 1;
-        identifiers.add("ch leave");
-        identifiers.add("leave");
+        setName("Leave");
+        setDescription("Leaves a channel");
+        setUsage("§e/ch leave §9<channel>");
+        setMinArgs(1);
+        setMaxArgs(1);
+        getIdentifiers().add("ch leave");
+        getIdentifiers().add("leave");
     }
 
     @Override

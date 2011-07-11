@@ -21,12 +21,12 @@ public class QuickMsgCommand extends BaseCommand {
 
     public QuickMsgCommand(HeroChat plugin) {
         super(plugin);
-        name = "Quick Message";
-        description = "Sends a message without changing focus";
-        usage = "§e/qm §9<channel> §9<msg> §eOR /§9<channel> §9<msg>";
-        minArgs = 2;
-        maxArgs = 1000;
-        identifiers.add("qm");
+        setName("Quick Message");
+        setDescription("Sends a message without changing focus");
+        setUsage("§e/qm §9<channel> §9<msg> §eOR /§9<channel> §9<msg>");
+        setMinArgs(2);
+        setMaxArgs(1000);
+        getIdentifiers().add("qm");
     }
 
     @Override

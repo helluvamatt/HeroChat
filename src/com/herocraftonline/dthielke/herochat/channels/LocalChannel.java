@@ -14,6 +14,8 @@ import java.util.Set;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import org.bukkit.util.config.ConfigurationNode;
+
 import com.herocraftonline.dthielke.herochat.HeroChat;
 import com.herocraftonline.dthielke.herochat.chatters.Chatter;
 import com.herocraftonline.dthielke.herochat.event.ChannelMessageEvent;
@@ -40,13 +42,13 @@ public class LocalChannel extends Channel {
         if (!enabled) {
             return false;
         }
-        
+
         if (message instanceof PlayerMessage) {
             PlayerMessage pMessage = (PlayerMessage) message;
             Chatter speaker = pMessage.getSender();
             pMessage.setRecipients(getNearbyChatters(speaker));
         }
-        
+
         // fire a message event
         ChannelMessageEvent event = new ChannelMessageEvent(message);
         plugin.getServer().getPluginManager().callEvent(event);
@@ -100,6 +102,13 @@ public class LocalChannel extends Channel {
 
     public void setDistance(int distance) {
         this.distance = distance;
+    }
+
+    @Override
+    public void save(ConfigurationNode config, String path) {
+        super.save(config, path);
+        path += "." + name;
+        config.setProperty(path + ".distance", 0);
     }
 
 }

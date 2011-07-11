@@ -22,12 +22,12 @@ public class ListCommand extends BaseCommand {
 
     public ListCommand(HeroChat plugin) {
         super(plugin);
-        name = "List";
-        description = "Lists all publicly available channels";
-        usage = "§e/ch list §8[page#]";
-        minArgs = 0;
-        maxArgs = 1;
-        identifiers.add("ch list");
+        setName("List");
+        setDescription("Lists all publicly available channels");
+        setUsage("§e/ch list §8[page#]");
+        setMinArgs(0);
+        setMaxArgs(1);
+        getIdentifiers().add("ch list");
     }
 
     @Override
