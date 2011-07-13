@@ -24,6 +24,7 @@ public class Chatter {
     private Set<Channel> channels = new HashSet<Channel>();
     private Set<String> ignores = new HashSet<String>();
     private boolean muted = false;
+    private Chatter msgTarget;
 
     public Chatter(HeroChat plugin, Player player) {
         this.plugin = plugin;
@@ -64,8 +65,7 @@ public class Chatter {
     }
 
     public void filterChannels() {
-        Channel[] channels = getChannels();
-        for (Channel channel : channels) {
+        for (Channel channel : getChannels()) {
             if (!channel.canJoin(this)) {
                 removeFromChannel(channel);
             }
@@ -107,8 +107,8 @@ public class Chatter {
         }
     }
 
-    public final String[] getIgnores() {
-        return ignores.toArray(new String[0]);
+    public Set<String> getIgnores() {
+        return new HashSet<String>(ignores);
     }
 
     public void addToChannel(Channel channel) {
@@ -135,8 +135,8 @@ public class Chatter {
         }
     }
 
-    public final Channel[] getChannels() {
-        return channels.toArray(new Channel[0]);
+    public Set<Channel> getChannels() {
+        return new HashSet<Channel>(channels);
     }
 
     @Override
@@ -224,6 +224,22 @@ public class Chatter {
         chatter.ignores = ignores;
         chatter.setMuted(muted);
         return chatter;
+    }
+
+    public boolean hasMessageTarget() {
+        return msgTarget != null;
+    }
+
+    public void clearMessageTarget() {
+        msgTarget = null;
+    }
+
+    public void setMessageTarget(Chatter msgTarget) {
+        this.msgTarget = msgTarget;
+    }
+
+    public Chatter getMessageTarget() {
+        return msgTarget;
     }
 
 }

@@ -42,7 +42,7 @@ public class ChannelManager {
                 if (defaultChannel.hasChatter(chatter)) {
                     chatter.setFocus(defaultChannel, true);
                 } else {
-                    chatter.setFocus(chatter.getChannels()[0], true);
+                    chatter.setFocus(chatter.getChannels().iterator().next(), true);
                 }
             }
         }

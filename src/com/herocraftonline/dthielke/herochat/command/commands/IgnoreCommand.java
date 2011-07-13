@@ -8,6 +8,8 @@
 
 package com.herocraftonline.dthielke.herochat.command.commands;
 
+import java.util.Set;
+
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -51,8 +53,8 @@ public class IgnoreCommand extends BaseCommand {
     }
 
     private void displayIgnoreList(Chatter chatter) {
-        String[] ignoreList = chatter.getIgnores();
-        if (ignoreList.length == 0) {
+        Set<String> ignoreList = chatter.getIgnores();
+        if (ignoreList.isEmpty()) {
             Messaging.send(chatter.getPlayer(), "Not ignoring anyone.");
         } else {
             String ignoreListMsg = "Ignoring: ";

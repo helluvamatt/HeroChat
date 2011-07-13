@@ -23,6 +23,7 @@ public final class Messaging {
         formatted = formatted.replace("{nick}", msg.getChannel().getNick());
         formatted = formatted.replace("{color}", msg.getChannel().getColor().toString());
         formatted = formatted.replace("{message}", msg.getMessage());
+        formatted = formatted.replace("{receiver}", msg.getRecipients().iterator().next().getPlayer().getDisplayName());
 
         // replace tags with player specific data
         if (msg instanceof PlayerMessage) {
