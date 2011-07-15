@@ -43,6 +43,7 @@ public class Channel {
     protected boolean enabled = true;
     protected boolean verbose = true;
     protected boolean quick = false;
+    protected boolean hidden = false;
 
     protected Set<Chatter> chatters = new HashSet<Chatter>();
     protected Set<String> moderators = new HashSet<String>();
@@ -58,17 +59,10 @@ public class Channel {
         this.color = ChatColor.WHITE;
         this.mode = Mode.INCLUSIVE;
     }
-    
+
     public Channel(HeroChat plugin, String name, String nick, String password) {
         this(plugin, name, nick);
         this.password = password;
-    }
-
-    public Channel(HeroChat plugin, String name, String nick, String password, String format, ChatColor color, Mode mode) {
-        this(plugin, name, nick, password);
-        this.format = format;
-        this.color = color;
-        this.mode = mode;
     }
 
     public boolean canJoin(Chatter chatter) {
@@ -95,7 +89,7 @@ public class Channel {
         if (!enabled) {
             return false;
         }
-        
+
         // fire a message event
         ChannelMessageEvent event = new ChannelMessageEvent(message);
         plugin.getServer().getPluginManager().callEvent(event);
@@ -116,7 +110,7 @@ public class Channel {
 
         return true;
     }
-    
+
     public boolean sendPlayerMessage(Chatter sender, String message) {
         return sendPlayerMessage(sender, message, format);
     }
@@ -145,7 +139,7 @@ public class Channel {
         // send the message
         return sendMessage(msgContainer);
     }
-    
+
     public boolean sendPluginMessage(JavaPlugin sender, String message) {
         return sendPluginMessage(sender, message, format);
     }
@@ -269,7 +263,7 @@ public class Channel {
     public boolean isBanned(Chatter chatter) {
         return isBanned(chatter.getPlayer().getName());
     }
-    
+
     public boolean isBanned(String player) {
         return bans.contains(player.toLowerCase());
     }
@@ -329,11 +323,11 @@ public class Channel {
     public boolean unmutePlayer(String player) {
         return mutes.remove(player.toLowerCase());
     }
-    
+
     public boolean isMuted(Chatter chatter) {
         return isMuted(chatter.getPlayer().getName());
     }
-    
+
     public boolean isMuted(String player) {
         return mutes.contains(player.toLowerCase());
     }
@@ -341,7 +335,7 @@ public class Channel {
     public Set<String> getMutes() {
         return new HashSet<String>(mutes);
     }
-    
+
     public Set<Chatter> getChatters() {
         return new HashSet<Chatter>(chatters);
     }
@@ -417,6 +411,14 @@ public class Channel {
     public void setQuick(boolean quick) {
         this.quick = quick;
     }
+    
+    public boolean isHidden() {
+        return hidden;
+    }
+
+    public void setHidden(boolean hidden) {
+        this.hidden = hidden;
+    }
 
     @Override
     public int hashCode() {
@@ -476,16 +478,8 @@ public class Channel {
         Set<String> bans = new HashSet<String>(config.getStringList("lists.bans", null));
         Set<String> mods = new HashSet<String>(config.getStringList("lists.moderators", null));
 
-        int distance = config.getInt("distance", 0);
-
         // Create the channel
-        Channel channel;
-        if (distance > 0) {
-            channel = new LocalChannel(plugin, name, nick);
-            ((LocalChannel) channel).setDistance(distance);
-        } else {
-            channel = new Channel(plugin, name, nick);
-        }
+        Channel channel = new Channel(plugin, name, nick);
 
         // Apply the settings we collected earlier
         channel.setPassword(password);

@@ -25,6 +25,10 @@ public class Message {
     public void setMessage(String message) {
         this.message = message;
     }
+    
+    public void setFormat(String format) {
+        this.format = format;
+    }
 
     public String getFormat() {
         return format;

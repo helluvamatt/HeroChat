@@ -12,6 +12,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.List;
 
 import org.bukkit.entity.Player;
 import org.bukkit.util.config.Configuration;
@@ -76,19 +77,27 @@ public class ConfigManager {
 
         Channel defChannel = channelManager.getChannel(defChannelName);
         if (defChannel == null) {
-            defChannel = channelManager.getChannels()[0];
+            defChannel = channelManager.getChannels().iterator().next();
         }
         channelManager.setDefaultChannel(defChannel);
     }
 
     private void loadChannels(Configuration config) {
         ChannelManager channelManager = plugin.getChannelManager();
-        for (String name : config.getKeys("channels")) {
-            Channel channel = Channel.load(plugin, config.getNode("channels." + name), name);
+
+        // load global channels
+        List<String> globalChannels = config.getKeys("channels.global");
+        for (String name : globalChannels) {
+            Channel channel = Channel.load(plugin, config.getNode("channels.global." + name), name);
             channelManager.addChannel(channel);
-            System.out.println("loaded channel: " + channel.getName());
         }
-        System.out.println("loaded " + channelManager.getChannels().length + " channels");
+
+        // load local channels
+        List<String> localChannels = config.getKeys("channels.local");
+        for (String name : localChannels) {
+            Channel channel = Channel.load(plugin, config.getNode("channels.local." + name), name);
+            channelManager.addChannel(channel);
+        }
     }
 
     public void loadPlayer(Player player) {
@@ -136,8 +145,7 @@ public class ConfigManager {
     }
 
     private void saveChannels(Configuration config) {
-        Channel[] channels = plugin.getChannelManager().getChannels();
-        for (Channel channel : channels) {
+        for (Channel channel : plugin.getChannelManager().getChannels()) {
             channel.save(config, "channels");
         }
     }

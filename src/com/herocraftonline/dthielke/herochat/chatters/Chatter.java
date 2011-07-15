@@ -24,7 +24,6 @@ public class Chatter {
     private Set<Channel> channels = new HashSet<Channel>();
     private Set<String> ignores = new HashSet<String>();
     private boolean muted = false;
-    private Chatter msgTarget;
 
     public Chatter(HeroChat plugin, Player player) {
         this.plugin = plugin;
@@ -37,8 +36,7 @@ public class Chatter {
         if (perm == null) {
             return;
         }
-        Channel[] channels = plugin.getChannelManager().getChannels();
-        for (Channel channel : channels) {
+        for (Channel channel : plugin.getChannelManager().getChannels()) {
             if (perm.hasPermission(player, channel, ChannelPermission.AUTOJOIN_ALWAYS)) {
                 addToChannel(channel);
             } else if (firstRun && perm.hasPermission(player, channel, ChannelPermission.AUTOJOIN_ONCE)) {
@@ -226,20 +224,8 @@ public class Chatter {
         return chatter;
     }
 
-    public boolean hasMessageTarget() {
-        return msgTarget != null;
-    }
-
-    public void clearMessageTarget() {
-        msgTarget = null;
-    }
-
-    public void setMessageTarget(Chatter msgTarget) {
-        this.msgTarget = msgTarget;
-    }
-
-    public Chatter getMessageTarget() {
-        return msgTarget;
+    public String toString() {
+        return getPlayer().getDisplayName();
     }
 
 }

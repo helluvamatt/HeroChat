@@ -69,13 +69,13 @@ public class ChannelManager {
             }
         }
     }
-    
+
     public void disableChannels() {
         for (Channel channel : channels) {
             channel.setEnabled(false);
         }
     }
-    
+
     public void enableChannels() {
         for (Channel channel : channels) {
             channel.setEnabled(true);
@@ -89,9 +89,9 @@ public class ChannelManager {
     public Channel getDefaultChannel() {
         return defaultChannel;
     }
-    
-    public final Channel[] getChannels() {
-        return channels.toArray(new Channel[0]);
+
+    public Set<Channel> getChannels() {
+        return new HashSet<Channel>(channels);
     }
 
 }

@@ -32,11 +32,6 @@ public class LocalChannel extends Channel {
         super(plugin, name, nick);
     }
 
-    public LocalChannel(HeroChat plugin, String name, String nick, String password, String format, ChatColor color, Mode mode, int distance) {
-        super(plugin, name, nick, password, format, color, mode);
-        this.distance = distance;
-    }
-
     @Override
     public boolean sendMessage(Message message) {
         if (!enabled) {
@@ -109,6 +104,39 @@ public class LocalChannel extends Channel {
         super.save(config, path);
         path += "." + name;
         config.setProperty(path + ".distance", 0);
+    }
+
+    public static LocalChannel load(HeroChat plugin, ConfigurationNode config, String name) {
+        // Collect necessary data from the config
+        String nick = config.getString("nickname", "nick");
+        String password = config.getString("password", "");
+        String format = config.getString("format", "{default}");
+        ChatColor color = ChatColor.valueOf(config.getString("color", "WHITE").toUpperCase());
+        Mode mode = Mode.valueOf(config.getString("mode", "INCLUSIVE").toUpperCase());
+        int distance = config.getInt("distance", DEFAULT_DISTANCE);
+
+        boolean verbose = config.getBoolean("flags.join-messages", true);
+        boolean quick = config.getBoolean("flags.shortcut-allowed", false);
+
+        Set<String> bans = new HashSet<String>(config.getStringList("lists.bans", null));
+        Set<String> mods = new HashSet<String>(config.getStringList("lists.moderators", null));
+
+        // Create the channel
+        LocalChannel channel = new LocalChannel(plugin, name, nick);
+
+        // Apply the settings we collected earlier
+        channel.setPassword(password);
+        channel.setFormat(format.isEmpty() || format.equals("{default}") ? MSG_FORMAT : format);
+        channel.setColor(color);
+        channel.setMode(mode);
+        channel.setVerbose(verbose);
+        channel.setQuick(quick);
+        channel.setDistance(distance);
+        channel.bans = bans;
+        channel.moderators = mods;
+
+        // Return the finished channel
+        return channel;
     }
 
 }

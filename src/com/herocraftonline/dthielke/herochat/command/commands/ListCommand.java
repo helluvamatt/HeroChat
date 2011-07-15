@@ -8,6 +8,9 @@
 
 package com.herocraftonline.dthielke.herochat.command.commands;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -37,9 +40,9 @@ public class ListCommand extends BaseCommand {
             chatter = plugin.getChatterManager().getChatter((Player) sender);
         }
 
-        Channel[] channels = plugin.getChannelManager().getChannels();
+        List<Channel> channels = new ArrayList<Channel>(plugin.getChannelManager().getChannels());
 
-        int pages = (int) Math.ceil((double) channels.length / CHANNELS_PER_PAGE);
+        int pages = (int) Math.ceil((double) channels.size() / CHANNELS_PER_PAGE);
         int p = 1;
         if (args.length > 0) {
             try {
@@ -55,10 +58,10 @@ public class ListCommand extends BaseCommand {
         sender.sendMessage("§c-----[ " + "§f" + "Channel List <" + p + "/" + pages + ">§c ]-----");
         for (int i = 0; i < CHANNELS_PER_PAGE; i++) {
             int index = (p - 1) * CHANNELS_PER_PAGE + i;
-            if (index >= channels.length) {
+            if (index >= channels.size()) {
                 break;
             }
-            Channel channel = channels[index];
+            Channel channel = channels.get(index);
             String msg = "  " + channel.getColor() + "[" + channel.getNick() + "] " + channel.getName();
             if (chatter != null && channel.hasChatter(chatter)) {
                 msg = msg.concat(" *");
