@@ -8,6 +8,8 @@
 
 package com.herocraftonline.dthielke.herochat.command.commands;
 
+import java.util.Set;
+
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -84,8 +86,8 @@ public class BanCommand extends BaseCommand {
     }
 
     private void displayBanList(CommandSender sender, Channel channel) {
-        String[] bans = channel.getBans();
-        if (bans.length == 0) {
+        Set<String> bans = channel.getBans();
+        if (bans.isEmpty()) {
             Messaging.send(sender, "No one is banned from $1.", channel.getName());
         } else {
             String banListMsg;

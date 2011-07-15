@@ -242,8 +242,8 @@ public class Channel {
         return moderators.contains(chatter.getPlayer().getName());
     }
 
-    public final String[] getModerators() {
-        return moderators.toArray(new String[0]);
+    public Set<String> getModerators() {
+        return new HashSet<String>(moderators);
     }
 
     public boolean banChatter(Chatter chatter, boolean notify) {
@@ -290,8 +290,8 @@ public class Channel {
         return bans.remove(player.toLowerCase());
     }
 
-    public final String[] getBans() {
-        return bans.toArray(new String[0]);
+    public Set<String> getBans() {
+        return new HashSet<String>(bans);
     }
 
     public boolean muteChatter(Chatter chatter, boolean notify) {
@@ -338,12 +338,12 @@ public class Channel {
         return mutes.contains(player.toLowerCase());
     }
 
-    public final String[] getMutes() {
-        return mutes.toArray(new String[0]);
+    public Set<String> getMutes() {
+        return new HashSet<String>(mutes);
     }
     
-    public final Chatter[] getChatters() {
-        return chatters.toArray(new Chatter[0]);
+    public Set<Chatter> getChatters() {
+        return new HashSet<Chatter>(chatters);
     }
 
     public String getName() {

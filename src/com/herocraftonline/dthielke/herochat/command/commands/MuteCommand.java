@@ -1,5 +1,7 @@
 package com.herocraftonline.dthielke.herochat.command.commands;
 
+import java.util.Set;
+
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -77,8 +79,8 @@ public class MuteCommand extends BaseCommand {
     }
 
     private void displayMuteList(CommandSender sender, Channel channel) {
-        String[] mutes = channel.getMutes();
-        if (mutes.length == 0) {
+        Set<String> mutes = channel.getMutes();
+        if (mutes.isEmpty()) {
             Messaging.send(sender, "No one is muted in $1.", channel.getName());
         } else {
             String muteListMsg;

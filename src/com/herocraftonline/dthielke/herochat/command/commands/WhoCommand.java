@@ -8,6 +8,8 @@
 
 package com.herocraftonline.dthielke.herochat.command.commands;
 
+import java.util.Set;
+
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -36,7 +38,7 @@ public class WhoCommand extends BaseCommand {
             Chatter chatter = plugin.getChatterManager().getChatter(player);
 
             Channel focus = chatter.getFocus();
-            Chatter[] chatters = focus.getChatters();
+            Set<Chatter> chatters = focus.getChatters();
             String playerList = focus.getName() + ": ";
 
             for (Chatter member : chatters) {
