@@ -15,34 +15,6 @@ import com.nijiko.permissions.PermissionHandler;
 
 public class PermissionManager {
 
-    public enum Permission {
-        RELOAD("reload"),
-        REMOVE("remove"),
-        BAN("ban"),
-        KICK("kick"),
-        MUTE("mute"),
-        CREATE("create"),
-        ADMIN_MOD("admin.mod"),
-        ADMIN_REMOVE("admin.remove"),
-        ADMIN_BAN("admin.ban"),
-        ADMIN_KICK("admin.kick"),
-        ADMIN_MUTE("admin.mute"),
-        ADMIN_GMUTE("admin.gmute"),
-        ADMIN_IMMUNITY("admin.immunity"),
-        ADMIN_TOGGLE("admin.toggle");
-        
-        private final String string;
-        
-        private Permission(String string) {
-            this.string = string;
-        }
-        
-        @Override
-        public String toString() {
-            return string;
-        }
-    }
-    
     public enum ChannelPermission {
         ALLOW("allow."),
         DENY("deny."),
@@ -66,6 +38,34 @@ public class PermissionManager {
         }
     }
 
+    public enum Permission {
+        RELOAD("reload"),
+        REMOVE("remove"),
+        BAN("ban"),
+        KICK("kick"),
+        MUTE("mute"),
+        CREATE("create"),
+        ADMIN_MOD("admin.mod"),
+        ADMIN_REMOVE("admin.remove"),
+        ADMIN_BAN("admin.ban"),
+        ADMIN_KICK("admin.kick"),
+        ADMIN_MUTE("admin.mute"),
+        ADMIN_GMUTE("admin.gmute"),
+        ADMIN_IMMUNITY("admin.immunity"),
+        ADMIN_TOGGLE("admin.toggle");
+
+        private final String string;
+
+        private Permission(String string) {
+            this.string = string;
+        }
+
+        @Override
+        public String toString() {
+            return string;
+        }
+    }
+
     private PermissionHandler security;
 
     public PermissionManager(PermissionHandler security) {
@@ -79,7 +79,7 @@ public class PermissionManager {
             return false;
         }
     }
-    
+
     public boolean hasPermission(Player player, Permission permission) {
         if (security != null) {
             return security.has(player, "herochat." + permission);

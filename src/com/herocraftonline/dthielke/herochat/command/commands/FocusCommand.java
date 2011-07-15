@@ -42,13 +42,13 @@ public class FocusCommand extends BaseCommand {
                 Messaging.send(sender, "Channel not found.");
                 return;
             }
-            
+
             if (!channel.hasChatter(chatter)) {
                 if (!channel.canJoin(chatter)) {
                     Messaging.send(sender, "You can't focus this channel.");
                     return;
                 }
-                
+
                 String password = channel.getPassword();
                 if (!password.isEmpty()) {
                     if (args.length < 2 || !args[1].equals(password)) {
@@ -56,12 +56,12 @@ public class FocusCommand extends BaseCommand {
                         return;
                     }
                 }
-                
+
                 if (!channel.addChatter(chatter, true)) {
                     return;
                 }
             }
-            
+
             chatter.setFocus(channel, true);
         }
     }

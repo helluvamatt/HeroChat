@@ -68,7 +68,7 @@ public class KickCommand extends BaseCommand {
             boolean adminKickPerm = permissions.hasPermission(player, Permission.ADMIN_KICK);
             boolean mod = channel.isModerator(playerChatter);
 
-            if ((!kickPerm && !adminKickPerm) || (kickPerm && !adminKickPerm && !mod)) {
+            if (!kickPerm && !adminKickPerm || kickPerm && !adminKickPerm && !mod) {
                 Messaging.send(player, "Insufficient permission.");
                 return;
             }

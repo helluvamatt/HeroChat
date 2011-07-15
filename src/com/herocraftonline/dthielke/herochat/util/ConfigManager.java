@@ -35,10 +35,6 @@ public class ConfigManager {
         usersConfigFolder.mkdirs();
     }
 
-    public void reload() {
-        load();
-    }
-
     public void load() {
         checkConfig();
 
@@ -47,6 +43,50 @@ public class ConfigManager {
         loadChannels(config);
         loadGlobals(config);
         loadPlayers();
+    }
+
+    public void loadPlayer(Player player) {
+        File userConfigFile = new File(usersConfigFolder, player.getName() + ".yml");
+        Configuration config = new Configuration(userConfigFile);
+        if (userConfigFile.exists()) {
+            config.load();
+        }
+        Chatter chatter = Chatter.load(plugin, config, player);
+        chatter.initialize(userConfigFile.exists());
+        plugin.getChatterManager().addChatter(chatter);
+    }
+
+    public void loadPlayers() {
+        for (Player player : plugin.getServer().getOnlinePlayers()) {
+            loadPlayer(player);
+        }
+    }
+
+    public void reload() {
+        load();
+    }
+
+    public void save() {
+        Configuration config = new Configuration(primaryConfigFile);
+        saveGlobals(config);
+        saveChannels(config);
+        config.save();
+
+        savePlayers();
+    }
+
+    public void savePlayer(Player player) {
+        File userConfigFile = new File(usersConfigFolder, player.getName() + ".yml");
+        Configuration config = new Configuration(userConfigFile);
+        Chatter chatter = plugin.getChatterManager().getChatter(player);
+        chatter.save(config);
+        config.save();
+    }
+
+    public void savePlayers() {
+        for (Player player : plugin.getServer().getOnlinePlayers()) {
+            savePlayer(player);
+        }
     }
 
     private void checkConfig() {
@@ -72,17 +112,6 @@ public class ConfigManager {
         }
     }
 
-    private void loadGlobals(Configuration config) {
-        ChannelManager channelManager = plugin.getChannelManager();
-        String defChannelName = config.getString("globals.default-channel");
-
-        Channel defChannel = channelManager.getChannel(defChannelName);
-        if (defChannel == null) {
-            defChannel = channelManager.getChannels().iterator().next();
-        }
-        channelManager.setDefaultChannel(defChannel);
-    }
-
     private void loadChannels(Configuration config) {
         ChannelManager channelManager = plugin.getChannelManager();
 
@@ -105,48 +134,15 @@ public class ConfigManager {
         }
     }
 
-    public void loadPlayer(Player player) {
-        File userConfigFile = new File(usersConfigFolder, player.getName() + ".yml");
-        Configuration config = new Configuration(userConfigFile);
-        if (userConfigFile.exists()) {
-            config.load();
+    private void loadGlobals(Configuration config) {
+        ChannelManager channelManager = plugin.getChannelManager();
+        String defChannelName = config.getString("globals.default-channel");
+
+        Channel defChannel = channelManager.getChannel(defChannelName);
+        if (defChannel == null) {
+            defChannel = channelManager.getChannels().iterator().next();
         }
-        Chatter chatter = Chatter.load(plugin, config, player);
-        chatter.initialize(userConfigFile.exists());
-        plugin.getChatterManager().addChatter(chatter);
-    }
-
-    public void loadPlayers() {
-        for (Player player : plugin.getServer().getOnlinePlayers()) {
-            loadPlayer(player);
-        }
-    }
-
-    public void savePlayer(Player player) {
-        File userConfigFile = new File(usersConfigFolder, player.getName() + ".yml");
-        Configuration config = new Configuration(userConfigFile);
-        Chatter chatter = plugin.getChatterManager().getChatter(player);
-        chatter.save(config);
-        config.save();
-    }
-
-    public void savePlayers() {
-        for (Player player : plugin.getServer().getOnlinePlayers()) {
-            savePlayer(player);
-        }
-    }
-
-    public void save() {
-        Configuration config = new Configuration(primaryConfigFile);
-        saveGlobals(config);
-        saveChannels(config);
-        config.save();
-
-        savePlayers();
-    }
-
-    private void saveGlobals(Configuration config) {
-        config.setProperty("globals.default-channel", plugin.getChannelManager().getDefaultChannel().getName());
+        channelManager.setDefaultChannel(defChannel);
     }
 
     private void saveChannels(Configuration config) {
@@ -157,6 +153,10 @@ public class ConfigManager {
                 channel.save(config, "channels.global");
             }
         }
+    }
+
+    private void saveGlobals(Configuration config) {
+        config.setProperty("globals.default-channel", plugin.getChannelManager().getDefaultChannel().getName());
     }
 
 }

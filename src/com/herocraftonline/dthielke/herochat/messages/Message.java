@@ -18,28 +18,28 @@ public class Message {
         this.recipients = recipients;
     }
 
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
-    
-    public void setFormat(String format) {
-        this.format = format;
+    public Channel getChannel() {
+        return channel;
     }
 
     public String getFormat() {
         return format;
     }
 
-    public Channel getChannel() {
-        return channel;
+    public String getMessage() {
+        return message;
     }
 
     public Set<Chatter> getRecipients() {
         return recipients;
+    }
+
+    public void setFormat(String format) {
+        this.format = format;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
     }
 
     public void setRecipients(Set<Chatter> recipients) {

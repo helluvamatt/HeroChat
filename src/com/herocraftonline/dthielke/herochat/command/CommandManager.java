@@ -22,6 +22,10 @@ public class CommandManager {
         commands = new ArrayList<BaseCommand>();
     }
 
+    public void addCommand(BaseCommand command) {
+        commands.add(command);
+    }
+
     public boolean dispatch(CommandSender sender, Command command, String label, String[] args) {
         String input = label + " ";
         for (String s : args) {
@@ -58,15 +62,11 @@ public class CommandManager {
         return true;
     }
 
-    public void addCommand(BaseCommand command) {
-        commands.add(command);
+    public List<BaseCommand> getCommands() {
+        return commands;
     }
 
     public void removeCommand(BaseCommand command) {
         commands.remove(command);
-    }
-
-    public List<BaseCommand> getCommands() {
-        return commands;
     }
 }

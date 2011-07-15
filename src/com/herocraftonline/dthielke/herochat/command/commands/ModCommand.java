@@ -63,7 +63,7 @@ public class ModCommand extends BaseCommand {
                 Messaging.send(player, "Insufficient permission.");
                 return;
             }
-            
+
             if (targetMod) {
                 if (!adminModPerm) {
                     Messaging.send(player, "$1 is already moderating $2.", target.getName(), channel.getName());
@@ -71,7 +71,7 @@ public class ModCommand extends BaseCommand {
                 }
             }
         }
-        
+
         if (targetMod) {
             channel.removeModerator(targetChatter, true);
             Messaging.send(sender, "$1 is no longer moderating $2.", target.getName(), channel.getName());

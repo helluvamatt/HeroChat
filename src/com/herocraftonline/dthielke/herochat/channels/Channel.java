@@ -65,6 +65,61 @@ public class Channel {
         this.password = password;
     }
 
+    public boolean addChatter(Chatter chatter, boolean notify) {
+        Player player = chatter.getPlayer();
+        // check if the player is banned
+        if (bans.contains(player.getName())) {
+            // notify if banned
+            if (notify) {
+                Messaging.send(player, "You are banned from $1.", name);
+            }
+            return false;
+        }
+        // add the player
+        boolean joined = chatters.add(chatter);
+        if (joined) {
+            chatter.addToChannel(this);
+        }
+        // notify if added
+        if (notify && joined) {
+            Messaging.send(player, "Joined $1.", name);
+            chatters.remove(chatter);
+            if (verbose) {
+                sendPluginMessage(plugin, "&f" + player.getDisplayName() + color + " joined the channel.", JOIN_FORMAT);
+            }
+            chatters.add(chatter);
+        }
+        return joined;
+    }
+
+    public boolean addModerator(Chatter chatter, boolean notify) {
+        Player player = chatter.getPlayer();
+
+        // add the player to the moderators list
+        boolean added = addModerator(player.getName());
+        // notify if added
+        if (notify && added) {
+            Messaging.send(player, "Now moderating $1.", name);
+        }
+        return added;
+    }
+
+    public boolean banChatter(Chatter chatter, boolean notify) {
+        Player player = chatter.getPlayer();
+
+        // add the player to the bans list
+        boolean banned = banPlayer(player.getName());
+        // notify if banned
+        if (notify && banned) {
+            sendPluginMessage(plugin, "&f" + player.getDisplayName() + color + " was banned from the channel.", BAN_FORMAT);
+        }
+        // remove the player from the channel
+        if (banned) {
+            removeChatter(chatter, true);
+        }
+        return banned;
+    }
+
     public boolean canJoin(Chatter chatter) {
         Player player = chatter.getPlayer();
         if (mode == Mode.INCLUSIVE) {
@@ -88,6 +143,174 @@ public class Channel {
             return plugin.getPermissionManager().hasPermission(player, this, ChannelPermission.SPEAK);
         }
         return false;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        Channel other = (Channel) obj;
+        if (name == null) {
+            if (other.name != null) {
+                return false;
+            }
+        } else if (!name.equalsIgnoreCase(other.name)) {
+            return false;
+        }
+        return true;
+    }
+
+    public Set<String> getBans() {
+        return new HashSet<String>(bans);
+    }
+
+    public Set<Chatter> getChatters() {
+        return new HashSet<Chatter>(chatters);
+    }
+
+    public ChatColor getColor() {
+        return color;
+    }
+
+    public String getFormat() {
+        return format;
+    }
+
+    public Mode getMode() {
+        return mode;
+    }
+
+    public Set<String> getModerators() {
+        return new HashSet<String>(moderators);
+    }
+
+    public Set<String> getMutes() {
+        return new HashSet<String>(mutes);
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getNick() {
+        return nick;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public boolean hasChatter(Chatter chatter) {
+        return chatters.contains(chatter);
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + (name == null ? 0 : name.toLowerCase().hashCode());
+        return result;
+    }
+
+    public boolean isBanned(Chatter chatter) {
+        return isBanned(chatter.getPlayer().getName());
+    }
+
+    public boolean isBanned(String player) {
+        return bans.contains(player.toLowerCase());
+    }
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public boolean isHidden() {
+        return hidden;
+    }
+
+    public boolean isModerator(Chatter chatter) {
+        return moderators.contains(chatter.getPlayer().getName());
+    }
+
+    public boolean isMuted(Chatter chatter) {
+        return isMuted(chatter.getPlayer().getName());
+    }
+
+    public boolean isMuted(String player) {
+        return mutes.contains(player.toLowerCase());
+    }
+
+    public boolean isQuick() {
+        return quick;
+    }
+
+    public boolean isVerbose() {
+        return verbose;
+    }
+
+    public boolean muteChatter(Chatter chatter, boolean notify) {
+        Player player = chatter.getPlayer();
+
+        // add the player to the bans list
+        boolean muted = mutePlayer(player.getName());
+        // notify if muted
+        if (notify && muted) {
+            Messaging.send(player, "Muted in $1.", name);
+        }
+        // remove the player from the channel
+        if (muted) {
+            removeChatter(chatter, false);
+        }
+        return muted;
+    }
+
+    public boolean removeChatter(Chatter chatter, boolean notify) {
+        Player player = chatter.getPlayer();
+        // remove the player
+        boolean removed = chatters.remove(chatter);
+        if (removed) {
+            chatter.removeFromChannel(this);
+        }
+        // notify if removed
+        if (notify && removed) {
+            if (verbose) {
+                sendPluginMessage(plugin, "&f" + player.getDisplayName() + color + " left the channel.", LEAVE_FORMAT);
+            }
+            Messaging.send(player, "Left $1.", name);
+        }
+        return removed;
+    }
+
+    public boolean removeModerator(Chatter chatter, boolean notify) {
+        Player player = chatter.getPlayer();
+
+        // remove the player from the moderators list
+        boolean removed = removeModerator(player.getName());
+        // notify if removed
+        if (notify && removed) {
+            Messaging.send(player, "No longer moderating $1.", name);
+        }
+        return removed;
+    }
+
+    public void save(ConfigurationNode config, String path) {
+        path += "." + name;
+        config.setProperty(path + ".nickname", nick);
+        config.setProperty(path + ".password", password);
+        config.setProperty(path + ".format", format);
+        config.setProperty(path + ".color", color.name());
+        config.setProperty(path + ".mode", mode.toString());
+        config.setProperty(path + ".flags.join-messages", verbose);
+        config.setProperty(path + ".flags.shortcut-allowed", quick);
+        config.setProperty(path + ".lists.bans", new ArrayList<String>(bans));
+        config.setProperty(path + ".lists.moderators", new ArrayList<String>(moderators));
     }
 
     public boolean sendMessage(Message message) {
@@ -157,120 +380,44 @@ public class Channel {
         return sendMessage(msgContainer);
     }
 
-    public boolean addChatter(Chatter chatter, boolean notify) {
-        Player player = chatter.getPlayer();
-        // check if the player is banned
-        if (bans.contains(player.getName())) {
-            // notify if banned
-            if (notify) {
-                Messaging.send(player, "You are banned from $1.", name);
-            }
-            return false;
-        }
-        // add the player
-        boolean joined = chatters.add(chatter);
-        if (joined) {
-            chatter.addToChannel(this);
-        }
-        // notify if added
-        if (notify && joined) {
-            Messaging.send(player, "Joined $1.", name);
-            chatters.remove(chatter);
-            if (verbose) {
-                sendPluginMessage(plugin, "&f" + player.getDisplayName() + color + " joined the channel.", JOIN_FORMAT);
-            }
-            chatters.add(chatter);
-        }
-        return joined;
+    public void setColor(ChatColor color) {
+        this.color = color;
     }
 
-    public boolean removeChatter(Chatter chatter, boolean notify) {
-        Player player = chatter.getPlayer();
-        // remove the player
-        boolean removed = chatters.remove(chatter);
-        if (removed) {
-            chatter.removeFromChannel(this);
-        }
-        // notify if removed
-        if (notify && removed) {
-            if (verbose) {
-                sendPluginMessage(plugin, "&f" + player.getDisplayName() + color + " left the channel.", LEAVE_FORMAT);
-            }
-            Messaging.send(player, "Left $1.", name);
-        }
-        return removed;
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
     }
 
-    public boolean hasChatter(Chatter chatter) {
-        return chatters.contains(chatter);
+    public void setFormat(String format) {
+        this.format = format;
     }
 
-    public boolean addModerator(Chatter chatter, boolean notify) {
-        Player player = chatter.getPlayer();
-
-        // add the player to the moderators list
-        boolean added = addModerator(player.getName());
-        // notify if added
-        if (notify && added) {
-            Messaging.send(player, "Now moderating $1.", name);
-        }
-        return added;
+    public void setHidden(boolean hidden) {
+        this.hidden = hidden;
     }
 
-    private boolean addModerator(String player) {
-        return moderators.add(player.toLowerCase());
+    public void setMode(Mode mode) {
+        this.mode = mode;
     }
 
-    public boolean removeModerator(Chatter chatter, boolean notify) {
-        Player player = chatter.getPlayer();
-
-        // remove the player from the moderators list
-        boolean removed = removeModerator(player.getName());
-        // notify if removed
-        if (notify && removed) {
-            Messaging.send(player, "No longer moderating $1.", name);
-        }
-        return removed;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    private boolean removeModerator(String player) {
-        return moderators.remove(player.toLowerCase());
+    public void setNick(String nick) {
+        this.nick = nick;
     }
 
-    public boolean isModerator(Chatter chatter) {
-        return moderators.contains(chatter.getPlayer().getName());
+    public void setPassword(String password) {
+        this.password = password;
     }
 
-    public Set<String> getModerators() {
-        return new HashSet<String>(moderators);
+    public void setQuick(boolean quick) {
+        this.quick = quick;
     }
 
-    public boolean banChatter(Chatter chatter, boolean notify) {
-        Player player = chatter.getPlayer();
-
-        // add the player to the bans list
-        boolean banned = banPlayer(player.getName());
-        // notify if banned
-        if (notify && banned) {
-            sendPluginMessage(plugin, "&f" + player.getDisplayName() + color + " was banned from the channel.", BAN_FORMAT);
-        }
-        // remove the player from the channel
-        if (banned) {
-            removeChatter(chatter, true);
-        }
-        return banned;
-    }
-
-    private boolean banPlayer(String player) {
-        return bans.add(player.toLowerCase());
-    }
-
-    public boolean isBanned(Chatter chatter) {
-        return isBanned(chatter.getPlayer().getName());
-    }
-
-    public boolean isBanned(String player) {
-        return bans.contains(player.toLowerCase());
+    public void setVerbose(boolean verbose) {
+        this.verbose = verbose;
     }
 
     public boolean unbanChatter(Chatter chatter, boolean notify) {
@@ -283,34 +430,6 @@ public class Channel {
             Messaging.send(player, "No longer banned from $1.", name);
         }
         return unbanned;
-    }
-
-    private boolean unbanPlayer(String player) {
-        return bans.remove(player.toLowerCase());
-    }
-
-    public Set<String> getBans() {
-        return new HashSet<String>(bans);
-    }
-
-    public boolean muteChatter(Chatter chatter, boolean notify) {
-        Player player = chatter.getPlayer();
-
-        // add the player to the bans list
-        boolean muted = mutePlayer(player.getName());
-        // notify if muted
-        if (notify && muted) {
-            Messaging.send(player, "Muted in $1.", name);
-        }
-        // remove the player from the channel
-        if (muted) {
-            removeChatter(chatter, false);
-        }
-        return muted;
-    }
-
-    private boolean mutePlayer(String player) {
-        return mutes.add(player.toLowerCase());
     }
 
     public boolean unmuteChatter(Chatter chatter, boolean notify) {
@@ -329,143 +448,24 @@ public class Channel {
         return mutes.remove(player.toLowerCase());
     }
 
-    public boolean isMuted(Chatter chatter) {
-        return isMuted(chatter.getPlayer().getName());
+    private boolean addModerator(String player) {
+        return moderators.add(player.toLowerCase());
     }
 
-    public boolean isMuted(String player) {
-        return mutes.contains(player.toLowerCase());
+    private boolean banPlayer(String player) {
+        return bans.add(player.toLowerCase());
     }
 
-    public Set<String> getMutes() {
-        return new HashSet<String>(mutes);
+    private boolean mutePlayer(String player) {
+        return mutes.add(player.toLowerCase());
     }
 
-    public Set<Chatter> getChatters() {
-        return new HashSet<Chatter>(chatters);
+    private boolean removeModerator(String player) {
+        return moderators.remove(player.toLowerCase());
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getNick() {
-        return nick;
-    }
-
-    public void setNick(String nick) {
-        this.nick = nick;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getFormat() {
-        return format;
-    }
-
-    public void setFormat(String format) {
-        this.format = format;
-    }
-
-    public ChatColor getColor() {
-        return color;
-    }
-
-    public void setColor(ChatColor color) {
-        this.color = color;
-    }
-
-    public Mode getMode() {
-        return mode;
-    }
-
-    public void setMode(Mode mode) {
-        this.mode = mode;
-    }
-
-    public boolean isEnabled() {
-        return enabled;
-    }
-
-    public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
-    }
-
-    public boolean isVerbose() {
-        return verbose;
-    }
-
-    public void setVerbose(boolean verbose) {
-        this.verbose = verbose;
-    }
-
-    public boolean isQuick() {
-        return quick;
-    }
-
-    public void setQuick(boolean quick) {
-        this.quick = quick;
-    }
-
-    public boolean isHidden() {
-        return hidden;
-    }
-
-    public void setHidden(boolean hidden) {
-        this.hidden = hidden;
-    }
-
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + (name == null ? 0 : name.toLowerCase().hashCode());
-        return result;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        Channel other = (Channel) obj;
-        if (name == null) {
-            if (other.name != null) {
-                return false;
-            }
-        } else if (!name.equalsIgnoreCase(other.name)) {
-            return false;
-        }
-        return true;
-    }
-
-    public void save(ConfigurationNode config, String path) {
-        path += "." + name;
-        config.setProperty(path + ".nickname", nick);
-        config.setProperty(path + ".password", password);
-        config.setProperty(path + ".format", format);
-        config.setProperty(path + ".color", color.name());
-        config.setProperty(path + ".mode", mode.toString());
-        config.setProperty(path + ".flags.join-messages", verbose);
-        config.setProperty(path + ".flags.shortcut-allowed", quick);
-        config.setProperty(path + ".lists.bans", new ArrayList<String>(bans));
-        config.setProperty(path + ".lists.moderators", new ArrayList<String>(moderators));
+    private boolean unbanPlayer(String player) {
+        return bans.remove(player.toLowerCase());
     }
 
     public static Channel load(HeroChat plugin, ConfigurationNode config, String name) {

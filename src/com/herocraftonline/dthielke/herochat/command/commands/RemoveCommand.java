@@ -56,7 +56,7 @@ public class RemoveCommand extends BaseCommand {
             boolean adminRemovePerm = permissions.hasPermission(player, Permission.ADMIN_REMOVE);
             boolean mod = channel.isModerator(chatter);
 
-            if ((!removePerm && !adminRemovePerm) || (removePerm && !adminRemovePerm && !mod)) {
+            if (!removePerm && !adminRemovePerm || removePerm && !adminRemovePerm && !mod) {
                 Messaging.send(player, "Insufficient permission.");
                 return;
             }

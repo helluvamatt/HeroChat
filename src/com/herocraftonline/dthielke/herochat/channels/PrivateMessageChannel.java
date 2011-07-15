@@ -30,6 +30,7 @@ public class PrivateMessageChannel extends Channel {
         return false;
     }
 
+    @Override
     public boolean sendMessage(Message message) {
         if (!enabled) {
             return false;

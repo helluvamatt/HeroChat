@@ -8,13 +8,13 @@ import org.bukkit.entity.Player;
 public class ChatterManager {
 
     private Set<Chatter> chatters = new HashSet<Chatter>();
-    
+
     public void addChatter(Chatter chatter) {
         chatters.add(chatter);
     }
 
-    public void removeChatter(Chatter chatter) {
-        chatters.remove(chatter);
+    public Chatter getChatter(Player player) {
+        return getChatter(player.getName());
     }
 
     public Chatter getChatter(String name) {
@@ -25,13 +25,13 @@ public class ChatterManager {
         }
         return null;
     }
-    
-    public Chatter getChatter(Player player) {
-        return getChatter(player.getName());
-    }
-    
+
     public final Chatter[] getChatters() {
         return chatters.toArray(new Chatter[0]);
+    }
+
+    public void removeChatter(Chatter chatter) {
+        chatters.remove(chatter);
     }
 
 }

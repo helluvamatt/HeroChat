@@ -32,32 +32,6 @@ public class ChannelManager {
         return channels.add(channel);
     }
 
-    public boolean removeChannel(Channel channel) {
-        if (channel.equals(defaultChannel)) {
-            return false;
-        }
-        for (Chatter chatter : channel.getChatters()) {
-            channel.removeChatter(chatter, true);
-            if (chatter.getFocus().equals(channel)) {
-                if (defaultChannel.hasChatter(chatter)) {
-                    chatter.setFocus(defaultChannel, true);
-                } else {
-                    chatter.setFocus(chatter.getChannels().iterator().next(), true);
-                }
-            }
-        }
-        return channels.remove(channel);
-    }
-
-    public Channel getChannel(String name) {
-        for (Channel channel : channels) {
-            if (channel.getName().equalsIgnoreCase(name) || channel.getNick().equalsIgnoreCase(name)) {
-                return channel;
-            }
-        }
-        return null;
-    }
-
     public void autoPopulateChannels(Chatter chatter, boolean firstJoin) {
         Player player = chatter.getPlayer();
         PermissionManager perm = plugin.getPermissionManager();
@@ -82,16 +56,42 @@ public class ChannelManager {
         }
     }
 
-    public void setDefaultChannel(Channel defaultChannel) {
-        this.defaultChannel = defaultChannel;
+    public Channel getChannel(String name) {
+        for (Channel channel : channels) {
+            if (channel.getName().equalsIgnoreCase(name) || channel.getNick().equalsIgnoreCase(name)) {
+                return channel;
+            }
+        }
+        return null;
+    }
+
+    public Set<Channel> getChannels() {
+        return new HashSet<Channel>(channels);
     }
 
     public Channel getDefaultChannel() {
         return defaultChannel;
     }
 
-    public Set<Channel> getChannels() {
-        return new HashSet<Channel>(channels);
+    public boolean removeChannel(Channel channel) {
+        if (channel.equals(defaultChannel)) {
+            return false;
+        }
+        for (Chatter chatter : channel.getChatters()) {
+            channel.removeChatter(chatter, true);
+            if (chatter.getFocus().equals(channel)) {
+                if (defaultChannel.hasChatter(chatter)) {
+                    chatter.setFocus(defaultChannel, true);
+                } else {
+                    chatter.setFocus(chatter.getChannels().iterator().next(), true);
+                }
+            }
+        }
+        return channels.remove(channel);
+    }
+
+    public void setDefaultChannel(Channel defaultChannel) {
+        this.defaultChannel = defaultChannel;
     }
 
 }

@@ -24,18 +24,6 @@ public class PlayerMessage extends Message {
         this.groupSuffix = groupSuffix;
     }
 
-    public Chatter getSender() {
-        return sender;
-    }
-
-    public String getPrefix() {
-        return prefix;
-    }
-
-    public String getSuffix() {
-        return suffix;
-    }
-
     public String getGroup() {
         return group;
     }
@@ -46,6 +34,18 @@ public class PlayerMessage extends Message {
 
     public String getGroupSuffix() {
         return groupSuffix;
+    }
+
+    public String getPrefix() {
+        return prefix;
+    }
+
+    public Chatter getSender() {
+        return sender;
+    }
+
+    public String getSuffix() {
+        return suffix;
     }
 
 }

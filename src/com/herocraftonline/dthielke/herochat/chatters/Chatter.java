@@ -31,6 +31,67 @@ public class Chatter {
         this.playerName = player.getName();
     }
 
+    public void addToChannel(Channel channel) {
+        boolean added = channels.add(channel);
+        if (added) {
+            channel.addChatter(this, false);
+        }
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        Chatter other = (Chatter) obj;
+        if (playerName == null) {
+            if (other.playerName != null) {
+                return false;
+            }
+        } else if (!playerName.equals(other.playerName)) {
+            return false;
+        }
+        return true;
+    }
+
+    public void filterChannels() {
+        for (Channel channel : getChannels()) {
+            if (!channel.canJoin(this)) {
+                removeFromChannel(channel);
+            }
+        }
+    }
+
+    public Set<Channel> getChannels() {
+        return new HashSet<Channel>(channels);
+    }
+
+    public Channel getFocus() {
+        return focus;
+    }
+
+    public Set<String> getIgnores() {
+        return new HashSet<String>(ignores);
+    }
+
+    public Player getPlayer() {
+        return plugin.getServer().getPlayer(playerName);
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + (playerName == null ? 0 : playerName.hashCode());
+        return result;
+    }
+
     public void initialize(boolean firstRun) {
         Player player = getPlayer();
         PermissionManager perm = plugin.getPermissionManager();
@@ -63,29 +124,6 @@ public class Chatter {
         }
     }
 
-    public void filterChannels() {
-        for (Channel channel : getChannels()) {
-            if (!channel.canJoin(this)) {
-                removeFromChannel(channel);
-            }
-        }
-    }
-
-    public boolean sendMessage(Message msg, String formattedMsg) {
-        if (msg instanceof PlayerMessage) {
-            Chatter sender = ((PlayerMessage) msg).getSender();
-            if (isIgnoring(sender)) {
-                return false;
-            }
-        }
-        getPlayer().sendMessage(formattedMsg);
-        return true;
-    }
-
-    public Player getPlayer() {
-        return plugin.getServer().getPlayer(playerName);
-    }
-
     public boolean isIgnoring(Chatter other) {
         return ignores.contains(other.playerName.toLowerCase());
     }
@@ -94,27 +132,8 @@ public class Chatter {
         return ignores.contains(player.toLowerCase());
     }
 
-    public void setIgnore(Chatter other, boolean ignore) {
-        setIgnore(other.getPlayer().getName(), ignore);
-    }
-
-    public void setIgnore(String player, boolean ignore) {
-        if (ignore) {
-            ignores.add(player.toLowerCase());
-        } else {
-            ignores.remove(player.toLowerCase());
-        }
-    }
-
-    public Set<String> getIgnores() {
-        return new HashSet<String>(ignores);
-    }
-
-    public void addToChannel(Channel channel) {
-        boolean added = channels.add(channel);
-        if (added) {
-            channel.addChatter(this, false);
-        }
+    public boolean isMuted() {
+        return muted;
     }
 
     public void removeFromChannel(Channel channel) {
@@ -134,58 +153,6 @@ public class Chatter {
         }
     }
 
-    public Set<Channel> getChannels() {
-        return new HashSet<Channel>(channels);
-    }
-
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((playerName == null) ? 0 : playerName.hashCode());
-        return result;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        Chatter other = (Chatter) obj;
-        if (playerName == null) {
-            if (other.playerName != null)
-                return false;
-        } else if (!playerName.equals(other.playerName))
-            return false;
-        return true;
-    }
-
-    public void setMuted(boolean muted) {
-        this.muted = muted;
-    }
-
-    public boolean isMuted() {
-        return muted;
-    }
-
-    public void setFocus(Channel focus, boolean notify) {
-        Channel prevFocus = this.focus;
-        this.focus = focus;
-        if (notify) {
-            Messaging.send(getPlayer(), "Focused $1.", focus.getName());
-        }
-        if (prevFocus instanceof PrivateMessageChannel) {
-            ((PrivateMessageChannel)prevFocus).update();
-        }
-    }
-
-    public Channel getFocus() {
-        return focus;
-    }
-
     public void save(ConfigurationNode config) {
         config.setProperty("player-name", playerName);
         List<String> channelNames = new ArrayList<String>();
@@ -196,6 +163,49 @@ public class Chatter {
         config.setProperty("channels", channelNames);
         config.setProperty("ignores", ignores);
         config.setProperty("muted", muted);
+    }
+
+    public boolean sendMessage(Message msg, String formattedMsg) {
+        if (msg instanceof PlayerMessage) {
+            Chatter sender = ((PlayerMessage) msg).getSender();
+            if (isIgnoring(sender)) {
+                return false;
+            }
+        }
+        getPlayer().sendMessage(formattedMsg);
+        return true;
+    }
+
+    public void setFocus(Channel focus, boolean notify) {
+        Channel prevFocus = this.focus;
+        this.focus = focus;
+        if (notify) {
+            Messaging.send(getPlayer(), "Focused $1.", focus.getName());
+        }
+        if (prevFocus instanceof PrivateMessageChannel) {
+            ((PrivateMessageChannel) prevFocus).update();
+        }
+    }
+
+    public void setIgnore(Chatter other, boolean ignore) {
+        setIgnore(other.getPlayer().getName(), ignore);
+    }
+
+    public void setIgnore(String player, boolean ignore) {
+        if (ignore) {
+            ignores.add(player.toLowerCase());
+        } else {
+            ignores.remove(player.toLowerCase());
+        }
+    }
+
+    public void setMuted(boolean muted) {
+        this.muted = muted;
+    }
+
+    @Override
+    public String toString() {
+        return getPlayer().getDisplayName();
     }
 
     public static Chatter load(HeroChat plugin, ConfigurationNode config, Player player) {
@@ -227,10 +237,6 @@ public class Chatter {
         chatter.ignores = ignores;
         chatter.setMuted(muted);
         return chatter;
-    }
-
-    public String toString() {
-        return getPlayer().getDisplayName();
     }
 
 }

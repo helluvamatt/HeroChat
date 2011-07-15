@@ -13,43 +13,8 @@ import com.herocraftonline.dthielke.herochat.messages.PlayerMessage;
 public final class Messaging {
     private static final String[] HEALTH_COLORS = { "§0", "§4", "§6", "§e", "§2" };
 
-    public static String stripColors(String input) {
-        return input.replaceAll("[§&][0-9a-f]", "");
-    }
-
-    public static String format(Message msg) {
-        // start with the format
-        String formatted = msg.getFormat();
-
-        // replace tags with data
-        formatted = formatted.replace("{name}", msg.getChannel().getName());
-        formatted = formatted.replace("{nick}", msg.getChannel().getNick());
-        formatted = formatted.replace("{color}", msg.getChannel().getColor().toString());
-        formatted = formatted.replace("{message}", msg.getMessage());
-        
-        Iterator<Chatter> iter = msg.getRecipients().iterator();
-        if (iter.hasNext()) {
-            formatted = formatted.replace("{receiver}", iter.next().getPlayer().getDisplayName());
-        }
-
-        // replace tags with player specific data
-        if (msg instanceof PlayerMessage) {
-            PlayerMessage pMsg = (PlayerMessage) msg;
-            Player sender = pMsg.getSender().getPlayer();
-            formatted = formatted.replace("{sender}", sender.getDisplayName());
-            formatted = formatted.replace("{world}", sender.getWorld().getName());
-            formatted = formatted.replace("{prefix}", pMsg.getPrefix());
-            formatted = formatted.replace("{suffix}", pMsg.getSuffix());
-            formatted = formatted.replace("{group}", pMsg.getGroup());
-            formatted = formatted.replace("{groupPrefix}", pMsg.getGroupPrefix());
-            formatted = formatted.replace("{groupSuffix}", pMsg.getGroupSuffix());
-            formatted = formatted.replace("{health}", createHealthBar(sender.getHealth()));
-        }
-
-        // convert ampersand color codes
-        formatted = formatted.replaceAll("&([0-9a-f])", "§$1");
-
-        return formatted;
+    public static void broadcast(Server server, String msg, Object... params) {
+        server.broadcastMessage(parameterizeMessage(msg, params));
     }
 
     public static String createHealthBar(int health) {
@@ -81,12 +46,47 @@ public final class Messaging {
         return healthBar;
     }
 
+    public static String format(Message msg) {
+        // start with the format
+        String formatted = msg.getFormat();
+
+        // replace tags with data
+        formatted = formatted.replace("{name}", msg.getChannel().getName());
+        formatted = formatted.replace("{nick}", msg.getChannel().getNick());
+        formatted = formatted.replace("{color}", msg.getChannel().getColor().toString());
+        formatted = formatted.replace("{message}", msg.getMessage());
+
+        Iterator<Chatter> iter = msg.getRecipients().iterator();
+        if (iter.hasNext()) {
+            formatted = formatted.replace("{receiver}", iter.next().getPlayer().getDisplayName());
+        }
+
+        // replace tags with player specific data
+        if (msg instanceof PlayerMessage) {
+            PlayerMessage pMsg = (PlayerMessage) msg;
+            Player sender = pMsg.getSender().getPlayer();
+            formatted = formatted.replace("{sender}", sender.getDisplayName());
+            formatted = formatted.replace("{world}", sender.getWorld().getName());
+            formatted = formatted.replace("{prefix}", pMsg.getPrefix());
+            formatted = formatted.replace("{suffix}", pMsg.getSuffix());
+            formatted = formatted.replace("{group}", pMsg.getGroup());
+            formatted = formatted.replace("{groupPrefix}", pMsg.getGroupPrefix());
+            formatted = formatted.replace("{groupSuffix}", pMsg.getGroupSuffix());
+            formatted = formatted.replace("{health}", createHealthBar(sender.getHealth()));
+        }
+
+        // convert ampersand color codes
+        formatted = formatted.replaceAll("&([0-9a-f])", "§$1");
+
+        return formatted;
+    }
+
     public static void send(CommandSender player, String msg, Object... params) {
         player.sendMessage(parameterizeMessage(msg, params));
     }
 
-    public static void broadcast(Server server, String msg, Object... params) {
-        server.broadcastMessage(parameterizeMessage(msg, params));
+    public static String stripColors(String input) {
+        return input.replaceAll("[§&][0-9a-f]", "");
     }
 
     private static String parameterizeMessage(String msg, Object... params) {

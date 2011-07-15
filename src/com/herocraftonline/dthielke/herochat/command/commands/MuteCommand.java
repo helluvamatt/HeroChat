@@ -63,7 +63,7 @@ public class MuteCommand extends BaseCommand {
             boolean adminMutePerm = permissions.hasPermission(player, Permission.ADMIN_MUTE);
             boolean mod = channel.isModerator(playerChatter);
 
-            if ((!mutePerm && !adminMutePerm) || (mutePerm && !adminMutePerm && !mod)) {
+            if (!mutePerm && !adminMutePerm || mutePerm && !adminMutePerm && !mod) {
                 Messaging.send(player, "Insufficient permission.");
                 return;
             }

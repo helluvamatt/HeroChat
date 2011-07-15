@@ -57,6 +57,52 @@ public class HeroChat extends JavaPlugin {
     private HeroChatPlayerListener playerListener;
     private static Logger log = Logger.getLogger("Minecraft");
 
+    public ChannelManager getChannelManager() {
+        return channelManager;
+    }
+
+    public ChatterManager getChatterManager() {
+        return chatterManager;
+    }
+
+    public CommandManager getCommandManager() {
+        return commandManager;
+    }
+
+    public ConfigManager getConfigManager() {
+        return configManager;
+    }
+
+    public PermissionManager getPermissionManager() {
+        return permissionManager;
+    }
+
+    public void issueConflictWarning(Plugin conflict) {
+        log(Level.WARNING, "Conflicting plugin detected: " + conflict.getDescription().getName() + ". If you experience issues, please try disabling this plugin.");
+    }
+
+    public void loadPermissions() {
+        Plugin plugin = this.getServer().getPluginManager().getPlugin("Permissions");
+        if (plugin != null) {
+            if (plugin.isEnabled()) {
+                Permissions permissions = (Permissions) plugin;
+                this.permissions = permissions.getHandler();
+                permissionManager = new PermissionManager(permissions.getHandler());
+                this.configManager.loadPlayers();
+                log(Level.INFO, "Permissions " + permissions.getDescription().getVersion() + " detected.");
+            }
+        }
+    }
+
+    public void log(Level level, String msg) {
+        log.log(level, "[HeroChat] " + msg.replaceAll("§[0-9a-f]", ""));
+    }
+
+    @Override
+    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+        return commandManager.dispatch(sender, command, label, args);
+    }
+
     @Override
     public void onDisable() {
         configManager.save();
@@ -78,23 +124,18 @@ public class HeroChat extends JavaPlugin {
         loadPermissions();
         checkConflict("iChat");
         checkConflict("EssentialsChat");
-        
+
         PluginDescriptionFile desc = getDescription();
         log(Level.INFO, desc.getName() + " version " + desc.getVersion() + " enabled.");
     }
 
-    @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        return commandManager.dispatch(sender, command, label, args);
-    }
-
-    private void registerEvents() {
-        playerListener = new HeroChatPlayerListener(this);
-        PluginManager pluginManager = getServer().getPluginManager();
-        pluginManager.registerEvent(Type.PLAYER_CHAT, playerListener, Priority.Highest, this);
-        pluginManager.registerEvent(Type.PLAYER_JOIN, playerListener, Priority.Monitor, this);
-        pluginManager.registerEvent(Type.PLAYER_QUIT, playerListener, Priority.Monitor, this);
-        pluginManager.registerEvent(Type.PLAYER_COMMAND_PREPROCESS, playerListener, Priority.Highest, this);
+    private void checkConflict(String pluginName) {
+        Plugin plugin = this.getServer().getPluginManager().getPlugin(pluginName);
+        if (plugin != null) {
+            if (plugin.isEnabled()) {
+                issueConflictWarning(plugin);
+            }
+        }
     }
 
     private void registerCommands() {
@@ -122,54 +163,13 @@ public class HeroChat extends JavaPlugin {
         commandManager.addCommand(new HelpCommand(this));
     }
 
-    public void loadPermissions() {
-        Plugin plugin = this.getServer().getPluginManager().getPlugin("Permissions");
-        if (plugin != null) {
-            if (plugin.isEnabled()) {
-                Permissions permissions = (Permissions) plugin;
-                this.permissions = permissions.getHandler();
-                permissionManager = new PermissionManager(permissions.getHandler());
-                this.configManager.loadPlayers();
-                log(Level.INFO, "Permissions " + permissions.getDescription().getVersion() + " detected.");
-            }
-        }
-    }
-
-    private void checkConflict(String pluginName) {
-        Plugin plugin = this.getServer().getPluginManager().getPlugin(pluginName);
-        if (plugin != null) {
-            if (plugin.isEnabled()) {
-                issueConflictWarning(plugin);
-            }
-        }
-    }
-
-    public void issueConflictWarning(Plugin conflict) {
-        log(Level.WARNING, "Conflicting plugin detected: " + conflict.getDescription().getName() + ". If you experience issues, please try disabling this plugin.");
-    }
-
-    public void log(Level level, String msg) {
-        log.log(level, "[HeroChat] " + msg.replaceAll("§[0-9a-f]", ""));
-    }
-
-    public ChannelManager getChannelManager() {
-        return channelManager;
-    }
-
-    public CommandManager getCommandManager() {
-        return commandManager;
-    }
-
-    public PermissionManager getPermissionManager() {
-        return permissionManager;
-    }
-
-    public ConfigManager getConfigManager() {
-        return configManager;
-    }
-
-    public ChatterManager getChatterManager() {
-        return chatterManager;
+    private void registerEvents() {
+        playerListener = new HeroChatPlayerListener(this);
+        PluginManager pluginManager = getServer().getPluginManager();
+        pluginManager.registerEvent(Type.PLAYER_CHAT, playerListener, Priority.Highest, this);
+        pluginManager.registerEvent(Type.PLAYER_JOIN, playerListener, Priority.Monitor, this);
+        pluginManager.registerEvent(Type.PLAYER_QUIT, playerListener, Priority.Monitor, this);
+        pluginManager.registerEvent(Type.PLAYER_COMMAND_PREPROCESS, playerListener, Priority.Highest, this);
     }
 
 }

@@ -1,19 +1,19 @@
 globals:
     default-channel: Global
 channels:
-    Global:
-        color: green
-        nickname: g
-        permissions:
-            speak: []
-            join: []
-        format: '{default}'
-        worlds: []
-        password: ''
-        lists:
-            bans: []
-            moderators: []
-        flags:
-            shortcut-allowed: true
-            join-messages: false
-        distance: 0
+    global:
+        Global:
+            color: green
+            nickname: g
+            permissions:
+                speak: []
+                join: []
+            format: '{default}'
+            worlds: []
+            password: ''
+            lists:
+                bans: []
+                moderators: []
+            flags:
+                shortcut-allowed: true
+                join-messages: false

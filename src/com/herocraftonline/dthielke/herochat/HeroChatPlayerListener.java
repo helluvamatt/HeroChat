@@ -27,21 +27,6 @@ public class HeroChatPlayerListener extends PlayerListener {
     }
 
     @Override
-    public void onPlayerCommandPreprocess(PlayerCommandPreprocessEvent event) {
-        if (event.isCancelled()) {
-            return;
-        }
-
-        String input = event.getMessage().substring(1);
-        String[] args = input.split(" ");
-        Channel channel = plugin.getChannelManager().getChannel(args[0]);
-        if (channel != null && channel.isQuick()) {
-            event.setCancelled(true);
-            plugin.getCommandManager().dispatch(event.getPlayer(), null, "qm", args);
-        }
-    }
-
-    @Override
     public void onPlayerChat(PlayerChatEvent event) {
         if (event.isCancelled()) {
             return;
@@ -57,11 +42,27 @@ public class HeroChatPlayerListener extends PlayerListener {
     }
 
     @Override
+    public void onPlayerCommandPreprocess(PlayerCommandPreprocessEvent event) {
+        if (event.isCancelled()) {
+            return;
+        }
+
+        String input = event.getMessage().substring(1);
+        String[] args = input.split(" ");
+        Channel channel = plugin.getChannelManager().getChannel(args[0]);
+        if (channel != null && channel.isQuick()) {
+            event.setCancelled(true);
+            plugin.getCommandManager().dispatch(event.getPlayer(), null, "qm", args);
+        }
+    }
+
+    @Override
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
         plugin.getConfigManager().loadPlayer(player);
     }
 
+    @Override
     public void onPlayerQuit(PlayerQuitEvent event) {
         Player player = event.getPlayer();
         plugin.getConfigManager().savePlayer(player);

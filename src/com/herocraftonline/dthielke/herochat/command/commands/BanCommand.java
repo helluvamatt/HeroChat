@@ -70,7 +70,7 @@ public class BanCommand extends BaseCommand {
             boolean adminBanPerm = permissions.hasPermission(player, Permission.ADMIN_BAN);
             boolean mod = channel.isModerator(playerChatter);
 
-            if ((!banPerm && !adminBanPerm) || (banPerm && !adminBanPerm && !mod)) {
+            if (!banPerm && !adminBanPerm || banPerm && !adminBanPerm && !mod) {
                 Messaging.send(player, "Insufficient permission.");
                 return;
             }

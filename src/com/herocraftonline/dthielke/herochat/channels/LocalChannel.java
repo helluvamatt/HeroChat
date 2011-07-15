@@ -32,6 +32,17 @@ public class LocalChannel extends Channel {
         super(plugin, name, nick);
     }
 
+    public int getDistance() {
+        return distance;
+    }
+
+    @Override
+    public void save(ConfigurationNode config, String path) {
+        super.save(config, path);
+        path += "." + name;
+        config.setProperty(path + ".distance", 0);
+    }
+
     @Override
     public boolean sendMessage(Message message) {
         if (!enabled) {
@@ -64,6 +75,10 @@ public class LocalChannel extends Channel {
         return true;
     }
 
+    public void setDistance(int distance) {
+        this.distance = distance;
+    }
+
     private Set<Chatter> getNearbyChatters(Chatter speaker) {
         Set<Chatter> nearbyChatters = new HashSet<Chatter>();
         Location sLoc = speaker.getPlayer().getLocation();
@@ -89,21 +104,6 @@ public class LocalChannel extends Channel {
             }
         }
         return nearbyChatters;
-    }
-
-    public int getDistance() {
-        return distance;
-    }
-
-    public void setDistance(int distance) {
-        this.distance = distance;
-    }
-
-    @Override
-    public void save(ConfigurationNode config, String path) {
-        super.save(config, path);
-        path += "." + name;
-        config.setProperty(path + ".distance", 0);
     }
 
     public static LocalChannel load(HeroChat plugin, ConfigurationNode config, String name) {
