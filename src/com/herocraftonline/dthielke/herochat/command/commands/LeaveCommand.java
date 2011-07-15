@@ -17,7 +17,6 @@ import com.herocraftonline.dthielke.herochat.channels.ChannelManager;
 import com.herocraftonline.dthielke.herochat.chatters.Chatter;
 import com.herocraftonline.dthielke.herochat.command.BaseCommand;
 import com.herocraftonline.dthielke.herochat.util.Messaging;
-import com.herocraftonline.dthielke.herochat.util.PermissionManager.ChannelPermission;
 
 public class LeaveCommand extends BaseCommand {
 
@@ -50,7 +49,7 @@ public class LeaveCommand extends BaseCommand {
                 return;
             }
 
-            if (plugin.getPermissionManager().hasPermission(player, channel, ChannelPermission.FORCED)) {
+            if (!channel.canLeave(chatter)) {
                 Messaging.send(sender, "You can't leave this channel.");
                 return;
             }

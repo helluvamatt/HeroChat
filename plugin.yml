@@ -23,6 +23,7 @@ commands:
     description: Globally mutes a player
     usage: /<command> player
   tell:
+    aliases: [msg]
     description: Starts or ends a private conversation
     usage: /<command> player
   ignore:

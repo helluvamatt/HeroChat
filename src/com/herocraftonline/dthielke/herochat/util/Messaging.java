@@ -1,9 +1,12 @@
 package com.herocraftonline.dthielke.herochat.util;
 
+import java.util.Iterator;
+
 import org.bukkit.Server;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import com.herocraftonline.dthielke.herochat.chatters.Chatter;
 import com.herocraftonline.dthielke.herochat.messages.Message;
 import com.herocraftonline.dthielke.herochat.messages.PlayerMessage;
 
@@ -23,7 +26,11 @@ public final class Messaging {
         formatted = formatted.replace("{nick}", msg.getChannel().getNick());
         formatted = formatted.replace("{color}", msg.getChannel().getColor().toString());
         formatted = formatted.replace("{message}", msg.getMessage());
-        formatted = formatted.replace("{receiver}", msg.getRecipients().iterator().next().getPlayer().getDisplayName());
+        
+        Iterator<Chatter> iter = msg.getRecipients().iterator();
+        if (iter.hasNext()) {
+            formatted = formatted.replace("{receiver}", iter.next().getPlayer().getDisplayName());
+        }
 
         // replace tags with player specific data
         if (msg instanceof PlayerMessage) {

@@ -43,24 +43,27 @@ public class JoinCommand extends BaseCommand {
                 Messaging.send(sender, "Channel not found.");
                 return;
             }
-            
-            if (!channel.hasChatter(chatter)) {
-                if (!channel.canJoin(chatter)) {
-                    Messaging.send(sender, "You can't join this channel.");
+
+            if (channel.hasChatter(chatter)) {
+                Messaging.send(sender, "You are already in this channel.");
+                return;
+            }
+
+            if (!channel.canJoin(chatter)) {
+                Messaging.send(sender, "You can't join this channel.");
+                return;
+            }
+
+            String password = channel.getPassword();
+            if (!password.isEmpty()) {
+                if (args.length < 2 || !args[1].equals(password)) {
+                    Messaging.send(sender, "Wrong password.");
                     return;
                 }
-                
-                String password = channel.getPassword();
-                if (!password.isEmpty()) {
-                    if (args.length < 2 || !args[1].equals(password)) {
-                        Messaging.send(sender, "Wrong password.");
-                        return;
-                    }
-                }
-                
-                if (!channel.addChatter(chatter, true)) {
-                    return;
-                }
+            }
+
+            if (!channel.addChatter(chatter, true)) {
+                return;
             }
         }
     }

@@ -20,6 +20,7 @@ import org.bukkit.util.config.Configuration;
 import com.herocraftonline.dthielke.herochat.HeroChat;
 import com.herocraftonline.dthielke.herochat.channels.Channel;
 import com.herocraftonline.dthielke.herochat.channels.ChannelManager;
+import com.herocraftonline.dthielke.herochat.channels.LocalChannel;
 import com.herocraftonline.dthielke.herochat.chatters.Chatter;
 
 public class ConfigManager {
@@ -87,16 +88,20 @@ public class ConfigManager {
 
         // load global channels
         List<String> globalChannels = config.getKeys("channels.global");
-        for (String name : globalChannels) {
-            Channel channel = Channel.load(plugin, config.getNode("channels.global." + name), name);
-            channelManager.addChannel(channel);
+        if (globalChannels != null) {
+            for (String name : globalChannels) {
+                Channel channel = Channel.load(plugin, config.getNode("channels.global." + name), name);
+                channelManager.addChannel(channel);
+            }
         }
 
         // load local channels
         List<String> localChannels = config.getKeys("channels.local");
-        for (String name : localChannels) {
-            Channel channel = Channel.load(plugin, config.getNode("channels.local." + name), name);
-            channelManager.addChannel(channel);
+        if (localChannels != null) {
+            for (String name : localChannels) {
+                Channel channel = Channel.load(plugin, config.getNode("channels.local." + name), name);
+                channelManager.addChannel(channel);
+            }
         }
     }
 
@@ -146,7 +151,11 @@ public class ConfigManager {
 
     private void saveChannels(Configuration config) {
         for (Channel channel : plugin.getChannelManager().getChannels()) {
-            channel.save(config, "channels");
+            if (channel instanceof LocalChannel) {
+                channel.save(config, "channels.local");
+            } else if (channel.getClass().equals(Channel.class)) {
+                channel.save(config, "channels.global");
+            }
         }
     }
 

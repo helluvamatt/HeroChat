@@ -75,6 +75,11 @@ public class Channel {
         return false;
     }
 
+    public boolean canLeave(Chatter chatter) {
+        Player player = chatter.getPlayer();
+        return !plugin.getPermissionManager().hasPermission(player, this, ChannelPermission.FORCED);
+    }
+
     public boolean canSpeak(Chatter chatter) {
         Player player = chatter.getPlayer();
         if (mode == Mode.INCLUSIVE) {
@@ -411,7 +416,7 @@ public class Channel {
     public void setQuick(boolean quick) {
         this.quick = quick;
     }
-    
+
     public boolean isHidden() {
         return hidden;
     }
@@ -457,7 +462,6 @@ public class Channel {
         config.setProperty(path + ".format", format);
         config.setProperty(path + ".color", color.name());
         config.setProperty(path + ".mode", mode.toString());
-        config.setProperty(path + ".distance", 0);
         config.setProperty(path + ".flags.join-messages", verbose);
         config.setProperty(path + ".flags.shortcut-allowed", quick);
         config.setProperty(path + ".lists.bans", new ArrayList<String>(bans));

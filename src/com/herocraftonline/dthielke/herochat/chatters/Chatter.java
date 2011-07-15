@@ -10,6 +10,7 @@ import org.bukkit.util.config.ConfigurationNode;
 
 import com.herocraftonline.dthielke.herochat.HeroChat;
 import com.herocraftonline.dthielke.herochat.channels.Channel;
+import com.herocraftonline.dthielke.herochat.channels.PrivateMessageChannel;
 import com.herocraftonline.dthielke.herochat.messages.Message;
 import com.herocraftonline.dthielke.herochat.messages.PlayerMessage;
 import com.herocraftonline.dthielke.herochat.util.Messaging;
@@ -171,9 +172,13 @@ public class Chatter {
     }
 
     public void setFocus(Channel focus, boolean notify) {
+        Channel prevFocus = this.focus;
         this.focus = focus;
         if (notify) {
             Messaging.send(getPlayer(), "Focused $1.", focus.getName());
+        }
+        if (prevFocus instanceof PrivateMessageChannel) {
+            ((PrivateMessageChannel)prevFocus).update();
         }
     }
 

@@ -10,6 +10,7 @@ package com.herocraftonline.dthielke.herochat.command.commands;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -40,9 +41,15 @@ public class ListCommand extends BaseCommand {
             chatter = plugin.getChatterManager().getChatter((Player) sender);
         }
 
-        List<Channel> channels = new ArrayList<Channel>(plugin.getChannelManager().getChannels());
+        Set<Channel> channels = plugin.getChannelManager().getChannels();
+        List<Channel> visible = new ArrayList<Channel>();
+        for (Channel channel : channels) {
+            if (!channel.isHidden()) {
+                visible.add(channel);
+            }
+        }
 
-        int pages = (int) Math.ceil((double) channels.size() / CHANNELS_PER_PAGE);
+        int pages = (int) Math.ceil((double) visible.size() / CHANNELS_PER_PAGE);
         int p = 1;
         if (args.length > 0) {
             try {
@@ -58,10 +65,10 @@ public class ListCommand extends BaseCommand {
         sender.sendMessage("§c-----[ " + "§f" + "Channel List <" + p + "/" + pages + ">§c ]-----");
         for (int i = 0; i < CHANNELS_PER_PAGE; i++) {
             int index = (p - 1) * CHANNELS_PER_PAGE + i;
-            if (index >= channels.size()) {
+            if (index >= visible.size()) {
                 break;
             }
-            Channel channel = channels.get(index);
+            Channel channel = visible.get(index);
             String msg = "  " + channel.getColor() + "[" + channel.getNick() + "] " + channel.getName();
             if (chatter != null && channel.hasChatter(chatter)) {
                 msg = msg.concat(" *");

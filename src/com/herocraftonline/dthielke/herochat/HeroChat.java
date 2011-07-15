@@ -34,6 +34,7 @@ import com.herocraftonline.dthielke.herochat.command.commands.KickCommand;
 import com.herocraftonline.dthielke.herochat.command.commands.LeaveCommand;
 import com.herocraftonline.dthielke.herochat.command.commands.ListCommand;
 import com.herocraftonline.dthielke.herochat.command.commands.ModCommand;
+import com.herocraftonline.dthielke.herochat.command.commands.MsgCommand;
 import com.herocraftonline.dthielke.herochat.command.commands.MuteCommand;
 import com.herocraftonline.dthielke.herochat.command.commands.QuickMsgCommand;
 import com.herocraftonline.dthielke.herochat.command.commands.ReloadCommand;
@@ -117,6 +118,7 @@ public class HeroChat extends JavaPlugin {
         commandManager.addCommand(new ReloadCommand(this));
         // page 3
         commandManager.addCommand(new ToggleCommand(this));
+        commandManager.addCommand(new MsgCommand(this));
         commandManager.addCommand(new HelpCommand(this));
     }
 
