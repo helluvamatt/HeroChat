@@ -1,7 +1,5 @@
 package com.herocraftonline.dthielke.herochat.channels;
 
-import java.util.logging.Level;
-
 import com.herocraftonline.dthielke.herochat.HeroChat;
 import com.herocraftonline.dthielke.herochat.chatters.Chatter;
 import com.herocraftonline.dthielke.herochat.event.ChannelMessageEvent;
@@ -91,7 +89,6 @@ public class PrivateMessageChannel extends Channel {
         }
 
         plugin.getChannelManager().removeChannel(this);
-        plugin.log(Level.INFO, "Cleaned transient channel.");
     }
 
 }
