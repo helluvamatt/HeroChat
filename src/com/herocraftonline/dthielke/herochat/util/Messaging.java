@@ -19,6 +19,7 @@ import org.bukkit.entity.Player;
 import com.herocraftonline.dthielke.herochat.HeroChat;
 import com.herocraftonline.dthielke.herochat.HeroChat.ChatColor;
 import com.herocraftonline.dthielke.herochat.channels.Channel;
+import com.onarandombox.MultiverseCore.MVWorld;
 
 public class Messaging {
     private static final String[] HEALTH_COLORS = { "§0", "§4", "§6", "§e", "§2" };
@@ -58,7 +59,7 @@ public class Messaging {
             matcher = pattern.matcher(msg);
         }
         censoredMsg.append(msg);
-        
+
         return censoredMsg.toString();
     }
 
@@ -79,7 +80,7 @@ public class Messaging {
                     group = plugin.getPermissionManager().getGroup(sender);
                     groupPrefix = plugin.getPermissionManager().getGroupPrefix(sender);
                     groupSuffix = plugin.getPermissionManager().getGroupSuffix(sender);
-                    world = sender.getWorld().getName();
+                    world = getWorld(sender);
                     senderName = sender.getDisplayName();
                     healthBar = createHealthBar(sender);
                 }
@@ -115,6 +116,16 @@ public class Messaging {
         }
 
         return leader;
+    }
+
+    private static String getWorld(Player sender) {
+        if (HeroChat.getMultiverseCore() != null) {
+            MVWorld world = HeroChat.getMultiverseCore().getMVWorld(sender.getWorld().getName());
+            if(world != null) {
+                return world.getColoredWorldString();
+            }
+        }
+        return sender.getWorld().getName();
     }
 
     private static String createHealthBar(Player player) {
