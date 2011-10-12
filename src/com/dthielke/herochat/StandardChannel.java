@@ -44,6 +44,12 @@ public class StandardChannel implements Channel {
     private List<Chatter> members = new ArrayList<Chatter>();
     private List<Chatter> bans = new ArrayList<Chatter>();
     private List<Chatter> mutes = new ArrayList<Chatter>();
+    
+    public StandardChannel(String name, String nick) {
+        this.name = name;
+        this.nick = nick;
+        this.distance = 0;
+    }
 
     @Override
     public String getName() {
@@ -124,6 +130,30 @@ public class StandardChannel implements Channel {
 
         Channel channel = (Channel) other;
         return name.equalsIgnoreCase(channel.getName()) || name.equalsIgnoreCase(channel.getNick());
+    }
+
+    @Override
+    public boolean addMember(Chatter chatter) {
+        if (members.contains(chatter))
+            return false;
+        
+        members.add(chatter);
+        if (!chatter.hasChannel(this))
+            chatter.addChannel(this);
+        
+        return true;
+    }
+
+    @Override
+    public boolean removeMember(Chatter chatter) {
+        if (!members.contains(chatter))
+            return false;
+        
+        members.remove(chatter);
+        if (chatter.hasChannel(this))
+            chatter.removeChannel(this);
+        
+        return true;
     }
 
 }

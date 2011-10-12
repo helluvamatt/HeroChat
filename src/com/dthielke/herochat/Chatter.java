@@ -11,6 +11,16 @@ public interface Chatter {
     public Player getPlayer();
 
     public String getName();
+    
+    boolean hasChannel(Channel channel);
+
+    public boolean addChannel(Channel channel);
+
+    public boolean removeChannel(Channel channel);
+
+    public Channel getActiveChannel();
+
+    public boolean setActiveChannel(Channel channel);
 
     public Result canJoin(Channel channel);
 

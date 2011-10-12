@@ -9,6 +9,10 @@ public interface Channel {
     public String getNick();
 
     public int getDistance();
+    
+    public boolean addMember(Chatter chatter);
+    
+    public boolean removeMember(Chatter chatter);
 
     public boolean isMember(Chatter chatter);
 

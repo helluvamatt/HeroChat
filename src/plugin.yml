@@ -1,4 +1,4 @@
-name: Heroes
+name: HeroChat
 main: com.dthielke.herochat.HeroChat
 version: 5.0.0
 website: http://www.herocraftonline.com

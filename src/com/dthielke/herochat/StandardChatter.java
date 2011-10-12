@@ -11,6 +11,7 @@ public class StandardChatter implements Chatter {
 
     private final Player player;
     private List<Channel> channels = new ArrayList<Channel>();
+    private Channel activeChannel;
 
     public StandardChatter(Player player) {
         this.player = player;
@@ -93,24 +94,67 @@ public class StandardChatter implements Chatter {
 
         return Result.ALLOWED;
     }
-    
+
     @Override
     public boolean equals(Object other) {
         if (other == this)
             return true;
-        
+
         if (other == null)
             return false;
-        
+
         if (!(other instanceof Chatter))
             return false;
-        
+
         return player.equals(((Chatter) other).getPlayer());
     }
-    
+
     @Override
     public int hashCode() {
         return player.hashCode();
+    }
+
+    @Override
+    public boolean addChannel(Channel channel) {
+        if (channels.contains(channel))
+            return false;
+
+        channels.add(channel);
+        if (!channel.isMember(this))
+            channel.addMember(this);
+        
+        return true;
+    }
+
+    @Override
+    public boolean removeChannel(Channel channel) {
+        if (!channels.contains(channel))
+            return false;
+
+        channels.remove(channel);
+        if (channel.isMember(this))
+            channel.removeMember(this);
+        
+        return true;
+    }
+    
+    @Override
+    public boolean hasChannel(Channel channel) {
+        return channels.contains(channel);
+    }
+
+    @Override
+    public Channel getActiveChannel() {
+        return activeChannel;
+    }
+
+    @Override
+    public boolean setActiveChannel(Channel channel) {
+        if (!channels.contains(channel))
+            return false;
+
+        activeChannel = channel;
+        return true;
     }
 
 }
