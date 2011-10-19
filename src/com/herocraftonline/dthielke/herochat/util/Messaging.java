@@ -14,6 +14,7 @@ import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import org.bukkit.entity.Player;
 
 import com.herocraftonline.dthielke.herochat.HeroChat;
@@ -120,7 +121,7 @@ public class Messaging {
 
     private static String getWorld(Player sender) {
         if (HeroChat.getMultiverseCore() != null) {
-            MVWorld world = HeroChat.getMultiverseCore().getMVWorld(sender.getWorld().getName());
+            MultiverseWorld world = HeroChat.getMultiverseCore().getMVWorldManager().getMVWorld(sender.getWorld().getName());
             if(world != null) {
                 return world.getColoredWorldString();
             }
