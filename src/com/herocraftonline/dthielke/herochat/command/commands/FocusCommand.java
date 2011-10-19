@@ -39,8 +39,8 @@ public class FocusCommand extends BaseCommand {
             if (c != null) {
                 if (!c.getBlacklist().contains(name)) {
                     if (!c.getWhitelist().isEmpty()) {
-                        String group = plugin.getPermissionManager().getGroup(player);
-                        if (!c.getWhitelist().contains(group) && !group.isEmpty()) {
+                        if (!plugin.getPermissionManager().anyGroupsInList(player, c.getWhitelist())
+                                && plugin.getPermissionManager().getGroups(player).length > 0) {
                             sender.sendMessage(plugin.getTag() + "§cYou cannot join this channel");
                             return;
                         }

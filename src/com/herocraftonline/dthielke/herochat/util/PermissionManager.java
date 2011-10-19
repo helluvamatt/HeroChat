@@ -13,12 +13,35 @@ import org.bukkit.entity.Player;
 import com.nijiko.permissions.Group;
 import com.nijiko.permissions.PermissionHandler;
 
+import java.util.List;
+
 public class PermissionManager {
 
     private PermissionHandler security;
 
     public PermissionManager(PermissionHandler security) {
         this.security = security;
+    }
+
+    public String[] getGroups(Player p) {
+        if (security != null) {
+            try {
+            String world = p.getWorld().getName();
+            String name = p.getName();
+            return security.getGroups(world, name);
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
+        }
+        return new String[0];
+    }
+
+    public boolean anyGroupsInList( Player p, List<String> list ) {
+        String[] groups = getGroups(p);
+        for (int i = 0; i < groups.length; i++) {
+            if (list.contains(groups[i])) return true;
+        }
+        return false;
     }
 
     public String getGroup(Player p) {
@@ -43,55 +66,37 @@ public class PermissionManager {
     public String getGroupPrefix(Player p) {
         if (security != null) {
             try {
-                String world = p.getWorld().getName();
-                String name = p.getName();
-                String groupName = security.getPrimaryGroup(world, name);
-                if (groupName == null) {
-                    return "";
+                String[] groups = getGroups(p);
+                for (int i = 0; i < groups.length; i++) {
+                    Group group = security.getGroupObject(p.getWorld().getName(), groups[i]);
+                    if (group != null) {
+                        if (group.getPrefix() != null)
+                            return group.getPrefix().replaceAll("&([0-9a-f])", "§$1");
+                    }
                 }
-                Group group = security.getGroupObject(world, groupName);
-                if (group == null) {
-                    return "";
-                }
-                String prefix = group.getPrefix();
-                if (prefix == null) {
-                    return "";
-                }
-                return prefix.replaceAll("&([0-9a-f])", "§$1");
             } catch (Exception e) {
                 System.out.println(e.getMessage());
-                return "";
             }
-        } else {
-            return "";
         }
+        return "";
     }
     
     public String getGroupSuffix(Player p) {
         if (security != null) {
             try {
-                String world = p.getWorld().getName();
-                String name = p.getName();
-                String groupName = security.getPrimaryGroup(world, name);
-                if (groupName == null) {
-                    return "";
+                String[] groups = getGroups(p);
+                for (int i = 0; i < groups.length; i++) {
+                    Group group = security.getGroupObject(p.getWorld().getName(), groups[i]);
+                    if (group != null) {
+                        if (group.getSuffix() != null)
+                            return group.getSuffix().replaceAll("&([0-9a-f])", "§$1");
+                    }
                 }
-                Group group = security.getGroupObject(world, groupName);
-                if (group == null) {
-                    return "";
-                }
-                String suffix = group.getSuffix();
-                if (suffix == null) {
-                    return "";
-                }
-                return suffix.replaceAll("&([0-9a-f])", "§$1");
             } catch (Exception e) {
                 System.out.println(e.getMessage());
-                return "";
             }
-        } else {
-            return "";
         }
+        return "";
     }
 
     public String getPrefix(Player p) {
