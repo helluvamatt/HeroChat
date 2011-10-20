@@ -222,10 +222,9 @@ public class HeroChat extends JavaPlugin {
 
                 for (Player player : getServer().getOnlinePlayers()) {
                     String name = player.getName();
-                    String group = permissionManager.getGroup(player);
                     List<Channel> joinedChannels = channelManager.getJoinedChannels(name);
                     for (Channel channel : joinedChannels) {
-                        if (!group.isEmpty() && !channel.getWhitelist().contains(group) && !channel.getWhitelist().isEmpty()) {
+                        if (!permissionManager.anyGroupsInList(player, channel.getWhitelist()) && !channel.getWhitelist().isEmpty()) {
                             channel.removePlayer(name);
                         }
                     }

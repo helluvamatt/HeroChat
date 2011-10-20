@@ -39,8 +39,7 @@ public class LocalChannel extends Channel {
             Player sender = plugin.getServer().getPlayer(name);
             if (sender != null) {
                 if (enabled || plugin.getPermissionManager().isAdmin(sender) || moderators.contains(name)) {
-                    String group = plugin.getPermissionManager().getGroup(sender);
-                    if (group == null || voicelist.contains(group) || voicelist.isEmpty()) {
+                    if (plugin.getPermissionManager().anyGroupsInList(sender, voicelist) || voicelist.isEmpty()) {
                         if (!plugin.getChannelManager().getMutelist().contains(sender.getName())) {
                             if (!mutelist.contains(sender.getName())) {
                                 if (worlds.isEmpty() || worlds.contains(sender.getWorld().getName())) {
