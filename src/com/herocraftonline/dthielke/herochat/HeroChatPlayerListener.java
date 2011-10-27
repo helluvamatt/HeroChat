@@ -32,6 +32,9 @@ public class HeroChatPlayerListener extends PlayerListener {
 
     @Override
     public void onPlayerCommandPreprocess(PlayerCommandPreprocessEvent event) {
+        if (event.isCancelled()) {
+            return;
+        }
         String input = event.getMessage().substring(1);
         String[] args = input.split(" ");
         Channel c = plugin.getChannelManager().getChannel(args[0]);
