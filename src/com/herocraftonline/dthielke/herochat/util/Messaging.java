@@ -14,13 +14,12 @@ import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import org.bukkit.entity.Player;
 
 import com.herocraftonline.dthielke.herochat.HeroChat;
 import com.herocraftonline.dthielke.herochat.HeroChat.ChatColor;
 import com.herocraftonline.dthielke.herochat.channels.Channel;
-import com.onarandombox.MultiverseCore.MVWorld;
+import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 
 public class Messaging {
     private static final String[] HEALTH_COLORS = { "§0", "§4", "§6", "§e", "§2" };
@@ -76,11 +75,10 @@ public class Messaging {
             try {
                 Player sender = plugin.getServer().getPlayer(senderName);
                 if (sender != null) {
-                    prefix = plugin.getPermissionManager().getPrefix(sender);
-                    suffix = plugin.getPermissionManager().getSuffix(sender);
-                    group = plugin.getPermissionManager().getGroup(sender);
-                    groupPrefix = plugin.getPermissionManager().getGroupPrefix(sender);
-                    groupSuffix = plugin.getPermissionManager().getGroupSuffix(sender);
+                    prefix = plugin.getPrefixSuffixManager().getPrefix(sender);
+                    suffix = plugin.getPrefixSuffixManager().getSuffix(sender);
+                    groupPrefix = plugin.getPrefixSuffixManager().getGroupPrefix(sender);
+                    groupSuffix = plugin.getPrefixSuffixManager().getGroupSuffix(sender);
                     world = getWorld(sender);
                     senderName = sender.getDisplayName();
                     healthBar = createHealthBar(sender);
@@ -122,7 +120,7 @@ public class Messaging {
     private static String getWorld(Player sender) {
         if (HeroChat.getMultiverseCore() != null) {
             MultiverseWorld world = HeroChat.getMultiverseCore().getMVWorldManager().getMVWorld(sender.getWorld().getName());
-            if(world != null) {
+            if (world != null) {
                 return world.getColoredWorldString();
             }
         }

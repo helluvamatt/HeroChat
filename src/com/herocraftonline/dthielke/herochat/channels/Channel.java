@@ -22,7 +22,7 @@ import com.herocraftonline.dthielke.herochat.util.Messaging;
 
 public class Channel {
 
-    //public static final String logFormat = "[{nick}] {player}: ";
+    // public static final String logFormat = "[{nick}] {player}: ";
     public static final String joinFormat = "{color}[{nick}] ";
 
     protected HeroChat plugin;
@@ -49,6 +49,7 @@ public class Channel {
     protected List<String> worlds;
     protected List<String> gameToIRCTags;
     protected List<String> IRCToGameTags;
+    protected List<String> permissions;
 
     public Channel(HeroChat plugin) {
         this.plugin = plugin;
@@ -75,6 +76,7 @@ public class Channel {
         worlds = new ArrayList<String>();
         IRCToGameTags = new ArrayList<String>();
         gameToIRCTags = new ArrayList<String>();
+        permissions = new ArrayList<String>();
     }
 
     public void sendMessage(String source, String msg, String format, boolean sentByPlayer) {
@@ -97,7 +99,7 @@ public class Channel {
                 Player sender = plugin.getServer().getPlayer(source);
                 if (sender != null) {
                     if (enabled || plugin.getPermissionManager().isAdmin(sender) || moderators.contains(source)) {
-                        if (plugin.getPermissionManager().anyGroupsInList(sender, voicelist) || voicelist.isEmpty()) {
+                        if (voicelist.isEmpty() || plugin.getPermissionManager().hasAny(sender, voicelist)) {
                             if (!plugin.getChannelManager().getMutelist().contains(sender.getName())) {
                                 if (!mutelist.contains(sender.getName())) {
                                     if (worlds.isEmpty() || worlds.contains(sender.getWorld().getName())) {

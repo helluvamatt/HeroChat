@@ -8,7 +8,7 @@ import com.herocraftonline.dthielke.herochat.channels.Channel;
 public class ChannelJoinEvent extends ChannelEvent {
 
     protected Player joiner;
-    
+
     public ChannelJoinEvent(Type type, Channel channel, Player joiner) {
         super(ChannelJoinEvent.class.getSimpleName(), channel);
         this.joiner = joiner;

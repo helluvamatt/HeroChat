@@ -55,29 +55,13 @@ import com.herocraftonline.dthielke.herochat.command.commands.ToggleCommand;
 import com.herocraftonline.dthielke.herochat.command.commands.WhoCommand;
 import com.herocraftonline.dthielke.herochat.util.ConfigManager;
 import com.herocraftonline.dthielke.herochat.util.PermissionManager;
-import com.nijiko.permissions.PermissionHandler;
-import com.nijikokun.bukkit.Permissions.Permissions;
+import com.herocraftonline.dthielke.herochat.util.PrefixSuffixManager;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 
 public class HeroChat extends JavaPlugin {
 
     public enum ChatColor {
-        BLACK("§0"),
-        NAVY("§1"),
-        GREEN("§2"),
-        BLUE("§3"),
-        RED("§4"),
-        PURPLE("§5"),
-        GOLD("§6"),
-        LIGHT_GRAY("§7"),
-        GRAY("§8"),
-        DARK_PURPLE("§9"),
-        LIGHT_GREEN("§a"),
-        LIGHT_BLUE("§b"),
-        ROSE("§c"),
-        LIGHT_PURPLE("§d"),
-        YELLOW("§e"),
-        WHITE("§f");
+        BLACK("§0"), NAVY("§1"), GREEN("§2"), BLUE("§3"), RED("§4"), PURPLE("§5"), GOLD("§6"), LIGHT_GRAY("§7"), GRAY("§8"), DARK_PURPLE("§9"), LIGHT_GREEN("§a"), LIGHT_BLUE("§b"), ROSE("§c"), LIGHT_PURPLE("§d"), YELLOW("§e"), WHITE("§f");
 
         public final String str;
 
@@ -94,6 +78,7 @@ public class HeroChat extends JavaPlugin {
     private ConversationManager conversationManager;
     private ConfigManager configManager;
     private PermissionManager permissionManager;
+    private PrefixSuffixManager prefixSuffixManager;
     private CraftIRC craftIRC;
     private String ircMessageFormat;
     private String ircTag;
@@ -113,11 +98,12 @@ public class HeroChat extends JavaPlugin {
                 configManager.savePlayer(player.getName());
             }
             configManager.save();
-        } catch (Exception e) {}
+        } catch (Exception e) {
+        }
         PluginDescriptionFile desc = getDescription();
         log(Level.INFO, desc.getName() + " version " + desc.getVersion() + " disabled.");
     }
-    
+
     public static MultiverseCore getMultiverseCore() {
         return multiverseCore;
     }
@@ -125,7 +111,7 @@ public class HeroChat extends JavaPlugin {
     public void onEnable() {
         channelManager = new ChannelManager(this);
         conversationManager = new ConversationManager();
-        permissionManager = new PermissionManager(null);
+        prefixSuffixManager = new PrefixSuffixManager(this);
         registerEvents();
         registerCommands();
 
@@ -151,11 +137,11 @@ public class HeroChat extends JavaPlugin {
             this.getServer().getPluginManager().disablePlugin(this);
             return;
         }
-        
+
         if (separateChatLog) {
             separateChatLog();
         }
-        
+
         PluginDescriptionFile desc = getDescription();
         log(Level.INFO, desc.getName() + " version " + desc.getVersion() + " enabled.");
 
@@ -211,23 +197,13 @@ public class HeroChat extends JavaPlugin {
     }
 
     public void loadPermissions() {
-        Plugin plugin = this.getServer().getPluginManager().getPlugin("Permissions");
-        if (plugin != null) {
-            if (plugin.isEnabled()) {
-                Permissions permissions = (Permissions) plugin;
-                PermissionHandler security = permissions.getHandler();
-                PermissionManager ph = new PermissionManager(security);
-                this.permissionManager = ph;
-                log(Level.INFO, "Permissions " + permissions.getDescription().getVersion() + " found.");
-
-                for (Player player : getServer().getOnlinePlayers()) {
-                    String name = player.getName();
-                    List<Channel> joinedChannels = channelManager.getJoinedChannels(name);
-                    for (Channel channel : joinedChannels) {
-                        if (!permissionManager.anyGroupsInList(player, channel.getWhitelist()) && !channel.getWhitelist().isEmpty()) {
-                            channel.removePlayer(name);
-                        }
-                    }
+        this.permissionManager = new PermissionManager();
+        for (Player player : getServer().getOnlinePlayers()) {
+            String name = player.getName();
+            List<Channel> joinedChannels = channelManager.getJoinedChannels(name);
+            for (Channel channel : joinedChannels) {
+                if (!channel.getWhitelist().isEmpty() && !permissionManager.hasAny(player, channel.getWhitelist())) {
+                    channel.removePlayer(name);
                 }
             }
         }
@@ -280,7 +256,7 @@ public class HeroChat extends JavaPlugin {
     public void issueConflictWarning(Plugin conflict) {
         log(Level.WARNING, "Conflicting plugin detected: " + conflict.getDescription().getName() + ". If you experience issues, please try disabling this plugin.");
     }
-    
+
     private void separateChatLog() {
         try {
             chatLog.setUseParentHandlers(false);
@@ -382,8 +358,12 @@ public class HeroChat extends JavaPlugin {
     public void setSeparateChatLog(boolean separateChatLog) {
         this.separateChatLog = separateChatLog;
     }
-    
+
     public boolean hasSeparateChatLog() {
         return separateChatLog;
+    }
+
+    public PrefixSuffixManager getPrefixSuffixManager() {
+        return prefixSuffixManager;
     }
 }

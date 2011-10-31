@@ -7,15 +7,15 @@ import org.bukkit.plugin.Plugin;
 public class HeroChatServerListener extends ServerListener {
 
     private HeroChat plugin;
-    
+
     public HeroChatServerListener(HeroChat plugin) {
         this.plugin = plugin;
     }
-    
+
     public void onPluginEnable(PluginEnableEvent event) {
         Plugin plugin = event.getPlugin();
         String name = plugin.getDescription().getName();
-        
+
         if (name.equals("Permissions")) {
             this.plugin.loadPermissions();
         } else if (name.equals("CraftIRC")) {

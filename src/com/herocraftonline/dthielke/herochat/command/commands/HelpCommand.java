@@ -34,7 +34,8 @@ public class HelpCommand extends BaseCommand {
         if (args.length != 0) {
             try {
                 page = Integer.parseInt(args[0]) - 1;
-            } catch (NumberFormatException e) {}
+            } catch (NumberFormatException e) {
+            }
         }
 
         List<BaseCommand> commands = plugin.getCommandManager().getCommands();
@@ -43,11 +44,11 @@ public class HelpCommand extends BaseCommand {
         if (commands.size() % CMDS_PER_PAGE != 0) {
             numPages++;
         }
-        
+
         if (page >= numPages || page < 0) {
             page = 0;
         }
-        sender.sendMessage("§c-----[ " + "§f" + plugin.getTag().replace("[", "").replace("]","") + "Help <" + (page + 1) + "/" + numPages + ">§c ]-----");
+        sender.sendMessage("§c-----[ " + "§f" + plugin.getTag().replace("[", "").replace("]", "") + "Help <" + (page + 1) + "/" + numPages + ">§c ]-----");
         int start = page * CMDS_PER_PAGE;
         int end = start + CMDS_PER_PAGE;
         if (end > commands.size()) {
@@ -57,7 +58,7 @@ public class HelpCommand extends BaseCommand {
             BaseCommand cmd = commands.get(c);
             sender.sendMessage("  §a" + cmd.getUsage());
         }
-        
+
         sender.sendMessage("§cFor more info on a particular command, type '/<command> ?'");
     }
 

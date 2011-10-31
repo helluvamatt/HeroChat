@@ -64,7 +64,7 @@ public class MuteCommand extends BaseCommand {
             sender.sendMessage(plugin.getTag() + "§cChannel not found");
         }
     }
-    
+
     private void displayMuteList(CommandSender sender, Channel channel) {
         String muteListMsg;
         List<String> mutes = channel.getMutelist();

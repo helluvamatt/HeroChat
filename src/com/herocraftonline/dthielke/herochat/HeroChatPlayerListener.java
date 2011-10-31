@@ -85,7 +85,8 @@ public class HeroChatPlayerListener extends PlayerListener {
         String name = joiner.getName();
         try {
             plugin.getConfigManager().loadPlayer(name);
-        } catch (Exception e) {}
+        } catch (Exception e) {
+        }
     }
 
     @Override

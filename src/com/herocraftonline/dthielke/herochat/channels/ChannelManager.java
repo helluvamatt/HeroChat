@@ -48,8 +48,7 @@ public class ChannelManager {
         if (player != null) {
             for (Channel c : channels) {
                 if (c.isAutoJoined()) {
-                    if (c.getWhitelist().isEmpty()
-                            || plugin.getPermissionManager().anyGroupsInList(player, c.getWhitelist())) {
+                    if (c.getWhitelist().isEmpty() || plugin.getPermissionManager().hasAny(player, c.getWhitelist())) {
                         c.addPlayer(name);
                     }
                 }
@@ -164,6 +163,7 @@ public class ChannelManager {
     public String getDefaultMsgFormat() {
         return defaultMsgFormat;
     }
+
     public void setMutelist(List<String> mutelist) {
         this.mutelist = mutelist;
     }
@@ -171,5 +171,4 @@ public class ChannelManager {
     public List<String> getMutelist() {
         return mutelist;
     }
-
 }

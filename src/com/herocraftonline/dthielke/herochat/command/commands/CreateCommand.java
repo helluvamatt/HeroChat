@@ -21,8 +21,7 @@ import com.herocraftonline.dthielke.herochat.command.BaseCommand;
 
 public class CreateCommand extends BaseCommand {
 
-    private static final String[] RESERVED_NAMES = { "ch", "join", "leave", "ignore", "help", "ban", "create", "kick", "list", "mod", "qm", "reload", "remove",
-                                                    "who" };
+    private static final String[] RESERVED_NAMES = { "ch", "join", "leave", "ignore", "help", "ban", "create", "kick", "list", "mod", "qm", "reload", "remove", "who" };
 
     public CreateCommand(HeroChat plugin) {
         super(plugin);
