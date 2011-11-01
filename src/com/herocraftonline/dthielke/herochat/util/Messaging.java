@@ -77,8 +77,8 @@ public class Messaging {
                 if (sender != null) {
                     prefix = plugin.getPrefixSuffixManager().getPrefix(sender);
                     suffix = plugin.getPrefixSuffixManager().getSuffix(sender);
-                    groupPrefix = plugin.getPrefixSuffixManager().getGroupPrefix(sender);
-                    groupSuffix = plugin.getPrefixSuffixManager().getGroupSuffix(sender);
+                    //groupPrefix = plugin.getPrefixSuffixManager().getGroupPrefix(sender);
+                    //groupSuffix = plugin.getPrefixSuffixManager().getGroupSuffix(sender);
                     world = getWorld(sender);
                     senderName = sender.getDisplayName();
                     healthBar = createHealthBar(sender);

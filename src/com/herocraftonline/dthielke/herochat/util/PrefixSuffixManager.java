@@ -11,8 +11,6 @@ public class PrefixSuffixManager {
 
     private List<FixObj> prefixes;
     private List<FixObj> suffixes;
-    private List<FixObj> groupPrefixes;
-    private List<FixObj> groupSuffixes;
 
     private HeroChat plugin;
 
@@ -20,24 +18,22 @@ public class PrefixSuffixManager {
         plugin = p;
         prefixes = new ArrayList<FixObj>();
         suffixes = new ArrayList<FixObj>();
-        groupPrefixes = new ArrayList<FixObj>();
-        groupSuffixes = new ArrayList<FixObj>();
     }
 
     public void setPrefixList(List<FixObj> prefixes) {
         this.prefixes = prefixes;
     }
+    
+    public List<FixObj> getPrefixList() {
+        return this.prefixes;
+    }
 
     public void setSuffixList(List<FixObj> suffixes) {
         this.suffixes = suffixes;
     }
-
-    public void setGroupPrefixList(List<FixObj> gPrefixes) {
-        this.groupPrefixes = gPrefixes;
-    }
-
-    public void setGroupSuffixList(List<FixObj> gSuffixes) {
-        this.groupSuffixes = gSuffixes;
+    
+    public List<FixObj> getSuffixList() {
+        return this.suffixes;
     }
 
     public String getPrefix(Player p) {
@@ -46,14 +42,6 @@ public class PrefixSuffixManager {
 
     public String getSuffix(Player p) {
         return searchList(p, suffixes);
-    }
-
-    public String getGroupPrefix(Player p) {
-        return searchList(p, groupPrefixes);
-    }
-
-    public String getGroupSuffix(Player p) {
-        return searchList(p, groupSuffixes);
     }
 
     private String searchList(Player p, List<FixObj> list) {
@@ -69,13 +57,15 @@ public class PrefixSuffixManager {
         return theObj != null ? theObj.toString() : "";
     }
 
-    public class FixObj {
+    public static class FixObj {
+        private String name;
         private String data;
         private int priority;
         private List<String> permNodes;
         private boolean requiresAll;
 
-        public FixObj(String data, int priority, List<String> perms, boolean requiresAll) {
+        public FixObj(String name, String data, int priority, List<String> perms, boolean requiresAll) {
+            this.name = name;
             this.data = data;
             this.priority = priority;
             this.permNodes = perms;
@@ -90,6 +80,10 @@ public class PrefixSuffixManager {
             return permNodes;
         }
 
+        public String getName() {
+            return name;
+        }
+        
         public String toString() {
             return data;
         }

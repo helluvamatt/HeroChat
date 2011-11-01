@@ -13,6 +13,7 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
 
@@ -25,6 +26,7 @@ import com.herocraftonline.dthielke.herochat.HeroChat.ChatColor;
 import com.herocraftonline.dthielke.herochat.channels.Channel;
 import com.herocraftonline.dthielke.herochat.channels.ChannelManager;
 import com.herocraftonline.dthielke.herochat.channels.LocalChannel;
+import com.herocraftonline.dthielke.herochat.util.PrefixSuffixManager.FixObj;
 
 public class ConfigManager {
     protected HeroChat plugin;
@@ -143,11 +145,24 @@ public class ConfigManager {
     }
 
     private void loadPrefixes(Configuration config) {
-        // TODO Load from configuration
+        plugin.getPrefixSuffixManager().setPrefixList(this.buildListFromNode(config, "prefixes"));
     }
 
     private void loadSuffixes(Configuration config) {
-        // TODO Load from configuration
+        plugin.getPrefixSuffixManager().setSuffixList(this.buildListFromNode(config, "suffixes"));
+    }
+    
+    private List<FixObj> buildListFromNode(Configuration config, String node) {
+        ArrayList<FixObj> theList = new ArrayList<FixObj>();
+        for (String name : config.getConfigurationSection(node).getKeys(false)) {
+            String data = config.getString(node + "." + name + ".value", "");
+            List<String> perms = config.getList(node + "." + name + ".perms");
+            boolean allPerms = config.getBoolean(node + "." + name + ".", false);
+            int priority = config.getInt(node + "." + name + ".priority", 0);
+            FixObj obj = new FixObj(name, data, priority, perms, allPerms);
+            theList.add(obj);
+        }
+        return theList;
     }
 
     public void loadPlayer(String name) {
@@ -194,6 +209,8 @@ public class ConfigManager {
         YamlConfiguration config = YamlConfiguration.loadConfiguration(primaryConfigFile);
         saveGlobals(config);
         saveChannels(config);
+        savePrefixes(config);
+        saveSuffixes(config);
         config.save(primaryConfigFile);
 
         for (Player player : plugin.getServer().getOnlinePlayers()) {
@@ -248,6 +265,27 @@ public class ConfigManager {
             String permissions = root + "permissions.";
             config.set(permissions + "join", c.getWhitelist());
             config.set(permissions + "speak", c.getVoicelist());
+        }
+    }
+    
+    public void savePrefixes(Configuration config) {
+        saveObjectList(config, "prefixes", plugin.getPrefixSuffixManager().getPrefixList());
+    }
+    
+    public void saveSuffixes(Configuration config) {
+        saveObjectList(config, "suffixes", plugin.getPrefixSuffixManager().getSuffixList());
+    }
+    
+    private void saveObjectList(Configuration config, String baseType, List<FixObj> list) {
+        Iterator<FixObj> iter = list.iterator();
+        String root = baseType + ".";
+        while (iter.hasNext()) {
+            FixObj o = iter.next();
+            String base = root + o.getName() + ".";
+            config.set(base + "value", o.toString());
+            config.set(base + "permissions", o.getPermissions());
+            config.set(base + "allperms", o.getAllPermsRequired());
+            config.set(base + "priority", o.getPriority());
         }
     }
 
